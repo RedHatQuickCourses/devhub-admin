@@ -1,6 +1,6 @@
-= An Example Quick Course
+= Red Hat Developer Hub Administration
 :navtitle: Home
 
 == Introduction
 
-This is an example quick course demonstrating the usage of Antora for authoring and publishing quick courses.
+This course covers the installation, updates and uninstallation process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using a GitHub or GitLab backend along with single sign-on functionality using Keycloak.
