@@ -1,0 +1,8 @@
+= Uninstallation
+
+This is _Section 2_ of _Chapter 1_ in the *hello* quick course....
+
+== Uninstalling the RHDH Helm Chart
+
+== Uninstalling the RHDH Operator
+

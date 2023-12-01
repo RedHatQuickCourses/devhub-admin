@@ -1,4 +1,8 @@
-= Section 3
+= Basic Configuration
 
 This is _Section 3_ of _Chapter 1_ in the *hello* quick course....
+
+== Configuration using OpenShift ConfigMaps
+
+
 

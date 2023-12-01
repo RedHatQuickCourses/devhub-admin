@@ -1,0 +1,7 @@
+= Upgrading RHDH
+
+Upgrading RHDH depends on your install method that you selected. 
+
+== Upgrading the RHDH Helm Chart
+
+== Upgrading the RHDH Operator using the OpenShift Web Console

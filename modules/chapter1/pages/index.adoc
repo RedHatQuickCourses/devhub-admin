@@ -1,3 +1,10 @@
-= Chapter 1
+= Installation and Basic Configuration
+:navtitle: Installation
 
-This is the home page of _Chapter_ 1 in the *hello* quick course...
+In this chapter, you will learn how to install Red Hat Developer Hub (RHDH) on OpenShift using different methods:
+
+* Installation using Helm charts
+* Installation using the Red Hat Developer Hub Operator
+* Installation using the CLI
+
+You will also learn how to upgrade and uninstall RHDH, and perform basic configuration of your RHDH instance.
