@@ -1,8 +1,23 @@
 = Uninstallation
 
-This is _Section 2_ of _Chapter 1_ in the *hello* quick course....
+IMPORTANT: Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database!. Follow the instructions in the previous section to back up the PostgreSQL database.
 
 == Uninstalling the RHDH Helm Chart
 
+You can update RHDH using the OpenShift web console.
+
+. Ensure that you are in the *Developer* perspective of the OpenShift console. Click on `Helm` to view the installed releases in the `Helm Releases` tab.
+
+. Expand the hamburger menu on the right of the `rhdh` release and click `Delete Helm Release`.
++
+image::helm-release-delete.png[title=Delete Helm Release]
+
+. Type the release name `rhdh` into the dialog that pops up and click `Delete` to delete the resources created by the helm chart.
+
+. The secret containing the encrypted Quay.io access token is not deleted automatically by the helm chart deletion process. If you do not need this secret anymore, delete the `rhdh-pull-secret` from the `Secrets` menu in the `Developer` perspective.
+
 == Uninstalling the RHDH Operator
 
+NOTE: The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+
+You can refer to the instructions https://docs.openshift.com/container-platform/4.13/operators/admin/olm-deleting-operators-from-cluster.html[here^] to uninstall the RHDH operator.

@@ -1,7 +1,44 @@
 = Upgrading RHDH
 
-Upgrading RHDH depends on your install method that you selected. 
+Upgrading RHDH depends on your install method that you selected.
+
+IMPORTANT: Before you perform any updates to RHDH, ensure that you back up *ALL* the data in the RHDH PostreSQL database!
+
+== Backup the RHDH PostgreSQL Database
+
+You need to install several CLI tools on your local workstation before upgrading the database.
+
+* Install the OpenShift CLI tool `oc`
+* Install the PostgreSQL CLI client `psql`
+
+=== Backup Process
+
+. Use the `oc` CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the `devhub` project.
+
+. Get the name of the PostgreSQL database pod.
+
+. 
 
 == Upgrading the RHDH Helm Chart
 
+You can update RHDH using the OpenShift web console.
+
+. Ensure that you are in the *Developer* perspective of the OpenShift console. Click on `Helm` to view the installed releases in the `Helm Releases` tab.
+
+. Expand the hamburger menu on the right of the `rhdh` release and click `Upgrade`.
++
+image::helm-release-upgrade.png[title=Upgrade Helm Release]
+
+. In the `Upgrade Helm Release` page, select the version of RHDH you want to upgrade to in the `Chart version` drop-down. This list shows the different helm chart versions of RHDH that have been publicly released.
++
+image::select-chart-upgrade.png[title=Select Upgrade Version]
+
+. After you have selected a version for upgrade, click `Upgrade`. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.
+
+. Close all open RHDH web pages, and log in again to verify that the upgrade was successful.
+ 
 == Upgrading the RHDH Operator using the OpenShift Web Console
+
+NOTE: The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+
+You can refer to the instructions https://docs.openshift.com/container-platform/4.13/operators/admin/olm-upgrading-operators.html#olm-upgrading-operators[here^] to upgrade the RHDH operator.
