@@ -2,4 +2,3 @@
 ** xref:install.adoc[]
 ** xref:upgrade.adoc[]
 ** xref:uninstall.adoc[]
-** xref:config.adoc[]

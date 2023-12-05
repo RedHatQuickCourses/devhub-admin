@@ -1,4 +1,4 @@
-= Installation and Basic Configuration
+= Installation, Upgrades and Uninstallation
 :navtitle: Installation
 
 In this chapter, you will learn how to install Red Hat Developer Hub (RHDH) on OpenShift using different methods:
@@ -7,4 +7,4 @@ In this chapter, you will learn how to install Red Hat Developer Hub (RHDH) on O
 * Installation using the Red Hat Developer Hub Operator
 * Installation using the CLI
 
-You will also learn how to upgrade and uninstall RHDH, and perform basic configuration of your RHDH instance.
+You will also learn how to upgrade and uninstall RHDH.

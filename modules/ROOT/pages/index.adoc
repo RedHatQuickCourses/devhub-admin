@@ -19,6 +19,7 @@ The PTL team acknowledges the valuable contributions of the following Red Hat as
 * Ravi Srinivasan
 * Jason Froelich
 * Hans-Peter Grahsl
+* Rafael Soares
 
 == Classroom Environment
 

@@ -6,18 +6,79 @@ IMPORTANT: Before you perform any updates to RHDH, ensure that you back up *ALL*
 
 == Backup the RHDH PostgreSQL Database
 
-You need to install several CLI tools on your local workstation before upgrading the database.
+You need to install several CLI tools on your *local workstation* before upgrading the database.
 
-* Install the OpenShift CLI tool `oc`
-* Install the PostgreSQL CLI client `psql`
+* Install the OpenShift CLI tool *oc*
+* Install the PostgreSQL CLI client *psql* and *pg_dump*
 
 === Backup Process
 
-. Use the `oc` CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the `devhub` project.
+. Use the *oc* CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc project devhub
+```
 
-. Get the name of the PostgreSQL database pod.
+. Scale the *rhdh-developer-hub* pods to *0* to prevent requests from modifying the database state during backup.
++
+```bash
+$ oc scale --replicas=0 deployment/rhdh-developer-hub
+```
 
-. 
+. Get the name of the PostgreSQL database pod and set it to an environment variable.
++
+```bash
+$ POD=`oc get pods --selector app.kubernetes.io/name=postgresql \
+  -o custom-columns=name:.metadata.name --no-headers`; echo $POD
+```
+
+. List the RHDH databases in the PostgreSQL instance. The RHDH databases are prefixed by *backstage_*.
++
+[subs=+quotes]
+----
+$ *oc rsh $POD*
+sh-5.1$ *psql postgres*
+psql (15.3)
+Type "help" for help.
+
+postgres=# *\l*
+...
+ backstage_plugin_app
+ backstage_plugin_auth
+ backstage_plugin_catalog
+ backstage_plugin_scaffolder
+ backstage_plugin_search 
+...
+(8 rows)
+postgres=# *\q*
+sh-5.1$ *exit*
+----
+
+. Enable port forwarding to the database pod.
++
+```bash
+$ oc port-forward $POD 5432:5432
+Forwarding from 127.0.0.1:5432 -> 5432
+Forwarding from [::1]:5432 -> 5432
+```
+
+. Backup all the *backstage_* the databases using the *pg_dump* command. Store the database backups in a safe location, for restoration at a later point in time in case of a disaster or failure.
++
+```bash
+$ pg_dump backstage_plugin_app > /tmp/backstage_plugin_app.sql \
+  --host=127.0.0.1 --port=5432 -U postgres
+```
++
+Repeat the command for all the other *backstage_* databases.
+
+. After all the databases have been backed up, you can scale the *rhdh-developer-hub* back to your original count.
++
+```bash
+$ oc scale --replicas=1 deployment/rhdh-developer-hub
+```
+
+NOTE: If you are using a non-default (that is, from a third party or commercial vendor) PostgreSQL database, refer to the backup instructions from the provider of the PostgreSQL database. Ensure that you scale the *rhdh-developer-hub* pod count to *0* before starting the backup procedure.
 
 == Upgrading the RHDH Helm Chart
 
