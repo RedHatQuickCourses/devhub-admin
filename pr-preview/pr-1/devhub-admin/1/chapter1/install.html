@@ -383,13 +383,125 @@ Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_postscript_installation_using_helm_cli"><a class="anchor" href="#_postscript_installation_using_helm_cli"></a>Postscript: Installation using Helm CLI</h2>
+<h2 id="_installation_using_helm_cli"><a class="anchor" href="#_installation_using_helm_cli"></a>Installation using Helm CLI</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>If you want to install RHDH non-interactively using the CLI, refer to the instructions at <a href="https://artifacthub.io/packages/helm/openshift/developer-hub" class="bare">https://artifacthub.io/packages/helm/openshift/developer-hub</a>.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+You must complete the steps listed in the <strong>Before Installation</strong> section before using the steps below.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>You will need to install the <code>helm</code> CLI. Instructions to install the helm CLI are available <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/building_applications/working-with-helm-charts#installing-helm" target="_blank" rel="noopener">here</a>.</p>
+<p>You will need to install the <code>helm</code> CLI. You can download the <strong>helm</strong> and other CLI tools from the OpenShift web console by clicking the <strong>"?"</strong> icon on the top right navigation bar.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cli-tools.png" alt="cli tools">
+</div>
+<div class="title">Figure 15. Download CLI Tools</div>
+</div>
+<div class="sect2">
+<h3 id="_cli_install_steps"><a class="anchor" href="#_cli_install_steps"></a>CLI Install Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the OpenShift helm chart repository</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm repo add openshift-helm-charts https://charts.openshift.io/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Download the default <strong>values.yaml</strong> file for the RHDH helm chart</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm show values openshift-helm-charts/redhat-developer-hub &gt; values.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the value of the <strong>global.clusterRouterBase</strong> attribute to the wildcard OpenShift DNS name, and also edit the <strong>upstream.nameOverride</strong> to <strong>rhdh</strong>.</p>
+<div class="listingblock">
+<div class="content">
+<pre>global:
+  clusterRouterBase: <strong>apps.cluster-&lt;guid&gt;.dynamic.opentlc.com</strong>
+  host: ""
+
+upstream:
+  nameOverride: <strong>rhdh</strong>
+  backstage:
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.opentlc.com:6443
+$ oc project devhub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the RHDH helm chart with the updated <strong>values.yaml</strong> file</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ helm upgrade -i rhdh -f default-values.yaml openshift-helm-charts/redhat-developer-hub
+
+Release "rhdh" does not exist. Installing it now.
+...
+NAME: rhdh
+LAST DEPLOYED: Tue Dec  5 18:17:39 2023
+NAMESPACE: devhub
+STATUS: deployed
+REVISION: 1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may sometimes see the following error during install. These messages can be safely ignored.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">1.26.9+636f2be is greater than or equal to 1.14-0 ERROR CWNAKNVCIEJVOEJVJO</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for 10-15 minutes while the helm chart is installed. Verify that the <strong>rhdh-devhub</strong> and <strong>rhdh-postgresql</strong> pods are in <strong>Running</strong> state.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ <strong>oc get pods</strong>
+NAME                    READY   STATUS    RESTARTS        AGE
+rhdh-5d9f68456d-2c4kq   1/1     Running   2 (6m12s ago)   6m23s
+rhdh-postgresql-0       1/1     Running   0               6m22s</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Fetch the OpenShift route for RHDH and open the URL in a browser to navigate to the RHDH home page.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ <strong>oc get route rhdh-developer-hub --output jsonpath={.spec.host}</strong>
+rhdh-developer-hub-devhub.apps.cluster-&lt;guid&gt;.dynamic.opentlc.com</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A short refresher on working with helm charts on OpenShift is available <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/building_applications/working-with-helm-charts" target="_blank" rel="noopener">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>More details about the RHDH helm chart are available at <a href="https://artifacthub.io/packages/helm/openshift/developer-hub" class="bare">https://artifacthub.io/packages/helm/openshift/developer-hub</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -461,7 +573,7 @@ Backend failed to start up Error: Missing required config value at
 <div class="content">
 <img src="_images/rhdh-pod-details-error.png" alt="rhdh pod details error">
 </div>
-<div class="title">Figure 15. RHDH Pod Failure</div>
+<div class="title">Figure 16. RHDH Pod Failure</div>
 </div>
 <div class="paragraph">
 <p><strong>Solution</strong>: Verify that you have created a secret named <code>rhdh-pull-secret</code> in the same project where you are installing RHDH. Delete the failed helm release and re-run the installation steps after you have created the secret.</p>
@@ -471,6 +583,17 @@ Backend failed to start up Error: Missing required config value at
 </div>
 </li>
 </ul>
+</div>
+</li>
+<li>
+<p><strong>Problem</strong>: I see the following error when installing the RHDH helm chart using the <strong>helm</strong> CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre>Error: query: failed to query with labels: secrets is forbidden: User "system:anonymous" cannot list resource "secrets" in API group "" in the namespace "devhub"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Solution</strong>: Ensure that you are logged in to the OpenShift cluster as a cluster administrator before installing, removing or upgrading the RHDH helm chart. Also ensure that you are in the correct OpenShift project to ensure the resources are created in the correct OpenShift project.</p>
 </div>
 </li>
 </ol>

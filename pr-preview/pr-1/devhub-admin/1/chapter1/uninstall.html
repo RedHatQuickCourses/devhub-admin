@@ -148,6 +148,36 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 </div>
 </div>
 <div class="sect1">
+<h2 id="_uninstalling_the_rhdh_helm_chart_using_the_cli"><a class="anchor" href="#_uninstalling_the_rhdh_helm_chart_using_the_cli"></a>Uninstalling the RHDH Helm Chart using the CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can uninstall RHDH using the <strong>helm</strong> CLI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.opentlc.com:6443
+$ oc project devhub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the following command to uninstall RHDH</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm uninstall
+release "rhdh" uninstalled</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_uninstalling_the_rhdh_operator"><a class="anchor" href="#_uninstalling_the_rhdh_operator"></a>Uninstalling the RHDH Operator</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">

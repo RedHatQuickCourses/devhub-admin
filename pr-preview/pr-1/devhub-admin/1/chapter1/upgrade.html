@@ -277,6 +277,36 @@ If you are using a non-default (that is, from a third party or commercial vendor
 </div>
 </div>
 <div class="sect1">
+<h2 id="_upgrading_the_rhdh_helm_chart_using_the_cli"><a class="anchor" href="#_upgrading_the_rhdh_helm_chart_using_the_cli"></a>Upgrading the RHDH Helm Chart using the CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update RHDH using the <strong>helm</strong> CLI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.opentlc.com:6443
+$ oc project devhub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>0.3.0</strong>), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a <strong>new-values.yml</strong> file on your workstation with values that override the attributes in the installed chart, or add new attributes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version developer-hub-0.3.0</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_upgrading_the_rhdh_operator_using_the_openshift_web_console"><a class="anchor" href="#_upgrading_the_rhdh_operator_using_the_openshift_web_console"></a>Upgrading the RHDH Operator using the OpenShift Web Console</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
