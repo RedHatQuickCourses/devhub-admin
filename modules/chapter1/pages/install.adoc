@@ -125,11 +125,91 @@ image::rhdh-guest-user.png[title=Log in as a guest user]
 +
 You have now successfully installed Red Hat Developer Hub on your OpenShift cluster.
 
-== Postscript: Installation using Helm CLI
+== Installation using Helm CLI
 
-If you want to install RHDH non-interactively using the CLI, refer to the instructions at https://artifacthub.io/packages/helm/openshift/developer-hub.
+IMPORTANT: You must complete the steps listed in the *Before Installation* section before using the steps below.
 
-You will need to install the `helm` CLI. Instructions to install the helm CLI are available https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/building_applications/working-with-helm-charts#installing-helm[here^].
+You will need to install the `helm` CLI. You can download the *helm* and other CLI tools from the OpenShift web console by clicking the *"?"* icon on the top right navigation bar.
+
+image::cli-tools.png[title=Download CLI Tools]
+
+=== CLI Install Steps
+
+. Add the OpenShift helm chart repository
++
+```bash
+$ helm repo add openshift-helm-charts https://charts.openshift.io/
+```
+
+. Download the default *values.yaml* file for the RHDH helm chart
++
+```bash
+$ helm show values openshift-helm-charts/redhat-developer-hub > values.yaml
+```
+
+. Change the value of the *global.clusterRouterBase* attribute to the wildcard OpenShift DNS name, and also edit the *upstream.nameOverride* to *rhdh*.
++
+[subs=+quotes]
+----
+global:
+  clusterRouterBase: *apps.cluster-<guid>.dynamic.opentlc.com*
+  host: ""
+
+upstream:
+  nameOverride: *rhdh*
+  backstage:
+...
+----
+
+. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc project devhub
+```
+
+. Install the RHDH helm chart with the updated *values.yaml* file
++
+[subs=+quotes]
+----
+$ helm upgrade -i rhdh -f default-values.yaml openshift-helm-charts/redhat-developer-hub
+
+Release "rhdh" does not exist. Installing it now.
+...
+NAME: rhdh
+LAST DEPLOYED: Tue Dec  5 18:17:39 2023
+NAMESPACE: devhub
+STATUS: deployed
+REVISION: 1
+----
++
+You may sometimes see the following error during install. These messages can be safely ignored.
++
+```
+1.26.9+636f2be is greater than or equal to 1.14-0 ERROR CWNAKNVCIEJVOEJVJO
+```
+
+. Wait for 10-15 minutes while the helm chart is installed. Verify that the *rhdh-devhub* and *rhdh-postgresql* pods are in *Running* state.
++
+[subs=+quotes]
+----
+$ *oc get pods*
+NAME                    READY   STATUS    RESTARTS        AGE
+rhdh-5d9f68456d-2c4kq   1/1     Running   2 (6m12s ago)   6m23s
+rhdh-postgresql-0       1/1     Running   0               6m22s
+----
+
+. Fetch the OpenShift route for RHDH and open the URL in a browser to navigate to the RHDH home page.
++
+[subs=+quotes]
+----
+$ *oc get route rhdh-developer-hub --output jsonpath={.spec.host}*
+rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.opentlc.com
+----
+
+A short refresher on working with helm charts on OpenShift is available https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/building_applications/working-with-helm-charts[here^].
+
+More details about the RHDH helm chart are available at https://artifacthub.io/packages/helm/openshift/developer-hub.
 
 == RHDH PostgreSQL Database
 
@@ -172,3 +252,12 @@ image::rhdh-pod-details-error.png[title=RHDH Pod Failure]
 *Solution*: Verify that you have created a secret named `rhdh-pull-secret` in the same project where you are installing RHDH. Delete the failed helm release and re-run the installation steps after you have created the secret.
 +
 You will also see similar errors if your Quay.io username has not been added to the RHDH private container registry, or if your secret contains an invalid token. Complete the steps outlined in the `Pre-requisites` section and retry the installation steps.
+
+. *Problem*: I see the following error when installing the RHDH helm chart using the *helm* CLI:
++
+[subs=+quotes]
+----
+Error: query: failed to query with labels: secrets is forbidden: User "system:anonymous" cannot list resource "secrets" in API group "" in the namespace "devhub"
+----
++
+*Solution*: Ensure that you are logged in to the OpenShift cluster as a cluster administrator before installing, removing or upgrading the RHDH helm chart. Also ensure that you are in the correct OpenShift project to ensure the resources are created in the correct OpenShift project.

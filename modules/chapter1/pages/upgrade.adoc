@@ -97,6 +97,24 @@ image::select-chart-upgrade.png[title=Select Upgrade Version]
 . After you have selected a version for upgrade, click `Upgrade`. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.
 
 . Close all open RHDH web pages, and log in again to verify that the upgrade was successful.
+
+== Upgrading the RHDH Helm Chart using the CLI
+
+You can update RHDH using the *helm* CLI.
+
+. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc project devhub
+```
+
+. Assuming there is a new version of the RHDH helm chart (for example, *0.3.0*), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a *new-values.yml* file on your workstation with values that override the attributes in the installed chart, or add new attributes.
++
+```bash
+$ helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version developer-hub-0.3.0
+```
  
 == Upgrading the RHDH Operator using the OpenShift Web Console
 

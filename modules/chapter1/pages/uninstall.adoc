@@ -16,6 +16,24 @@ image::helm-release-delete.png[title=Delete Helm Release]
 
 . The secret containing the encrypted Quay.io access token is not deleted automatically by the helm chart deletion process. If you do not need this secret anymore, delete the `rhdh-pull-secret` from the `Secrets` menu in the `Developer` perspective.
 
+== Uninstalling the RHDH Helm Chart using the CLI
+
+You can uninstall RHDH using the *helm* CLI.
+
+. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc project devhub
+```
+
+. Run the following command to uninstall RHDH
++
+```bash
+$ helm uninstall 
+release "rhdh" uninstalled
+```
+
 == Uninstalling the RHDH Operator
 
 NOTE: The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
