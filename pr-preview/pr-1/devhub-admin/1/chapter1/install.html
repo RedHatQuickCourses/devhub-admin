@@ -180,6 +180,18 @@ The chart contains an opinionated default configuration of Backstage with a pre-
 </div>
 <div class="sect2">
 <h3 id="_before_installation"><a class="anchor" href="#_before_installation"></a>Before Installation</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+These four steps are <strong>NOT</strong> required for the <em>1.0 GA</em> version of RHDH. The container image will be publicly available from the <strong>registry.redhat.io</strong> container image registry.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The pre-release version of the RHDH container image is not yet available publicly for download. You first need to request access to the private container image repository in Quay.io as outlined in the <code>Pre-requisites</code> section above.</p>
 </div>
@@ -232,7 +244,7 @@ Copy the details for use later in the course.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installation_using_the_openshift_console"><a class="anchor" href="#_installation_using_the_openshift_console"></a>Installation using the OpenShift Console</h3>
+<h3 id="_create_a_project_for_rhdh"><a class="anchor" href="#_create_a_project_for_rhdh"></a>Create a Project for RHDH</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -269,6 +281,21 @@ Copy the details for use later in the course.</p>
 </li>
 <li>
 <p>Create a new secret in the <code>devhub</code> project.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The next <em>three sub-steps</em> are <strong>NOT</strong> required for the <em>1.0 GA</em> version of RHDH. The container image will be publicly available from the <strong>registry.redhat.io</strong> container image registry. If you are installing the 1.0 GA version of the product, continue to the <em>Install the RHDH Helm Chart</em> section.
+</td>
+</tr>
+</table>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -288,13 +315,17 @@ Copy the details for use later in the course.</p>
 </div>
 <div class="title">Figure 8. Edit Secret YAML file</div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>Click <code>Create</code> to create the secret.</p>
-</div>
 </li>
 </ol>
 </div>
-</li>
+</div>
+<div class="sect2">
+<h3 id="_install_the_rhdh_helm_chart"><a class="anchor" href="#_install_the_rhdh_helm_chart"></a>Install the RHDH Helm Chart</h3>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Switch to the <code>Developer</code> perspective in the OpenShift console.</p>
 <div class="imageblock">
@@ -454,7 +485,7 @@ $ oc project devhub</code></pre>
 <p>Install the RHDH helm chart with the updated <strong>values.yaml</strong> file</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ helm upgrade -i rhdh -f default-values.yaml openshift-helm-charts/redhat-developer-hub
+<pre>$ <strong>helm upgrade -i rhdh -f values.yaml openshift-helm-charts/redhat-developer-hub</strong>
 
 Release "rhdh" does not exist. Installing it now.
 ...
