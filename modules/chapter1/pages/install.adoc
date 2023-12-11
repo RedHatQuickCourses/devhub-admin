@@ -36,6 +36,8 @@ The container image for RHDH is not yet publicly available. You need access to t
 
 === Before Installation
 
+IMPORTANT: These four steps are *NOT* required for the _1.0 GA_ version of RHDH. The container image will be publicly available from the *registry.redhat.io* container image registry.
+
 The pre-release version of the RHDH container image is not yet available publicly for download. You first need to request access to the private container image repository in Quay.io as outlined in the `Pre-requisites` section above.
 
 You then need to create an OpenShift secret with your Quay.io access token (encrypted). Do the following before the RHDH install:
@@ -59,9 +61,9 @@ image::03_generate-kube-secret.png[title=Kubernetes secret YAML file]
 +
 You will use the contents of this YAML file in the installation to create an OpenShift secret.
 
-=== Installation using the OpenShift Console
+=== Create a Project for RHDH
 
-. Log in to your OpenShift web console as the cluster administrator user (usually username is `admin`). The username and password details for your OpenShift cluster are accessible in the RHDP `Services` dashboard. You should have also received an email with the details of your OpenShift cluster.
+1. Log in to your OpenShift web console as the cluster administrator user (usually username is `admin`). The username and password details for your OpenShift cluster are accessible in the RHDP `Services` dashboard. You should have also received an email with the details of your OpenShift cluster.
 +
 image::03-rhdp-cluster-details.png[title=RHDP OpenShift Cluster Details]
 +
@@ -70,11 +72,13 @@ image::03-rhdp-cluster-details.png[title=RHDP OpenShift Cluster Details]
 You can install the RHDH Helm chart as a regular, non-cluster administrator user, but this is not recommended. Many organizations have strict policies on who can install operators and charts in the OpenShift cluster.
 ====
 
-. Click on `Projects` (Ensure you are in the `Administrator` perspective of the OpenShift console). Create a new OpenShift project named `devhub`.
+2. Click on `Projects` (Ensure you are in the `Administrator` perspective of the OpenShift console). Create a new OpenShift project named `devhub`.
 +
 image::new-ocp-project.png[title=Create a new OpenShift Project]
 
-. Create a new secret in the `devhub` project.
+3. Create a new secret in the `devhub` project.
+
+IMPORTANT: The next _three sub-steps_ are *NOT* required for the _1.0 GA_ version of RHDH. The container image will be publicly available from the *registry.redhat.io* container image registry. If you are installing the 1.0 GA version of the product, continue to the _Install the RHDH Helm Chart_ section.
 
 .. Click the `+` icon in the top right corner of the OpenShift console, and paste the contents of the `<username-secret.yaml>` file you downloaded earlier from Quay.io.
 +
@@ -83,8 +87,10 @@ image::import-yaml-icon.png[title=Import YAML icon]
 .. Edit the `metadata.name` attribute and change it to `rhdh-pull-secret`.
 +
 image::edit-secret-yaml.png[title=Edit Secret YAML file]
-+
-Click `Create` to create the secret.
+
+.. Click `Create` to create the secret.
+
+=== Install the RHDH Helm Chart
 
 . Switch to the `Developer` perspective in the OpenShift console.
 +
@@ -172,7 +178,7 @@ $ oc project devhub
 +
 [subs=+quotes]
 ----
-$ helm upgrade -i rhdh -f default-values.yaml openshift-helm-charts/redhat-developer-hub
+$ *helm upgrade -i rhdh -f values.yaml openshift-helm-charts/redhat-developer-hub*
 
 Release "rhdh" does not exist. Installing it now.
 ...

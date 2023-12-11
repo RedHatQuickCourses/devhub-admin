@@ -29,10 +29,11 @@ $ oc project devhub
 
 . Run the following command to uninstall RHDH
 +
-```bash
-$ helm uninstall 
+[subs=+quotes]
+----
+$ *helm uninstall rhdh*
 release "rhdh" uninstalled
-```
+----
 
 == Uninstalling the RHDH Operator
 

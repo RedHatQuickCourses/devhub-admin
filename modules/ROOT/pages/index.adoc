@@ -17,7 +17,7 @@ This course covers the installation, updates and uninstallation process for Red 
 The PTL team acknowledges the valuable contributions of the following Red Hat associates:
 
 * Ravi Srinivasan
-* Jason Froelich
+* Jason Froehlich
 * Hans-Peter Grahsl
 * Rafael Soares
 
