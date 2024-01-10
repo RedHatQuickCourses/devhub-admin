@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Uninstallation :: Red Hat Developer Hub Administration</title>
+    <title>Red Hat Developer Hub Uninstallation :: Red Hat Developer Hub Administration</title>
     <link rel="prev" href="upgrade.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -49,13 +49,13 @@
     <a class="nav-link" href="index.html">Installation</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="install.html">Installation</a>
+    <a class="nav-link" href="install.html">Installing RHDH</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="uninstall.html">Uninstallation</a>
+    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
   </li>
 </ul>
   </li>
@@ -91,7 +91,7 @@
   <ul>
     <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
     <li><a href="index.html">Installation</a></li>
-    <li><a href="uninstall.html">Uninstallation</a></li>
+    <li><a href="uninstall.html">Uninstalling RHDH</a></li>
   </ul>
 </nav>
 </div>
@@ -100,7 +100,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Uninstallation</h1>
+<h1 class="page">Red Hat Developer Hub Uninstallation</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="admonitionblock important">
@@ -121,7 +121,7 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 <h2 id="_uninstalling_the_rhdh_helm_chart"><a class="anchor" href="#_uninstalling_the_rhdh_helm_chart"></a>Uninstalling the RHDH Helm Chart</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can update RHDH using the OpenShift web console.</p>
+<p>You can uninstall RHDH using the OpenShift web console.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -140,9 +140,6 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 <li>
 <p>Type the release name <code>rhdh</code> into the dialog that pops up and click <code>Delete</code> to delete the resources created by the helm chart.</p>
 </li>
-<li>
-<p>The secret containing the encrypted Quay.io access token is not deleted automatically by the helm chart deletion process. If you do not need this secret anymore, delete the <code>rhdh-pull-secret</code> from the <code>Secrets</code> menu in the <code>Developer</code> perspective.</p>
-</li>
 </ol>
 </div>
 </div>
@@ -159,7 +156,7 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 <p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.opentlc.com:6443
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
 $ oc project devhub</code></pre>
 </div>
 </div>
