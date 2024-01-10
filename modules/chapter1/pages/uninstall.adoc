@@ -1,10 +1,11 @@
-= Uninstallation
+= Red Hat Developer Hub Uninstallation
+:navtitle: Uninstalling RHDH
 
 IMPORTANT: Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database!. Follow the instructions in the previous section to back up the PostgreSQL database.
 
 == Uninstalling the RHDH Helm Chart
 
-You can update RHDH using the OpenShift web console.
+You can uninstall RHDH using the OpenShift web console.
 
 . Ensure that you are in the *Developer* perspective of the OpenShift console. Click on `Helm` to view the installed releases in the `Helm Releases` tab.
 
@@ -14,8 +15,6 @@ image::helm-release-delete.png[title=Delete Helm Release]
 
 . Type the release name `rhdh` into the dialog that pops up and click `Delete` to delete the resources created by the helm chart.
 
-. The secret containing the encrypted Quay.io access token is not deleted automatically by the helm chart deletion process. If you do not need this secret anymore, delete the `rhdh-pull-secret` from the `Secrets` menu in the `Developer` perspective.
-
 == Uninstalling the RHDH Helm Chart using the CLI
 
 You can uninstall RHDH using the *helm* CLI.
@@ -23,7 +22,7 @@ You can uninstall RHDH using the *helm* CLI.
 . Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
 +
 ```bash
-$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
 $ oc project devhub
 ```
 

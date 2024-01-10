@@ -1,4 +1,5 @@
-= Installation
+= Red Hat Developer Hub Installation
+:navtitle: Installing RHDH
 
 Red Hat builds and ships RHDH as a container image that is based on the _Red Hat Enterprise Linux Universal Base Image_ (**RHEL UBI**).
 
@@ -10,7 +11,7 @@ RHDH can be installed from within the OpenShift web console just like any other 
 
 Refer to the instructions https://docs.openshift.com/container-platform/4.13/operators/admin/olm-adding-operators-to-cluster.html[here^] to install the RHDH operator on OpenShift.
 
-NOTE: At the time of writing (Dec 2023), the operator is not yet available on OperatorHub. Watch this space for install instructions in the near future when the operator becomes generally available (ETA: Q1 2024).
+NOTE: At the time of writing (Jan 2024), the operator is not yet available on *OperatorHub*. Watch this space for install instructions in the near future when the operator becomes generally available (ETA: Q1 2024).
 
 == Installation Using Helm Charts
 
@@ -27,39 +28,7 @@ The Helm chart option is the most up to date and recommended method of installat
 
 === Pre-requisites
 
-The container image for RHDH is not yet publicly available. You need access to the private repository for RHDH located in the Quay.io container registry.
-
-. If you do not already have one, create a new account at http://quay.io
-. Send email to rhdh-interest@redhat.com with your Quay.io ID. Request your ID to be added to the private repository for RHDH
-. For support issues and troubleshooting, verify that you have access to the RHDH slack channel at https://redhat-external.slack.com/archives/C05E30GJ79V
 . Order the https://demo.redhat.com/catalog?item=babylon-catalog-prod/openshift-cnv.ocp413-single-node-cnv.prod&utm_source=webapp&utm_medium=share-link[OpenShift 4.13 Single Node Workshop^] catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.
-
-=== Before Installation
-
-IMPORTANT: These four steps are *NOT* required for the _1.0 GA_ version of RHDH. The container image will be publicly available from the *registry.redhat.io* container image registry.
-
-The pre-release version of the RHDH container image is not yet available publicly for download. You first need to request access to the private container image repository in Quay.io as outlined in the `Pre-requisites` section above.
-
-You then need to create an OpenShift secret with your Quay.io access token (encrypted). Do the following before the RHDH install:
-
-1. Log in your your Quay.io account and click `Account Settings`.
-+
-image::01_quay-ac-settings.png[title=Quay.io settings]
-
-2. In the `Docker CLI Password` section, click `Generate Encrypted Password`.
-+
-image::02_generate-enc-pwd.png[title=Generate encrypted token]
-
-3. You will now see your username and encrypted password credentials to log in to Quay.io from Docker or Podman CLI.
-Copy the details for use later in the course.
-+
-image::02-gen-username-password.png[title=Encrypted credentials]
-
-4. Click on `Kubernetes Secret` and download the `<username>-secret.yml` file, where `username` is your Quay.io user ID.
-+
-image::03_generate-kube-secret.png[title=Kubernetes secret YAML file]
-+
-You will use the contents of this YAML file in the installation to create an OpenShift secret.
 
 === Create a Project for RHDH
 
@@ -75,20 +44,6 @@ You can install the RHDH Helm chart as a regular, non-cluster administrator user
 2. Click on `Projects` (Ensure you are in the `Administrator` perspective of the OpenShift console). Create a new OpenShift project named `devhub`.
 +
 image::new-ocp-project.png[title=Create a new OpenShift Project]
-
-3. Create a new secret in the `devhub` project.
-
-IMPORTANT: The next _three sub-steps_ are *NOT* required for the _1.0 GA_ version of RHDH. The container image will be publicly available from the *registry.redhat.io* container image registry. If you are installing the 1.0 GA version of the product, continue to the _Install the RHDH Helm Chart_ section.
-
-.. Click the `+` icon in the top right corner of the OpenShift console, and paste the contents of the `<username-secret.yaml>` file you downloaded earlier from Quay.io.
-+
-image::import-yaml-icon.png[title=Import YAML icon]
-
-.. Edit the `metadata.name` attribute and change it to `rhdh-pull-secret`.
-+
-image::edit-secret-yaml.png[title=Edit Secret YAML file]
-
-.. Click `Create` to create the secret.
 
 === Install the RHDH Helm Chart
 
@@ -119,7 +74,7 @@ image::edit-helm-chart-values.png[title=Edit Helm Chart Details]
 . Wait for 10-15 minutes while the helm chart is deployed. The `PostgreSQL` and `Red Hat Developer Hub` should be fully started.
 Click the `Open URL` link to access Red Hat Developer Hub.
 +
-image::rhdh-installed.png[RHDH Topology View]
+image::rhdh-installed.png[title=RHDH Topology View]
 
 . You should now see the Red Hat Developer Hub log in page.
 +
@@ -132,8 +87,6 @@ image::rhdh-guest-user.png[title=Log in as a guest user]
 You have now successfully installed Red Hat Developer Hub on your OpenShift cluster.
 
 == Installation using Helm CLI
-
-IMPORTANT: You must complete the steps listed in the *Before Installation* section before using the steps below.
 
 You will need to install the `helm` CLI. You can download the *helm* and other CLI tools from the OpenShift web console by clicking the *"?"* icon on the top right navigation bar.
 
@@ -158,7 +111,7 @@ $ helm show values openshift-helm-charts/redhat-developer-hub > values.yaml
 [subs=+quotes]
 ----
 global:
-  clusterRouterBase: *apps.cluster-<guid>.dynamic.opentlc.com*
+  clusterRouterBase: *apps.cluster-<guid>.dynamic.redhatworkshops.io*
   host: ""
 
 upstream:
@@ -170,7 +123,7 @@ upstream:
 . Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
 +
 ```bash
-$ oc login -u admin https://api.cluster-<your_guid>.dynamic.opentlc.com:6443
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
 $ oc project devhub
 ```
 
@@ -210,7 +163,7 @@ rhdh-postgresql-0       1/1     Running   0               6m22s
 [subs=+quotes]
 ----
 $ *oc get route rhdh-developer-hub --output jsonpath={.spec.host}*
-rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.opentlc.com
+rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
 ----
 
 A short refresher on working with helm charts on OpenShift is available https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/building_applications/working-with-helm-charts[here^].
@@ -247,18 +200,6 @@ Backend failed to start up Error: Missing required config value at
 +
 You can always edit and update the RHDH configuration after the installation is completed successfully.
 
-. *Problem*: I see the following errors when installing the RHDH helm chart:
-
-* Error: ImagePullBackOff
-* Error: ErrImagePull
-* Failed to pull image "quay.io/rhdh/rhdh-hub-rhel9:1.0-88": rpc error: code = Unknown desc = reading manifest 1.0-88 in quay.io/rhdh/rhdh-hub-rhel9: unauthorized: access to the requested resource is not authorized
-+
-image::rhdh-pod-details-error.png[title=RHDH Pod Failure]
-+
-*Solution*: Verify that you have created a secret named `rhdh-pull-secret` in the same project where you are installing RHDH. Delete the failed helm release and re-run the installation steps after you have created the secret.
-+
-You will also see similar errors if your Quay.io username has not been added to the RHDH private container registry, or if your secret contains an invalid token. Complete the steps outlined in the `Pre-requisites` section and retry the installation steps.
-
 . *Problem*: I see the following error when installing the RHDH helm chart using the *helm* CLI:
 +
 [subs=+quotes]
@@ -266,4 +207,4 @@ You will also see similar errors if your Quay.io username has not been added to 
 Error: query: failed to query with labels: secrets is forbidden: User "system:anonymous" cannot list resource "secrets" in API group "" in the namespace "devhub"
 ----
 +
-*Solution*: Ensure that you are logged in to the OpenShift cluster as a cluster administrator before installing, removing or upgrading the RHDH helm chart. Also ensure that you are in the correct OpenShift project to ensure the resources are created in the correct OpenShift project.
+*Solution*: Ensure that you are logged in to the OpenShift cluster as a cluster administrator before installing, removing or upgrading the RHDH helm chart. Also ensure that you are in the correct OpenShift project so that the resources are created in it.
