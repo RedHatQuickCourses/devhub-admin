@@ -3,4 +3,43 @@
 
 == Introduction
 
+Welcome to this quick course on the _Red Hat Developer Hub Administration_.
+This course is the `second` in a series of `three` courses about Red Hat Developer Hub:
+
+1. https://redhatquickcourses.github.io/devhub-intro[Introduction to Red Hat Developer Hub^]
+2. Red Hat Developer Hub Administration  (_This course_)
+3. Building Developer Portals with Red Hat Developer Hub (Under Development)
+
 This course covers the installation, updates and uninstallation process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using a GitHub or GitLab backend along with single sign-on functionality using Keycloak.
+
+== Contributors
+
+The PTL team acknowledges the valuable contributions of the following Red Hat associates:
+
+* Ravi Srinivasan
+* Jason Froehlich
+* Hans-Peter Grahsl
+* Rafael Soares
+
+== Classroom Environment
+
+Use the https://demo.redhat.com/catalog?item=babylon-catalog-prod/openshift-cnv.ocp413-single-node-cnv.prod&utm_source=webapp&utm_medium=share-link[OpenShift 4.13 Single Node Workshop^] catalog item from Red Hat Demo Platform (RHDP).
+
+This classroom does *NOT* have RHDH pre-installed. You install and configure a basic RHDH instance, and then continue using this instance with other courses in the learning path.
+
+== Prerequisites
+
+* Basic knowledge of OpenShift (or Kubernetes) administration
+* Knowledge of building Docker or Podman containers.
+* Deploying container images on OpenShift or Kubernetes
+* OpenShift or Kubernetes User and Role administration
+
+== Objectives
+
+The overall objectives of this course include:
+
+* Install, Upgrade and Uninstall Red Hat Developer Hub on OpenShift
+* Perform basic configuration of RHDH
+* Configure single sign-on and user authentication for Red Hat Developer Hub using:
+** GitHub or GitLab
+** Keycloak

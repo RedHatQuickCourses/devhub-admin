@@ -1,0 +1,124 @@
+= Upgrading Red Hat Developer Hub
+:navtitle: Upgrading RHDH
+
+Upgrading RHDH depends on your install method that you selected.
+
+IMPORTANT: Before you perform any updates to RHDH, ensure that you back up *ALL* the data in the RHDH PostreSQL database!
+
+== Backup the RHDH PostgreSQL Database
+
+You need to install several CLI tools on your *local workstation* before upgrading the database.
+
+* Install the OpenShift CLI tool *oc*
+* Install the PostgreSQL CLI client *psql* and *pg_dump*
+
+=== Backup Process
+
+. Use the *oc* CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+$ oc project devhub
+```
+
+. Scale the *rhdh-developer-hub* pods to *0* to prevent requests from modifying the database state during backup.
++
+```bash
+$ oc scale --replicas=0 deployment/rhdh-developer-hub
+```
+
+. Get the name of the PostgreSQL database pod and set it to an environment variable.
++
+```bash
+$ POD=`oc get pods --selector app.kubernetes.io/name=postgresql \
+  -o custom-columns=name:.metadata.name --no-headers`; echo $POD
+```
+
+. List the RHDH databases in the PostgreSQL instance. The RHDH databases are prefixed by *backstage_*.
++
+[subs=+quotes]
+----
+$ *oc rsh $POD*
+sh-5.1$ *psql postgres*
+psql (15.3)
+Type "help" for help.
+
+postgres=# *\l*
+...
+ backstage_plugin_app
+ backstage_plugin_auth
+ backstage_plugin_catalog
+ backstage_plugin_scaffolder
+ backstage_plugin_search 
+...
+(8 rows)
+postgres=# *\q*
+sh-5.1$ *exit*
+----
+
+. Enable port forwarding to the database pod.
++
+```bash
+$ oc port-forward $POD 5432:5432
+Forwarding from 127.0.0.1:5432 -> 5432
+Forwarding from [::1]:5432 -> 5432
+```
+
+. Backup all the *backstage_* the databases using the *pg_dump* command. Store the database backups in a safe location, for restoration at a later point in time in case of a disaster or failure.
++
+```bash
+$ pg_dump backstage_plugin_app > /tmp/backstage_plugin_app.sql \
+  --host=127.0.0.1 --port=5432 -U postgres
+```
++
+Repeat the command for all the other *backstage_* databases.
+
+. After all the databases have been backed up, you can scale the *rhdh-developer-hub* back to your original count.
++
+```bash
+$ oc scale --replicas=1 deployment/rhdh-developer-hub
+```
+
+NOTE: If you are using a non-default (that is, from a third party or commercial vendor) PostgreSQL database, refer to the backup instructions from the provider of the PostgreSQL database. Ensure that you scale the *rhdh-developer-hub* pod count to *0* before starting the backup procedure.
+
+== Upgrading the RHDH Helm Chart
+
+You can update RHDH using the OpenShift web console.
+
+. Ensure that you are in the *Developer* perspective of the OpenShift console. Click on `Helm` to view the installed releases in the `Helm Releases` tab.
+
+. Expand the hamburger menu on the right of the `rhdh` release and click `Upgrade`.
++
+image::helm-release-upgrade.png[title=Upgrade Helm Release]
+
+. In the `Upgrade Helm Release` page, select the version of RHDH you want to upgrade to in the `Chart version` drop-down. This list shows the different helm chart versions of RHDH that have been publicly released.
++
+image::select-chart-upgrade.png[title=Select Upgrade Version]
+
+. After you have selected a version for upgrade, click `Upgrade`. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.
+
+. Close all open RHDH web pages, and log in again to verify that the upgrade was successful.
+
+== Upgrading the RHDH Helm Chart using the CLI
+
+You can update RHDH using the *helm* CLI.
+
+. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
++
+```bash
+$ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+$ oc project devhub
+```
+
+. Assuming there is a new version of the RHDH helm chart (for example, *0.3.0*), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a *new-values.yml* file on your workstation with values that override the attributes in the installed chart, or add new attributes.
++
+```bash
+$ helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version developer-hub-0.3.0
+```
+ 
+== Upgrading the RHDH Operator using the OpenShift Web Console
+
+NOTE: The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+
+You can refer to the instructions https://docs.openshift.com/container-platform/4.13/operators/admin/olm-upgrading-operators.html#olm-upgrading-operators[here^] to upgrade the RHDH operator.
