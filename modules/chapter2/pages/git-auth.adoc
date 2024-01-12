@@ -1,0 +1,4 @@
+# Configuring Authentication using GitHub or GitLab
+:navtitle: GitHub/GitLab Authentication
+
+sd
