@@ -166,3 +166,9 @@ postgresql:
 
 . Click `Upgrade` to redeploy the RHDH instance. It may take some time for the RHDH pods to be redeployed.
 Verify that the integration was successful by navigating to the RHDH home page.
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/getting_started_with_red_hat_developer_hub/index#ref-rhdh-supported-configs_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
+* https://backstage.io/docs/conf[Configuration in Backstage^]
+* https://backstage.io/docs/getting-started/configuration#install-and-configure-postgresql[Configure PostgreSQL database in Backstage^]
