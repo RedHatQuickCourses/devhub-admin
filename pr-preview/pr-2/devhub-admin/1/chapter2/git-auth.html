@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Configuring Authentication using GitHub :: Red Hat Developer Hub Administration</title>
     <link rel="prev" href="basic-config.html">
-    <link rel="next" href="keycloak-auth.html">
+    <link rel="next" href="rbac.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -75,7 +75,7 @@
     <a class="nav-link" href="git-auth.html">GitHub Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="keycloak-auth.html">Keycloak Authentication</a>
+    <a class="nav-link" href="rbac.html">Role Based Access Control</a>
   </li>
 </ul>
   </li>
@@ -193,7 +193,7 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <div class="ulist">
 <ul>
 <li>
-<p><code>GitHub App name</code>: <strong>rhdh-app-&lt;your_RHDP_GUID&gt;</strong></p>
+<p><code>GitHub App name</code>: <strong>rhdh-app-&lt;your_RHDP_GUID&gt;</strong> (A unique name)</p>
 </li>
 <li>
 <p><code>Homepage URL</code>: <strong><a href="https://rhdh-developer-hub-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io" class="bare">https://rhdh-developer-hub-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io</a></strong> (Your RHDH Route URL)</p>
@@ -255,6 +255,12 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 </li>
 <li>
 <p>Click <code>Generate a new client secret</code>. Copy the generated secret for the next steps.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/2-gh-auth.png" alt="2 gh auth" width="600">
+</div>
+<div class="title">Figure 1. Generate Client Secret</div>
+</div>
 </li>
 <li>
 <p>Scroll down to the <code>Private Keys</code> section and click <code>Generate a private key</code>. Copy the generated private key certificate (it is in PEM format) to a safe location.</p>
@@ -264,6 +270,12 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 </li>
 <li>
 <p>Select <code>All Repositories</code> for <code>Repository access</code> and then click <code>Install</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/8-gh-auth.png" alt="8 gh auth" width="400">
+</div>
+<div class="title">Figure 2. Install GitHub App</div>
+</div>
 </li>
 </ol>
 </div>
@@ -409,9 +421,21 @@ app:
 <ol class="arabic">
 <li>
 <p>Edit the <code>rhdh</code> helm chart, toggle <code>Form view</code>, and expand <code>Root Schema &gt; global &gt; Dynamic plugins configuration &gt; List of dynamic plugins that should be installed in the backstage application</code>. Add the value <code>./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic</code> to the <code>Package specification&#8230;&#8203;</code> field. This value enables the dynamic plugin for GitHub Organization discovery.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/9-gh-auth.png" alt="9 gh auth">
+</div>
+<div class="title">Figure 3. Enable the GitHub Org Discovery Dynamic Plugin</div>
+</div>
 </li>
 <li>
 <p>Next, expand <code>Root Schema &gt; Backstage chart schema &gt; Backstage parameters &gt; Backstage container environment variables from existing Secrets</code> and add <code>rhdh-secrets</code> to refer to the secret you created earlier.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/3-gh-auth.png" alt="3 gh auth">
+</div>
+<div class="title">Figure 4. Reference the Secret</div>
+</div>
 </li>
 <li>
 <p>Click <code>Upgrade</code>.</p>
@@ -428,27 +452,69 @@ app:
 <ol class="arabic">
 <li>
 <p>If you are signed in as a <code>Guest</code> RHDH user, then sign out by selecting the <code>Sign Out</code> (expand the <code>&#8230;&#8203;</code> next to the Profile card) in the <code>Settings &gt; Profile</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/guest-sign-out.png" alt="guest sign out" width="600">
+</div>
+<div class="title">Figure 5. Guest Sign out</div>
+</div>
 </li>
 <li>
 <p>Sign in using <code>GitHub</code> sign-in method in the RHDH home page</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/sign-in-github.png" alt="sign in github" width="600">
+</div>
+<div class="title">Figure 6. GitHub Sign in</div>
+</div>
 </li>
 <li>
-<p>You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials.</p>
+<p>You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/4-gh-auth.png" alt="4 gh auth" width="400">
+</div>
+<div class="title">Figure 7. GitHub Allow Access Prompt</div>
+</div>
 </li>
 <li>
 <p>After you are signed in, navigate to the <code>Settings</code> page. Notice that GitHub has authenticated the user and provided identity information to RHDH.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/gh-identity-visible.png" alt="gh identity visible" width="500">
+</div>
+<div class="title">Figure 8. GitHub Identity in Settings Page</div>
+</div>
 </li>
 <li>
 <p>Click on the logged in <code>User Entity</code> in the <code>Settings</code> page to view the detail imported from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-gh-profile.png" alt="view gh profile" width="400">
+</div>
+<div class="title">Figure 9. View Profile Data</div>
+</div>
 </li>
 <li>
 <p>Click on the RHDH <code>Catalog</code> in the sidebar. Select the <code>Kind</code> drop-down, and note that two new entities called <code>User</code> and <code>Group</code> are now visible.</p>
 </li>
 <li>
 <p>Select <code>Group</code> in the <code>Kind</code> drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-groups.png" alt="view kind groups">
+</div>
+<div class="title">Figure 10. View Groups (Teams) from GitHub</div>
+</div>
 </li>
 <li>
 <p>Select <code>User</code> in the <code>Kind</code> drop-down to view the users imported from the GitHub organization.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-users.png" alt="view kind users">
+</div>
+<div class="title">Figure 11. View Users Imported from GitHub</div>
+</div>
 </li>
 </ol>
 </div>
@@ -490,7 +556,7 @@ There is a known issue in the RHDH 1.0 version, where it may take more than 30 m
 </div>
 <nav class="pagination">
   <span class="prev"><a href="basic-config.html">Basic Configuration</a></span>
-  <span class="next"><a href="keycloak-auth.html">Keycloak Authentication</a></span>
+  <span class="next"><a href="rbac.html">Role Based Access Control</a></span>
 </nav>
 </article>
   </div>
