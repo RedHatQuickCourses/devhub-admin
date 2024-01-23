@@ -1,4 +1,0 @@
-# Configuring Authentication using Keycloak
-:navtitle: Keycloak Authentication
-
-sd

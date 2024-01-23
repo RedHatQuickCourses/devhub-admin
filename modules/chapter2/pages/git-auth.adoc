@@ -28,7 +28,7 @@ Configuring GitHub for RHDH authentication involves two major steps:
 . Navigate to https://github.com/organizations/<YOUR_ORGANIZATION>/settings/apps, and then click `New GitHub App`.
 . In the `Register new GitHub App` page, fill out the following details:
 
-* `GitHub App name`: *rhdh-app-<your_RHDP_GUID>*
+* `GitHub App name`: *rhdh-app-<your_RHDP_GUID>* (A unique name)
 * `Homepage URL`: *https://rhdh-developer-hub-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io* (Your RHDH Route URL)
 * `Callback URL`: *https://rhdh-developer-hub-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io/api/auth/github/handler/frame*
 * `Webhook URL`: *https://rhdh-developer-hub-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io*
@@ -47,9 +47,14 @@ Configuring GitHub for RHDH authentication involves two major steps:
 . Verify your form entries, and when you are satisfied click `Create GitHub App`.
 . You will be shown your `App ID` and a client ID. Make note of these values for the next step.
 . Click `Generate a new client secret`. Copy the generated secret for the next steps.
++
+image::2-gh-auth.png[title=Generate Client Secret,width=600]
+
 . Scroll down to the `Private Keys` section and click `Generate a private key`. Copy the generated private key certificate (it is in PEM format) to a safe location.
 . In the left sidebar menu of the generated app, select `Install App`, and then click `Install`.
 . Select `All Repositories` for `Repository access` and then click `Install`.
++
+image::8-gh-auth.png[title=Install GitHub App,width=400]
 
 ### Create a Secret to Store GitHub App Credentials
 
@@ -158,8 +163,12 @@ app:
 The final step is to inject the secret you created with the GitHub App credentials into the RHDH container. You do this by editing the helm chart configuration and refer to the `rhdh-secrets`. You will also enable the `GitHub Organization discovery` dynamic plugin.
 
 . Edit the `rhdh` helm chart, toggle `Form view`, and expand `Root Schema > global > Dynamic plugins configuration > List of dynamic plugins that should be installed in the backstage application`. Add the value `./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic` to the `Package specification...` field. This value enables the dynamic plugin for GitHub Organization discovery.
++
+image::9-gh-auth.png[title=Enable the GitHub Org Discovery Dynamic Plugin]
 
 . Next, expand `Root Schema > Backstage chart schema > Backstage parameters > Backstage container environment variables from existing Secrets` and add `rhdh-secrets` to refer to the secret you created earlier.
++
+image::3-gh-auth.png[title=Reference the Secret]
 
 . Click `Upgrade`.
 
@@ -168,13 +177,33 @@ The final step is to inject the secret you created with the GitHub App credentia
 ### Verify User Sign In
 
 . If you are signed in as a `Guest` RHDH user, then sign out by selecting the `Sign Out` (expand the `...` next to the Profile card) in the `Settings > Profile` page.
++
+image::guest-sign-out.png[title=Guest Sign out,width=600]
+
 . Sign in using `GitHub` sign-in method in the RHDH home page
-. You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials.
++
+image::sign-in-github.png[title=GitHub Sign in,width=600]
+
+. You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.
++
+image::4-gh-auth.png[title=GitHub Allow Access Prompt,width=400]
+
 . After you are signed in, navigate to the `Settings` page. Notice that GitHub has authenticated the user and provided identity information to RHDH.
++
+image::gh-identity-visible.png[title=GitHub Identity in Settings Page,width=500]
+
 . Click on the logged in `User Entity` in the `Settings` page to view the detail imported from GitHub.
++
+image::view-gh-profile.png[title=View Profile Data,width=400]
+
 . Click on the RHDH `Catalog` in the sidebar. Select the `Kind` drop-down, and note that two new entities called `User` and `Group` are now visible.
 . Select `Group` in the `Kind` drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization.
++
+image::view-kind-groups.png[title=View Groups (Teams) from GitHub]
+
 . Select `User` in the `Kind` drop-down to view the users imported from the GitHub organization.
++
+image::view-kind-users.png[title=View Users Imported from GitHub]
 
 NOTE: There is a known issue in the RHDH 1.0 version, where it may take more than 30 minutes for the GitHub Organization member discovery plugin to fetch data from GitHub. The schedule is unfortunately fixed and hard-coded in the plugin. This issue will be fixed in a future dot release of the product.
 
