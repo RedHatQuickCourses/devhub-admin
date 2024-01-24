@@ -320,6 +320,18 @@ data:
 <div class="paragraph">
 <p>Throughout the rest of the course, you will edit the <strong>app-config-rhdh</strong> ConfigMap to configure and enable plugins for RHDH.</p>
 </div>
+<div class="paragraph">
+<p>Whenever you change the configuration in the <code>app-config-rhdh</code> ConfigMap, or create/edit any new secrets, you can force RHDH to re-read the configuration by clicking on the RHDH pod in the <code>Topology</code> page and then selecting <code>Restart rollout</code> in the <code>Action</code> drop-down:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/restart-rollout.png" alt="restart rollout">
+</div>
+<div class="title">Figure 2. Restart RHDH Rollout to re-read configuration value changes</div>
+</div>
+<div class="paragraph">
+<p>You can also scale down the RHDH pod to zero (0), and then scale it up back to one or more to reload the configuration.</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
