@@ -3,7 +3,7 @@
 
 The authentication system in RHDH is handled by *Authentication Providers*. RHDH uses the providers to access identity and user information, which can be used to delegate access rights to various plugins and services in RHDH. You can configure RHDH to have multiple authentication providers, with only *ONE* provider being actively used at any given time for logging in users.
 
-RHDH supports many common authentication providers by default like GitHub, GitLab, Auth0, Okta, Keycloak, and more. Consult the references section for the full list.
+RHDH supports many common authentication providers by default like GitHub, GitLab, Auth0, Okta, and more. Consult the references section for the full list.
 
 NOTE: Authentication providers are responsible *only* for authenticating the *identity* of the user, and passing on this information to RHDH. Authorization, that is, *what* actions an authenticated identity can perform in RHDH are handled by a different component of RHDH called *Role Based Access Control (RBAC)* using *Permissions Policies*. RBAC is covered in a separate section of this course.
 
@@ -206,6 +206,17 @@ image::view-kind-groups.png[title=View Groups (Teams) from GitHub]
 image::view-kind-users.png[title=View Users Imported from GitHub]
 
 NOTE: There is a known issue in the RHDH 1.0 version, where it may take more than 30 minutes for the GitHub Organization member discovery plugin to fetch data from GitHub. The schedule is unfortunately fixed and hard-coded in the plugin. This issue will be fixed in a future dot release of the product.
+
+### Troubleshooting Tips
+
+To troubleshoot issues with the RHDH container, enable debug logging as follows to get verbose logging in container logs:
+
+[subs=+quotes]
+----
+$ oc set env deployment rhdh-developer-hub LOG_LEVEL=debug -n devhub
+----
+
+Once debugging is complete switch log level back to *info*.
 
 ## References
 

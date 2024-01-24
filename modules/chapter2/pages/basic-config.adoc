@@ -117,6 +117,12 @@ data:
 
 Throughout the rest of the course, you will edit the *app-config-rhdh* ConfigMap to configure and enable plugins for RHDH.
 
+Whenever you change the configuration in the `app-config-rhdh` ConfigMap, or create/edit any new secrets, you can force RHDH to re-read the configuration by clicking on the RHDH pod in the `Topology` page and then selecting `Restart rollout` in the `Action` drop-down:
+
+image::restart-rollout.png[title=Restart RHDH Rollout to re-read configuration value changes]
+
+You can also scale down the RHDH pod to zero (0), and then scale it up back to one or more to reload the configuration.
+
 NOTE: One advantage of using helm charts to deploy and manage RHDH is versioned deployments. If for some reason, your configuration causes RHDH to fail deployment, you can rollbacl to  previous releases and recover your old configuration. Correct your configuration file errors and retry the deployment.
 
 == RHDH PostgreSQL Database Configuration
