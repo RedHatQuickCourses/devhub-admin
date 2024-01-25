@@ -12,6 +12,37 @@ To apply RBAC in RHDH, you need to do two things:
 . Configure an authenticated user as a *Policy Administrator*
 . Configure policies in a CSV file and import it into RHDH
 
+## Declarative Role Based Access Control
+
+RBAC in RHDH is configured using a CSV file that follows the *casbin* (https://casbin.org) format, a popular declarative domain specific language (DSL) for access control.
+
+A RBAC policy CSV consists of a number of lines of declarations. A *policy* declaration consists of lines in the following format:
+
+[source,csv]
+----
+type, role_name, resource, action, permission
+----
+where,
+
+* *type* = should be a single letter - `p` for policy type, or `g` for role assignments to users
+* *role_name* = A custom role name defined by you, for example `admins`, `users`, `viewers`
+* *resource* = features in RHDH, for example `catalog-entity`, `policy-entity`, `scaffolder-template`, and more
+* *action* = `create`, `update`, delete, or `read`
+* *permission* = `allow` or `deny`
+
+Consult the references section for the full list of `resource` types in RHDH.
+
+Consider the following policy snippet:
+
+[source, csv]
+----
+p, role:default/myrole, catalog-entity, read, allow
+p, role:default/myrole, catalog.entity.delete, delete, deny
+g, user:default/myuser, role:default/myrole
+----
+
+It defines a custom role named `myrole` that permits read only access to the RHDH catalog, but denies deletes. The last line in the policy CSV file assigns the `myuser` user the `myrole` role. The `myuser` user should be a valid identity that is authenticated by one of the identity providers supported by RHDH.
+
 ## Lab: Configure Policy Administrators
 
 NOTE: The main reason to declare policy administrators is to allow a certain limited number of authenticated users to invoke the RBAC REST API. The actual policies are defined in a separate CSV file and referenced in the `app-config-rhdh` ConfigMap. This can be done by OpenShift platform or cluster administrators who have access to the namespace where RHDH is running.
@@ -126,7 +157,7 @@ You can perform the following actions with the REST API:
 * Create, update, or delete a permission policy or a role
 * Retrieve permission policy information about static plugins
 
-WARNING: If RBAC is enabled, you may need to permit actions on the `policy.entity` resource for read, create and update to view and change policies using the REST API. Recall that default policy is to deny, so you will see `HTTP 401 Unauthorized` errors when you make REST calls without policy changes.
+WARNING: If RBAC is enabled, you may need to permit actions on the `policy.entity` resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see `HTTP 401 Unauthorized` errors if you make REST calls without policy changes.
 
 Detailed coverage of the REST API is beyond the scope of this course. Consult the references section for more details.
 
@@ -136,3 +167,4 @@ Detailed coverage of the REST API is beyond the scope of this course. Consult th
 * https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#ref-rbac-rest-api-endpoints_admin-rhdh[RBAC REST API^]
 * https://www.youtube.com/watch?v=V8SwbSRE8CQ[Janus IDP Community Meeting - RBAC^]
 * https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/apis.md[Janus IDP RBAC REST API^]
+* https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md[RBAC resource types in RHDH^]
