@@ -147,6 +147,60 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_declarative_role_based_access_control"><a class="anchor" href="#_declarative_role_based_access_control"></a>Declarative Role Based Access Control</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RBAC in RHDH is configured using a CSV file that follows the <strong>casbin</strong> (<a href="https://casbin.org" class="bare">https://casbin.org</a>) format, a popular declarative domain specific language (DSL) for access control.</p>
+</div>
+<div class="paragraph">
+<p>A RBAC policy CSV consists of a number of lines of declarations. A <strong>policy</strong> declaration consists of lines in the following format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">type, role_name, resource, action, permission</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>type</strong> = should be a single letter - <code>p</code> for policy type, or <code>g</code> for role assignments to users</p>
+</li>
+<li>
+<p><strong>role_name</strong> = A custom role name defined by you, for example <code>admins</code>, <code>users</code>, <code>viewers</code></p>
+</li>
+<li>
+<p><strong>resource</strong> = features in RHDH, for example <code>catalog-entity</code>, <code>policy-entity</code>, <code>scaffolder-template</code>, and more</p>
+</li>
+<li>
+<p><strong>action</strong> = <code>create</code>, <code>update</code>, delete, or <code>read</code></p>
+</li>
+<li>
+<p><strong>permission</strong> = <code>allow</code> or <code>deny</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Consult the references section for the full list of <code>resource</code> types in RHDH.</p>
+</div>
+<div class="paragraph">
+<p>Consider the following policy snippet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">p, role:default/myrole, catalog-entity, read, allow
+p, role:default/myrole, catalog.entity.delete, delete, deny
+g, user:default/myuser, role:default/myrole</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It defines a custom role named <code>myrole</code> that permits read only access to the RHDH catalog, but denies deletes. The last line in the policy CSV file assigns the <code>myuser</code> user the <code>myrole</code> role. The <code>myuser</code> user should be a valid identity that is authenticated by one of the identity providers supported by RHDH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_lab_configure_policy_administrators"><a class="anchor" href="#_lab_configure_policy_administrators"></a>Lab: Configure Policy Administrators</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
@@ -354,7 +408,7 @@ You may encounter inconsistencies and bugs with RBAC, and policy examples are sc
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If RBAC is enabled, you may need to permit actions on the <code>policy.entity</code> resource for read, create and update to view and change policies using the REST API. Recall that default policy is to deny, so you will see <code>HTTP 401 Unauthorized</code> errors when you make REST calls without policy changes.
+If RBAC is enabled, you may need to permit actions on the <code>policy.entity</code> resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see <code>HTTP 401 Unauthorized</code> errors if you make REST calls without policy changes.
 </td>
 </tr>
 </table>
@@ -383,6 +437,9 @@ If RBAC is enabled, you may need to permit actions on the <code>policy.entity</c
 </li>
 <li>
 <p><a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/apis.md" target="_blank" rel="noopener">Janus IDP RBAC REST API</a></p>
+</li>
+<li>
+<p><a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md" target="_blank" rel="noopener">RBAC resource types in RHDH</a></p>
 </li>
 </ul>
 </div>
