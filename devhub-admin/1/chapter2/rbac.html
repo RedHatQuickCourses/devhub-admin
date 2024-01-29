@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Role Based Access Control (RBAC) :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="git-auth.html">
+    <link rel="next" href="../appendix/appendix-a.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/install.html">Installing RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="git-auth.html">GitHub Authentication</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Basic Configuration</a></li>
+    <li><a href="rbac.html">Role Based Access Control</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Role Based Access Control (RBAC)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous section, you learnt how to <em>authenticate</em> users (that is, <strong>who</strong> they are). In this section you will learn how to <em>authorize</em> users to perform actions in RHDH (that is, <strong>what</strong> they can do in RHDH).</p>
+</div>
+<div class="paragraph">
+<p>Role-Based Access Control (RBAC) is a security concept that controls access to resources in a system, and specifies a mapping between <em>users</em> of the system, and the <em>actions</em> they can perform on <em>resources</em> in the system. You define <em>roles</em> with specific <em>permissions</em> , and then assign the roles to users.</p>
+</div>
+<div class="paragraph">
+<p>RBAC on RHDH is built on top of the <strong>Permissions</strong> framework in Backstage, which defines RBAC policies in code. Rather than define policies in code, the RHDH RBAC feature allows you to define policies in a declarative fashion using a simple CSV based format.</p>
+</div>
+<div class="paragraph">
+<p>To apply RBAC in RHDH, you need to do two things:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure an authenticated user as a <strong>Policy Administrator</strong></p>
+</li>
+<li>
+<p>Configure policies in a CSV file and import it into RHDH</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_declarative_role_based_access_control"><a class="anchor" href="#_declarative_role_based_access_control"></a>Declarative Role Based Access Control</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RBAC in RHDH is configured using a CSV file that follows the <strong>casbin</strong> (<a href="https://casbin.org" class="bare">https://casbin.org</a>) format, a popular declarative domain specific language (DSL) for access control.</p>
+</div>
+<div class="paragraph">
+<p>A RBAC policy CSV consists of a number of lines of declarations. A <strong>policy</strong> declaration consists of lines in the following format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">type, role_name, resource, action, permission</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>type</strong> = should be a single letter - <code>p</code> for policy type, or <code>g</code> for role assignments to users</p>
+</li>
+<li>
+<p><strong>role_name</strong> = A custom role name defined by you, for example <code>admins</code>, <code>users</code>, <code>viewers</code></p>
+</li>
+<li>
+<p><strong>resource</strong> = features in RHDH, for example <code>catalog-entity</code>, <code>policy-entity</code>, <code>scaffolder-template</code>, and more</p>
+</li>
+<li>
+<p><strong>action</strong> = <code>create</code>, <code>update</code>, delete, or <code>read</code></p>
+</li>
+<li>
+<p><strong>permission</strong> = <code>allow</code> or <code>deny</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Consult the references section at the bottom of this page for the full list of <code>resource</code> types in RHDH.</p>
+</div>
+<div class="paragraph">
+<p>Consider the following policy snippet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">p, role:default/myrole, catalog-entity, read, allow
+p, role:default/myrole, catalog.entity.delete, delete, deny
+g, user:default/myuser, role:default/myrole</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It defines a custom role named <code>myrole</code> that permits read only access to the RHDH catalog, but denies deletes. The last line in the policy CSV file assigns the <code>myuser</code> user the <code>myrole</code> role. The <code>myuser</code> user should be a valid identity that is authenticated by one of the identity providers supported by RHDH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_configure_policy_administrators"><a class="anchor" href="#_lab_configure_policy_administrators"></a>Lab: Configure Policy Administrators</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The main reason to declare policy administrators is to allow a certain limited number of authenticated users to invoke the RBAC REST API. The actual policies are defined in a separate CSV file and referenced in the <code>app-config-rhdh</code> ConfigMap. This can be done by OpenShift platform or cluster administrators who have access to the namespace where RHDH is running.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To declare users as policy administrators, add the following <code>permission</code> attribute to the <code>app-config-rhdh</code> ConfigMap (At the same indentation level as the <strong>app</strong> and below the <strong>catalog</strong> attribute). Ensure that you added a valid authenticated user for the <code>admin.users</code> attribute:</p>
+<div class="listingblock">
+<div class="content">
+<pre>catalog:
+      providers:
+        githubOrg:
+          default:
+            id: development
+            orgUrl: ${GITHUB_ORG_URL}
+<strong>permission:
+      enabled: true
+      rbac:
+        admin:
+          users:
+            - name: user:/default/rsriniva</strong></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Re-deploy the <code>rhdh</code> helm chart for the changes to take effect.</p>
+</li>
+<li>
+<p>Sign out from the existing RHDH session and login again using the GitHub ID of the declared policy administrator.</p>
+</li>
+<li>
+<p>Navigate to the <code>Catalog</code> page in RHDH, and click <code>CREATE</code>. Note that you are not allowed to create new components.</p>
+</li>
+<li>
+<p>Next, try navigating to the <code>API</code> page and click on <code>REGISTER EXISTING API</code>. You will be shown an <code>ERROR 404</code> page. With RBAC enabled, most features are disabled by default. You need to explicitly enable permissions to resources in RHDH.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/404-error-rbac.png" alt="404 error rbac">
+</div>
+<div class="title">Figure 1. Not allowed to register APIs</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_declarative_policy_definition_in_csv_files"><a class="anchor" href="#_lab_declarative_policy_definition_in_csv_files"></a>Lab: Declarative Policy Definition in CSV Files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To selectively allow RHDH features, you need to declare <code>roles</code> with allowed policies, and then assign these roles to users or groups.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit the <code>app-config-rhdh</code> ConfigMap, and add a reference to the policy CSV file under the <code>rbac</code> attribute that you enabled previously:</p>
+<div class="listingblock">
+<div class="content">
+<pre>catalog:
+      providers:
+        githubOrg:
+          default:
+            id: development
+            orgUrl: ${GITHUB_ORG_URL}
+permission:
+      enabled: true
+      rbac:
+        <strong>policies-csv-file: ./rbac/rbac-policy.csv</strong>
+        admin:
+          users:
+            - name: user:default/rsriniva</pre>
+</div>
+</div>
+</li>
+<li>
+<p>You will create a new ConfigMap to store the contents of the CSV policy file. Create a new ConfigMap named <code>rhdh-rbac-policy</code> with the following content. These policies allow the user with the <code>admins</code> role to read, create and update components, but fetching catalog information from remote locations is denied:</p>
+<div class="listingblock">
+<div class="content">
+<pre>kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rhdh-rbac-policy
+  namespace: devhub
+immutable: false
+data:
+  rbac-policy.csv: |-
+    p, role:default/admins, catalog-entity, read, allow
+    p, role:default/admins, catalog.entity.create, create, allow
+    p, role:default/admins, catalog.entity.refresh, update, allow
+    p, role:default/admins, catalog.location.create, create, deny
+    p, role:default/admins, catalog.location.read, read, deny
+    g, user:default/rsriniva, role:default/admins</pre>
+</div>
+</div>
+</li>
+<li>
+<p>To mount the contents of the RBAC policy CSV file into the RHDH container, edit the <code>rhdh</code> helm chart in <code>Form View</code> and follow the instructions as outlined in <a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart" class="bare">https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart</a>. Ensure that the paths and name of ConfigMap match your set up.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Exercise caution when adding new volume mounts and new volumes in the helm chart form view. Do NOT delete the existing volume mounts, otherwise various features and functionality in RHDH will be broken
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/container-vol-mounts.png" alt="container vol mounts">
+</div>
+<div class="title">Figure 2. Container Volume Mounts Configuration</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/container-volumes.png" alt="container volumes">
+</div>
+<div class="title">Figure 3. Container Volumes Configuration</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rbac-configmap.png" alt="rbac configmap">
+</div>
+<div class="title">Figure 4. RBAC ConfigMap Configuration</div>
+</div>
+</li>
+<li>
+<p>Re-deploy the helm chart to re-read the new configuration.</p>
+</li>
+<li>
+<p>Sign out and sign in again as the user (the user who was assigned the <code>admins</code> role) you mentioned in the policy CSV file. Navigate to the <code>Catalog</code> page, and click <code>CREATE</code>. Note that you are now allowed to create new components.</p>
+</li>
+<li>
+<p>Click <code>API</code> and note that you are now allowed to register new APIs.</p>
+</li>
+<li>
+<p>Try and register a new API or component by entering <code><a href="https://github.com/backstage/backstage/blob/master/catalog-info.yaml" class="bare">https://github.com/backstage/backstage/blob/master/catalog-info.yaml</a></code> into the <code>Select URL</code> field, and then click <code>ANALYZE</code>. Note that the <strong>deny</strong> policy for <code>catalog.location</code> in your RBAC prevents RHDH from fetching the metadata about the component. You will see an error:</p>
+<div class="listingblock">
+<div class="content">
+<pre>{"error":{"name":"NotAllowedError","message":""},"request":{"method":"POST","url":"/locations?dryRun=true"},"response":{"statusCode":403}}</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the <code>rhdh-rbac-policy</code> ConfigMap to <strong>allow</strong> <code>create</code> and <code>read</code> actions for the <code>catalog.location</code> resource and re-deploy your helm chart. You should now be able to create new components and the metadata fetches from remote Git repositories should work as before.</p>
+</li>
+<li>
+<p>You can experiment with enabling and disabling various components of RHDH by following the permissions guide at <a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md" class="bare">https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md</a>. Some plugins and their features can be controlled using RBAC.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+There is a bug in the RBAC system when database persistence is enabled for RBAC. Do not enable the <code>database</code> attribute in the rbac <code>permission</code> block in <code>app-config-rhdh</code>!
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+You may encounter inconsistencies and bugs with RBAC, and policy examples are scarcely documented. There are plans to introduce a web based UI for policy management in future releases of RHDH. It is recommended to keep the RBAC system <strong>disabled</strong> when you trying out features and functionality of RHDH like Software Templates, plugins, Search, and more. Turn it back on only if you know what you are doing and you fully understand the impact of policy files.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rbac_rest_api"><a class="anchor" href="#_rbac_rest_api"></a>RBAC REST API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RHDH provides an RBAC REST API that you can use to manage the permissions and roles programmatically. This API can be used to automate the maintenance of RHDH permission policies and roles.</p>
+</div>
+<div class="paragraph">
+<p>You can perform the following actions with the REST API:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Retrieve information about all permission policies or specific permission policies, or roles</p>
+</li>
+<li>
+<p>Create, update, or delete a permission policy or a role</p>
+</li>
+<li>
+<p>Retrieve permission policy information about static plugins</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If RBAC is enabled, you may need to permit actions on the <code>policy.entity</code> resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see HTTP 401 or 403 errors if you make REST calls without policy changes.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Detailed coverage of the REST API is beyond the scope of this course. Consult the references section for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#con-rbac-overview_admin-rhdh" target="_blank" rel="noopener">RBAC in RHDH</a></p>
+</li>
+<li>
+<p><a href="https://backstage.io/docs/permissions/overview" target="_blank" rel="noopener">Permissions Policy in Backstage</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#ref-rbac-rest-api-endpoints_admin-rhdh" target="_blank" rel="noopener">RBAC REST API</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=V8SwbSRE8CQ" target="_blank" rel="noopener">Janus IDP Community Meeting - RBAC</a></p>
+</li>
+<li>
+<p><a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/apis.md" target="_blank" rel="noopener">Janus IDP RBAC REST API</a></p>
+</li>
+<li>
+<p><a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md" target="_blank" rel="noopener">RBAC resource types in RHDH</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="git-auth.html">GitHub Authentication</a></span>
+  <span class="next"><a href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
