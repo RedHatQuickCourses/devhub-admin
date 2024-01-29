@@ -10,7 +10,7 @@ This course is the `second` in a series of `three` courses about Red Hat Develop
 2. Red Hat Developer Hub Administration  (_This course_)
 3. Building Developer Portals with Red Hat Developer Hub (Under Development)
 
-This course covers the installation, updates and uninstallation process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using a GitHub or GitLab backend along with single sign-on functionality using Keycloak.
+This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using a GitHub or GitLab backend along with single sign-on functionality using Keycloak.
 
 == Contributors
 
@@ -20,6 +20,8 @@ The PTL team acknowledges the valuable contributions of the following Red Hat as
 * Jason Froehlich
 * Hans-Peter Grahsl
 * Rafael Soares
+* Tyrell Reddy and the entire Demo Platform (RHDP) Team
+* Rigin Oommen
 
 == Classroom Environment
 

@@ -1,0 +1,9 @@
+= Basic Configuration
+
+In this chapter, you will learn how to perform basic configuration of your Red Hat Developer Hub (RHDH) instance, and configure authentication and authorization for users.
+
+Goals:
+
+* Describe the configuration mechanism in RHDH
+* Configure authentication using GitHub
+* Configure authorization using Role Based Access Control (RBAC)

@@ -1,0 +1,131 @@
+# Basics of Red Hat Developer Hub Configuration
+:navtitle: Basic Configuration
+
+RHDH uses YAML files for configuration. Various runtime variables, plugin configuration, and other behaviors can be controlled using one or more YAML configuration files.
+
+== Exploring the default RHDH Configuration
+
+Let us briefly inspect the OpenShift resources created by the RHDH helm chart after installation.
+
+Log in as the OpenShift cluster administrator user in the web console and switch to the *Developer* perspective.
+Click on `Helm` in the left sidebar, and then click the `rhdh` helm release.
+
+Click the `Resources` tab to view the resources created by the helm chart after installation.
+
+image::helm-resources.png[title=Helm Chart Resources,width=600]
+
+The two `ConfigMap` resources, *dynamic-plugins* and *rhdh-developer-hub-app-config* are used to configure the dynamic plugins, and the overall configuration of RHDH respectively.
+
+The default *app-config.yaml* configuration stored in the *rhdh-developer-hub-app-config* ConfigMap is as follows:
+
+[subs=+quotes]
+----
+app:
+  baseUrl: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
+backend:
+  auth:
+    keys:
+    - secret: ${BACKEND_SECRET}
+  baseUrl: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
+  cors:
+    origin: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
+  database:
+    connection:
+      password: ${POSTGRESQL_ADMIN_PASSWORD}
+      user: postgres
+----
+
+IMPORTANT: This default *app-config.yaml* should not be edited directly to avoid problems during helm chart upgrades. Instead you must define your own custom *app-config-rhdh.yaml* configuration file as a separate ConfigMap resource, and override the default configuration values.
+
+== Application Configuration Files (app-config-*.yaml)
+
+Recall that an instance of RHDH is called an "App" (short form of _Application_), and the instance is configured using YAML files. RHDH runs as a container on OpenShift, so this and other configuration files for RHDH should be created as OpenShift _ConfigMaps_ and mounted inside the container.
+
+[WARNING]
+====
+Do NOT hard code sensitive and confidential values in the *app-config.yaml* files! Instead, use environment variable placeholders. You can then store plain text values using _ConfigMaps_ and confidential values like passwords, API keys, encrypted tokens and other sensitive information using _Secrets_.
+====
+
+The configuration is validated using JSON Schema definitions. You can enable or disable components and plugins, and configure them using these `app-config-*.yaml` files.
+The configuration is shared between the frontend and backend. Values that are common between the two needs to be defined only once, for example, the `backend.baseUrl`, which defines the root URL of the backend REST API.
+
+Configuration is stored in YAML files where the defaults are *app-config.yaml* and *app-config.local.yaml* for locally overriding configuration variables from the default configuration file. Other sets of files can by loaded by passing `--config` flags.
+
+It is possible to have multiple configuration files, to support different environments (Development, QA, Staging, Production, and more), and also to override configuration that is for specific components and plugins. The configuration files to load are selected using a `--config` flag, and it is possible to load any number of files.
+
+If no `--config` flags are specified, the default behavior is to load *app-config.yaml*. Note that if any `--config` flags are used, the default *app-config.yaml* file is *NOT* loaded. To include it, you need to explicitly pass it as `--config` arguments, for example:
+
+The RHDH container image uses an entrypoint defined as follows for starting the backend container:
+
+[subs=+quotes]
+----
+node packages/backend 
+  --config app-config.yaml \
+  --config app-config.example.yaml \
+  --config app-config.example.production.yaml
+----
+
+It is also possible to supply configuration through environment variables, for example, consider the YAML configuration snippet like below:
+
+[subs=+quotes]
+----
+app:
+  baseUrl: https://${HOST}
+----
+
+You can override the value of `baseUrl` by passing an environment variable named *APP_CONFIG_app_baseUrl*=https://staging.example.com to the RHDH container.  
+The environment variable name must be prefixed with *APP_CONFIG* and the nested YAML attributes separated with underscore("_") symbol.
+
+WARNING: This approach should be used sparingly, usually just for temporary overrides during development.
+
+== Configuration File Precedence
+
+Configuration methods have different priority, higher priority methods replace values from configurations with lower priority.
+The priority of the configurations is determined by the following rules, in order:
+
+. Configuration from the *APP_CONFIG_* environment variables has the highest priority, followed by files.
+. Files loaded with `--config` flags are ordered by priority, where the last flag has the highest priority.
+. If no `--config` flags are provided, *app-config.local.yaml* has higher priority than *app-config.yaml*.
+
+== Lab: Adding a Custom app-config YAML File
+
+It is a good practice to override the default *app-config.yaml* file using your own custom configuration file embedded inside a ConfigMap, and passing it as an argument using `--config` flags. At runtime, the values from the default configuration are merged with the values from your custom configuration file.
+
+To create the custom configuration file, do the following:
+
+. Create a new ConfigMap named *app-config-rhdh* resource in the same OpenShift project where you installed RHDH (*devhub*)
++
+[subs=+quotes]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+----
+
+. In the `Helm Releases` page, select the `Upgrade` option for the *rhdh* helm chart.
+
+. Expand `Root Schema → Backstage Chart Schema → Backstage Parameters → Extra App Configuration files to inline into command arguments`, and then click `Add Extra app configuration files to inline into command arguments`.
+
+. Add *app-config-rhdh* in the `configMapRef` field, and *app-config-rhdh.yaml* in the `filename` field.
+
+. Click `Upgrade` to redeploy the RHDH container. It may take a few minutes for the RHDH container to be redeployed with the new configuration.
+
+Throughout the rest of the course, you will edit the *app-config-rhdh* ConfigMap to configure and enable plugins for RHDH.
+
+Whenever you change the configuration in the `app-config-rhdh` ConfigMap, or create/edit any new secrets, you can force RHDH to re-read the configuration by clicking on the RHDH pod in the `Topology` page and then selecting `Restart rollout` in the `Action` drop-down:
+
+image::restart-rollout.png[title=Restart RHDH Rollout to re-read configuration value changes]
+
+You can also scale down the RHDH pod to zero (0), and then scale it up back to one or more to reload the configuration.
+
+NOTE: One advantage of using helm charts to deploy and manage RHDH is versioned deployments. If for some reason, your configuration causes RHDH to fail deployment, you can rollback to  previous releases and recover your old configuration. Correct your configuration file errors and retry the deployment.
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/getting_started_with_red_hat_developer_hub/index#ref-rhdh-supported-configs_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
+* https://backstage.io/docs/conf[Configuration in Backstage^]
