@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Role Based Access Control (RBAC) :: Red Hat Developer Hub Administration</title>
     <link rel="prev" href="git-auth.html">
+    <link rel="next" href="../appendix/appendix-a.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -77,6 +78,13 @@
     <a class="nav-link" href="rbac.html">Role Based Access Control</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
   </li>
 </ul>
   </li>
@@ -183,7 +191,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Consult the references section for the full list of <code>resource</code> types in RHDH.</p>
+<p>Consult the references section at the bottom of this page for the full list of <code>resource</code> types in RHDH.</p>
 </div>
 <div class="paragraph">
 <p>Consider the following policy snippet:</p>
@@ -282,7 +290,7 @@ permission:
         <strong>policies-csv-file: ./rbac/rbac-policy.csv</strong>
         admin:
           users:
-            - name: user:/default/rsriniva</pre>
+            - name: user:default/rsriniva</pre>
 </div>
 </div>
 </li>
@@ -309,6 +317,18 @@ data:
 </li>
 <li>
 <p>To mount the contents of the RBAC policy CSV file into the RHDH container, edit the <code>rhdh</code> helm chart in <code>Form View</code> and follow the instructions as outlined in <a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart" class="bare">https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart</a>. Ensure that the paths and name of ConfigMap match your set up.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Exercise caution when adding new volume mounts and new volumes in the helm chart form view. Do NOT delete the existing volume mounts, otherwise various features and functionality in RHDH will be broken
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="_images/container-vol-mounts.png" alt="container vol mounts">
@@ -408,7 +428,7 @@ You may encounter inconsistencies and bugs with RBAC, and policy examples are sc
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If RBAC is enabled, you may need to permit actions on the <code>policy.entity</code> resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see <code>HTTP 401 Unauthorized</code> errors if you make REST calls without policy changes.
+If RBAC is enabled, you may need to permit actions on the <code>policy.entity</code> resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see HTTP 401 or 403 errors if you make REST calls without policy changes.
 </td>
 </tr>
 </table>
@@ -447,6 +467,7 @@ If RBAC is enabled, you may need to permit actions on the <code>policy.entity</c
 </div>
 <nav class="pagination">
   <span class="prev"><a href="git-auth.html">GitHub Authentication</a></span>
+  <span class="next"><a href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a></span>
 </nav>
 </article>
   </div>

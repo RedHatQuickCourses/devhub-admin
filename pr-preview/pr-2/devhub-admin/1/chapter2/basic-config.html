@@ -81,6 +81,13 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
+  </li>
+</ul>
+  </li>
 </ul>
   </nav>
 </div>
@@ -198,7 +205,7 @@ This default <strong>app-config.yaml</strong> should not be edited directly to a
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Do NOT hard code sensitive and confidential values in the <strong>app-config.yaml</strong> files!. Instead, use environment variable placeholders. You can then store plain text values using <em>ConfigMaps</em> and confidential values like passwords, API keys, encrypted tokens and other sensitive information using <em>Secrets</em>.</p>
+<p>Do NOT hard code sensitive and confidential values in the <strong>app-config.yaml</strong> files! Instead, use environment variable placeholders. You can then store plain text values using <em>ConfigMaps</em> and confidential values like passwords, API keys, encrypted tokens and other sensitive information using <em>Secrets</em>.</p>
 </div>
 </td>
 </tr>
@@ -281,7 +288,7 @@ The priority of the configurations is determined by the following rules, in orde
 <h2 id="_lab_adding_a_custom_app_config_yaml_file"><a class="anchor" href="#_lab_adding_a_custom_app_config_yaml_file"></a>Lab: Adding a Custom app-config YAML File</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is a good practice to override the default <strong>app-config.yaml</strong> file using your own custom configuration file embedded inside a ConfigMa, and passing it as an argument using <code>--config</code> flags. At runtime, the values from the default configuration are merged with the values from your custom configuration file.</p>
+<p>It is a good practice to override the default <strong>app-config.yaml</strong> file using your own custom configuration file embedded inside a ConfigMap, and passing it as an argument using <code>--config</code> flags. At runtime, the values from the default configuration are merged with the values from your custom configuration file.</p>
 </div>
 <div class="paragraph">
 <p>To create the custom configuration file, do the following:</p>
@@ -339,84 +346,10 @@ data:
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-One advantage of using helm charts to deploy and manage RHDH is versioned deployments. If for some reason, your configuration causes RHDH to fail deployment, you can rollbacl to  previous releases and recover your old configuration. Correct your configuration file errors and retry the deployment.
+One advantage of using helm charts to deploy and manage RHDH is versioned deployments. If for some reason, your configuration causes RHDH to fail deployment, you can rollback to  previous releases and recover your old configuration. Correct your configuration file errors and retry the deployment.
 </td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rhdh_postgresql_database_configuration"><a class="anchor" href="#_rhdh_postgresql_database_configuration"></a>RHDH PostgreSQL Database Configuration</h2>
-<div class="sectionbody">
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-This section is for informational purposes only. Do not make these changes in your classroom environment because you do not have access to an external PostgreSQL database instance. You will continue to work with the default PostgreSQL database that was installed during RHDH installation for the rest of the course.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>For large scale production rollouts, it is recommended to use an external PostgreSQL database instead of the default database provisioned by the RHDH installation process.</p>
-</div>
-<div class="paragraph">
-<p>To integrate your RHDH instance with an external PostgreSQL database instance, do the following:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Edit or create the <strong>app-config-rhdh</strong> ConfigMap if it does not exist (by following the steps outlined in the previous lab), and add the configuration for accessing the external PostgreSQL database. Ensure that the <code>backend</code> attribute is added at the same level as <code>app</code> (that is, below the <code>app-config-rhdh.yaml</code> data element):</p>
-<div class="listingblock">
-<div class="content">
-<pre>app-config-rhdh.yaml: |
-    app:
-      title: Red Hat Developer Hub
-<strong>backend:
-  database:
-    client: pg
-    connection:
-      host: mydbhost.example.com
-      port: 5432
-      user: ${POSTGRES_USER}
-      password: ${POSTGRES_PASSWORD}</strong></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Click <code>Save</code> to save the configuration changes.</p>
-</li>
-<li>
-<p>If you have RHDH already installed, skip this step and jump to the next step. Otherwise, follow the instructions in the <a href="../chapter1/install.html#_install_the_rhdh_helm_chart" class="xref page">Red Hat Developer Hub Installation</a> section to install RHDH using helm charts. In the <code>Create Helm Release</code> page, select <code>YAML View</code> to edit the helm chart values outlined in the next steps.</p>
-</li>
-<li>
-<p>If you have RHDH already installed, in the <code>Helm Releases</code> page, select the <code>Upgrade</code> option for the <strong>rhdh</strong> helm chart.</p>
-</li>
-<li>
-<p>Select <code>YAML View</code> in the <code>Configure via</code> field to view the helm chart values as YAML</p>
-</li>
-<li>
-<p>Search the <code>postgresql.enabled</code> field and set it to <strong>false</strong> to prevent the helm chart from deploying a database.</p>
-<div class="listingblock">
-<div class="content">
-<pre>postgresql:
-    auth:
-      secretKeys:
-        adminPasswordKey: postgres-password
-        userPasswordKey: password
-    enabled: <strong>false</strong></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Click <code>Upgrade</code> to redeploy the RHDH instance. It may take some time for the RHDH pods to be redeployed.
-Verify that the integration was successful by navigating to the RHDH home page.</p>
-</li>
-</ol>
 </div>
 </div>
 </div>
@@ -430,9 +363,6 @@ Verify that the integration was successful by navigating to the RHDH home page.<
 </li>
 <li>
 <p><a href="https://backstage.io/docs/conf" target="_blank" rel="noopener">Configuration in Backstage</a></p>
-</li>
-<li>
-<p><a href="https://backstage.io/docs/getting-started/configuration#install-and-configure-postgresql" target="_blank" rel="noopener">Configure PostgreSQL database in Backstage</a></p>
 </li>
 </ul>
 </div>

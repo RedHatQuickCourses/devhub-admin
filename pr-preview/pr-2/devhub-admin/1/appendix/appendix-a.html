@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Red Hat Developer Hub Uninstallation :: Red Hat Developer Hub Administration</title>
-    <link rel="prev" href="upgrade.html">
-    <link rel="next" href="../chapter2/index.html">
+    <title>Integrating RHDH with an External PostgreSQL Database :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="../chapter2/rbac.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -47,16 +46,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Installation</a>
+    <a class="nav-link" href="../chapter1/index.html">Installation</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="install.html">Installing RHDH</a>
+    <a class="nav-link" href="../chapter1/install.html">Installing RHDH</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
+    <a class="nav-link" href="../chapter1/upgrade.html">Upgrading RHDH</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/uninstall.html">Uninstalling RHDH</a>
   </li>
 </ul>
   </li>
@@ -83,8 +82,8 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="appendix-a.html">Appendix A: External PostgreSQL DB</a>
   </li>
 </ul>
   </li>
@@ -117,8 +116,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
-    <li><a href="index.html">Installation</a></li>
-    <li><a href="uninstall.html">Uninstalling RHDH</a></li>
+    <li><a href="appendix-a.html">Appendix A: External PostgreSQL DB</a></li>
   </ul>
 </nav>
 </div>
@@ -127,82 +125,8 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Red Hat Developer Hub Uninstallation</h1>
+<h1 class="page">Integrating RHDH with an External PostgreSQL Database</h1>
 <div id="preamble">
-<div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database!. Follow the instructions in the previous section to back up the PostgreSQL database.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_uninstalling_the_rhdh_helm_chart"><a class="anchor" href="#_uninstalling_the_rhdh_helm_chart"></a>Uninstalling the RHDH Helm Chart</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can uninstall RHDH using the OpenShift web console.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Ensure that you are in the <strong>Developer</strong> perspective of the OpenShift console. Click on <code>Helm</code> to view the installed releases in the <code>Helm Releases</code> tab.</p>
-</li>
-<li>
-<p>Expand the hamburger menu on the right of the <code>rhdh</code> release and click <code>Delete Helm Release</code>.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/helm-release-delete.png" alt="helm release delete">
-</div>
-<div class="title">Figure 1. Delete Helm Release</div>
-</div>
-</li>
-<li>
-<p>Type the release name <code>rhdh</code> into the dialog that pops up and click <code>Delete</code> to delete the resources created by the helm chart.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_uninstalling_the_rhdh_helm_chart_using_the_cli"><a class="anchor" href="#_uninstalling_the_rhdh_helm_chart_using_the_cli"></a>Uninstalling the RHDH Helm Chart using the CLI</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can uninstall RHDH using the <strong>helm</strong> CLI.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
-$ oc project devhub</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the following command to uninstall RHDH</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ <strong>helm uninstall rhdh</strong>
-release "rhdh" uninstalled</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_uninstalling_the_rhdh_operator"><a class="anchor" href="#_uninstalling_the_rhdh_operator"></a>Uninstalling the RHDH Operator</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -211,19 +135,84 @@ release "rhdh" uninstalled</pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+This section is for informational purposes only. Do not make these changes in your classroom environment because you do not have access to an external PostgreSQL database instance. You will continue to work with the default PostgreSQL database that was installed during RHDH installation for the rest of the course.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You can refer to the instructions <a href="https://docs.openshift.com/container-platform/4.13/operators/admin/olm-deleting-operators-from-cluster.html" target="_blank" rel="noopener">here</a> to uninstall the RHDH operator.</p>
+<p>For large scale production rollouts, it is recommended to use an external PostgreSQL database instead of the default database provisioned by the RHDH installation process.</p>
+</div>
+<div class="paragraph">
+<p>To integrate your RHDH instance with an external PostgreSQL database instance, do the following:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit or create the <strong>app-config-rhdh</strong> ConfigMap if it does not exist, and add the configuration for accessing the external PostgreSQL database. Ensure that the <code>backend</code> attribute is added at the same level as <code>app</code> (that is, below the <code>app-config-rhdh.yaml</code> data element):</p>
+<div class="listingblock">
+<div class="content">
+<pre>app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+<strong>backend:
+  database:
+    client: pg
+    connection:
+      host: mydbhost.example.com
+      port: 5432
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}</strong></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>Save</code> to save the configuration changes.</p>
+</li>
+<li>
+<p>If you have RHDH already installed, skip this step and jump to the next step. Otherwise, follow the instructions in the <a href="../chapter1/install.html#_install_the_rhdh_helm_chart" class="xref page">Red Hat Developer Hub Installation</a> section to install RHDH using helm charts. In the <code>Create Helm Release</code> page, select <code>YAML View</code> to edit the helm chart values outlined in the next steps.</p>
+</li>
+<li>
+<p>If you have RHDH already installed, in the <code>Helm Releases</code> page, select the <code>Upgrade</code> option for the <strong>rhdh</strong> helm chart.</p>
+</li>
+<li>
+<p>Select <code>YAML View</code> in the <code>Configure via</code> field to view the helm chart values as YAML</p>
+</li>
+<li>
+<p>Search the <code>postgresql.enabled</code> field and set it to <strong>false</strong> to prevent the helm chart from deploying a database.</p>
+<div class="listingblock">
+<div class="content">
+<pre>postgresql:
+    auth:
+      secretKeys:
+        adminPasswordKey: postgres-password
+        userPasswordKey: password
+    enabled: <strong>false</strong></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>Upgrade</code> to redeploy the RHDH instance. It may take some time for the RHDH pods to be redeployed.
+Verify that the integration was successful by navigating to the RHDH home page.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://backstage.io/docs/getting-started/configuration#install-and-configure-postgresql" target="_blank" rel="noopener">Configure PostgreSQL database in Backstage</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="upgrade.html">Upgrading RHDH</a></span>
-  <span class="next"><a href="../chapter2/index.html">Basic Configuration</a></span>
+  <span class="prev"><a href="../chapter2/rbac.html">Role Based Access Control</a></span>
 </nav>
 </article>
   </div>

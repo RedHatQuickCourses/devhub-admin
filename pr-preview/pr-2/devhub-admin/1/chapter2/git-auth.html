@@ -81,6 +81,13 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
+  </li>
+</ul>
+  </li>
 </ul>
   </nav>
 </div>
@@ -127,7 +134,7 @@
 <p>The authentication system in RHDH is handled by <strong>Authentication Providers</strong>. RHDH uses the providers to access identity and user information, which can be used to delegate access rights to various plugins and services in RHDH. You can configure RHDH to have multiple authentication providers, with only <strong>ONE</strong> provider being actively used at any given time for logging in users.</p>
 </div>
 <div class="paragraph">
-<p>RHDH supports many common authentication providers by default like GitHub, GitLab, Auth0, Okta, and more. Consult the references section for the full list.</p>
+<p>RHDH supports many common authentication providers by default like GitHub, GitLab, Auth0, Okta, and more. Consult the references section at the bottom of this page for the full list.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -136,7 +143,7 @@
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Authentication providers are responsible <strong>only</strong> for authenticating the <strong>identity</strong> of the user, and passing on this information to RHDH. Authorization, that is, <strong>what</strong> actions an authenticated identity can perform in RHDH are handled by a different component of RHDH called <strong>Role Based Access Control (RBAC)</strong> using <strong>Permissions Policies</strong>. RBAC is covered in a separate section of this course.
+Authentication providers are responsible <strong>only</strong> for authenticating the <strong>identity</strong> of the user, and passing on this information to RHDH. Authorization, that is, <strong>what</strong> actions an authenticated identity can perform in RHDH are handled by a different component of RHDH called <strong>Role Based Access Control (RBAC)</strong> using <strong>Permission Policies</strong>. RBAC is covered in a separate section of this course.
 </td>
 </tr>
 </table>
@@ -158,6 +165,16 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 </li>
 <li>
 <p>Administrator rights to a GitHub Organization (Create a new Github Org if it does not exist)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create one or more <strong>teams</strong> within your GitHub Organization</p>
+</li>
+<li>
+<p>Invite one or more <strong>users</strong> to your GitHub Organization</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
 <p>OpenShift cluster administrator access</p>
@@ -208,7 +225,7 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <p><code>Webhook secret</code>: <strong>5up3rS3cret</strong> (Provide a strong secret)</p>
 </li>
 <li>
-<p>Under <code>Permissions</code>, expand <code>Repository Permissions</code> and ensure that you provide at least <code>Read-only</code> access to the GitHub features you would like to integrate from RHDH. At a minimum, toggle the following permissions:</p>
+<p>Under <code>Permissions</code>, expand <code>Repository Permissions</code> and ensure that you provide appropriate access (Read-Only, Read-Write etc) to the GitHub features you would like to integrate from RHDH. At a minimum, toggle the following permissions:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -283,12 +300,12 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <div class="sect2">
 <h3 id="_create_a_secret_to_store_github_app_credentials"><a class="anchor" href="#_create_a_secret_to_store_github_app_credentials"></a>Create a Secret to Store GitHub App Credentials</h3>
 <div class="paragraph">
-<p>Rather than store the GitHub App credentials in plain text directly in the <code>app-config-rhdh</code> ConfigMap, you will create a secret to store the credentials. You will then refer to the credentials as environment variables in the ConfigMap.</p>
+<p>Rather than storing the GitHub App credentials in plain text directly in the <code>app-config-rhdh</code> ConfigMap, you will create a secret to store the credentials. You will then refer to the credentials as environment variables in the ConfigMap.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create a file named <code>env.sh</code> with the following environment variables and replace the values with the GitHub App details you created in the previous step.</p>
+<p>Create a file named <code>env.sh</code> with the following environment variables and replace the values with the GitHub App details you created in the previous step. Replace the <code>GITHUB_APP_PRIVATE_KEY_FILE</code> value with your private key file that you downloaded from GitHub.</p>
 <div class="listingblock">
 <div class="content">
 <pre>export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.<strong>https...api//' | sed 's/.6443.</strong>$//')
@@ -494,30 +511,6 @@ app:
 </div>
 <div class="title">Figure 9. View Profile Data</div>
 </div>
-</li>
-<li>
-<p>Click on the RHDH <code>Catalog</code> in the sidebar. Select the <code>Kind</code> drop-down, and note that two new entities called <code>User</code> and <code>Group</code> are now visible.</p>
-</li>
-<li>
-<p>Select <code>Group</code> in the <code>Kind</code> drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/view-kind-groups.png" alt="view kind groups">
-</div>
-<div class="title">Figure 10. View Groups (Teams) from GitHub</div>
-</div>
-</li>
-<li>
-<p>Select <code>User</code> in the <code>Kind</code> drop-down to view the users imported from the GitHub organization.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/view-kind-users.png" alt="view kind users">
-</div>
-<div class="title">Figure 11. View Users Imported from GitHub</div>
-</div>
-</li>
-</ol>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -529,6 +522,30 @@ There is a known issue in the RHDH 1.0 version, where it may take more than 30 m
 </td>
 </tr>
 </table>
+</div>
+</li>
+<li>
+<p>Click on the RHDH <code>Catalog</code> in the sidebar. Select the <code>Kind</code> drop-down, and note that two new entities called <code>User</code> and <code>Group</code> are now visible. You may have to wait for 20-30 minutes while the data is fetched from GitHub.</p>
+</li>
+<li>
+<p>Select <code>Group</code> in the <code>Kind</code> drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization. If you have not created teams in GitHub, then do so now before proceeding. You may have to wait for 20-30 minutes while the data is fetched from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-groups.png" alt="view kind groups">
+</div>
+<div class="title">Figure 10. View Groups (Teams) from GitHub</div>
+</div>
+</li>
+<li>
+<p>Select <code>User</code> in the <code>Kind</code> drop-down to view the users imported from the GitHub organization. If you have not invited users to your organization in GitHub, then do so now before proceeding. You may have to wait for 20-30 minutes while the data is fetched from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-users.png" alt="view kind users">
+</div>
+<div class="title">Figure 11. View Users Imported from GitHub</div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect2">
@@ -563,6 +580,9 @@ There is a known issue in the RHDH 1.0 version, where it may take more than 30 m
 </li>
 <li>
 <p><a href="https://backstage.io/docs/integrations/github/github-apps#app-permissions" target="_blank" rel="noopener">Required GitHub App Permissions</a></p>
+</li>
+<li>
+<p><a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations" target="_blank" rel="noopener">Managing GitHub Organizations</a></p>
 </li>
 </ul>
 </div>
