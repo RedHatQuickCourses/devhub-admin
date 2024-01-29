@@ -1,0 +1,52 @@
+# Integrating RHDH with an External PostgreSQL Database
+:navtitle: Appendix A: External PostgreSQL DB
+
+NOTE: This section is for informational purposes only. Do not make these changes in your classroom environment because you do not have access to an external PostgreSQL database instance. You will continue to work with the default PostgreSQL database that was installed during RHDH installation for the rest of the course.
+
+For large scale production rollouts, it is recommended to use an external PostgreSQL database instead of the default database provisioned by the RHDH installation process.
+
+To integrate your RHDH instance with an external PostgreSQL database instance, do the following:
+
+. Edit or create the *app-config-rhdh* ConfigMap if it does not exist, and add the configuration for accessing the external PostgreSQL database. Ensure that the `backend` attribute is added at the same level as `app` (that is, below the `app-config-rhdh.yaml` data element):
++
+[subs=+quotes]
+----
+app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+*backend:
+  database:
+    client: pg
+    connection:
+      host: mydbhost.example.com
+      port: 5432
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}*
+----
+
+. Click `Save` to save the configuration changes.
+
+. If you have RHDH already installed, skip this step and jump to the next step. Otherwise, follow the instructions in the xref:chapter1:install.adoc#_install_the_rhdh_helm_chart[Red Hat Developer Hub Installation] section to install RHDH using helm charts. In the `Create Helm Release` page, select `YAML View` to edit the helm chart values outlined in the next steps.
+
+. If you have RHDH already installed, in the `Helm Releases` page, select the `Upgrade` option for the *rhdh* helm chart.
+
+. Select `YAML View` in the `Configure via` field to view the helm chart values as YAML
+
+. Search the `postgresql.enabled` field and set it to *false* to prevent the helm chart from deploying a database.
++
+[subs=+quotes]
+----
+postgresql:
+    auth:
+      secretKeys:
+        adminPasswordKey: postgres-password
+        userPasswordKey: password
+    enabled: *false*
+----
+
+. Click `Upgrade` to redeploy the RHDH instance. It may take some time for the RHDH pods to be redeployed.
+Verify that the integration was successful by navigating to the RHDH home page.
+
+== References
+
+* https://backstage.io/docs/getting-started/configuration#install-and-configure-postgresql[Configure PostgreSQL database in Backstage^]

@@ -30,7 +30,7 @@ where,
 * *action* = `create`, `update`, delete, or `read`
 * *permission* = `allow` or `deny`
 
-Consult the references section for the full list of `resource` types in RHDH.
+Consult the references section at the bottom of this page for the full list of `resource` types in RHDH.
 
 Consider the following policy snippet:
 
@@ -95,7 +95,7 @@ permission:
         *policies-csv-file: ./rbac/rbac-policy.csv*
         admin:
           users:
-            - name: user:/default/rsriniva
+            - name: user:default/rsriniva
 ----
 
 . You will create a new ConfigMap to store the contents of the CSV policy file. Create a new ConfigMap named `rhdh-rbac-policy` with the following content. These policies allow the user with the `admins` role to read, create and update components, but fetching catalog information from remote locations is denied:
@@ -120,11 +120,14 @@ data:
 
 . To mount the contents of the RBAC policy CSV file into the RHDH container, edit the `rhdh` helm chart in `Form View` and follow the instructions as outlined in https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart. Ensure that the paths and name of ConfigMap match your set up.
 +
+WARNING: Exercise caution when adding new volume mounts and new volumes in the helm chart form view. Do NOT delete the existing volume mounts, otherwise various features and functionality in RHDH will be broken
++
 image::container-vol-mounts.png[title=Container Volume Mounts Configuration]
 +
 image::container-volumes.png[title=Container Volumes Configuration]
 +
 image::rbac-configmap.png[title=RBAC ConfigMap Configuration]
+
 
 . Re-deploy the helm chart to re-read the new configuration.
 
@@ -157,7 +160,7 @@ You can perform the following actions with the REST API:
 * Create, update, or delete a permission policy or a role
 * Retrieve permission policy information about static plugins
 
-WARNING: If RBAC is enabled, you may need to permit actions on the `policy.entity` resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see `HTTP 401 Unauthorized` errors if you make REST calls without policy changes.
+WARNING: If RBAC is enabled, you may need to permit actions on the `policy.entity` resource for read, create and update to view and change policies using the REST API. Recall that the default policy is to deny, so you will see HTTP 401 or 403 errors if you make REST calls without policy changes.
 
 Detailed coverage of the REST API is beyond the scope of this course. Consult the references section for more details.
 
