@@ -10,7 +10,7 @@ This course is the `second` in a series of `three` courses about Red Hat Develop
 2. Red Hat Developer Hub Administration  (_This course_)
 3. Building Developer Portals with Red Hat Developer Hub (Under Development)
 
-This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using a GitHub or GitLab backend along with single sign-on functionality using Keycloak.
+This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using GitHub along with configuring authorization policies using Role Based Access Control (RBAC).
 
 == Contributors
 
@@ -42,6 +42,5 @@ The overall objectives of this course include:
 
 * Install, Upgrade and Uninstall Red Hat Developer Hub on OpenShift
 * Perform basic configuration of RHDH
-* Configure single sign-on and user authentication for Red Hat Developer Hub using:
-** GitHub or GitLab
-** Keycloak
+* Configure single sign-on and user authentication for Red Hat Developer Hub using GitHub
+* Configure authorization policies using Role Based Access Control (RBAC)
