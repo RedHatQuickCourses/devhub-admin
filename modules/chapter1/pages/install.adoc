@@ -103,7 +103,7 @@ $ helm repo add openshift-helm-charts https://charts.openshift.io/
 . Download the default *values.yaml* file for the RHDH helm chart
 +
 ```bash
-$ helm show values openshift-helm-charts/redhat-developer-hub > values.yaml
+$ helm show values openshift-helm-charts/redhat-developer-hub --version 1.0.0-1 > values.yaml
 ```
 
 . Change the value of the *global.clusterRouterBase* attribute to the wildcard OpenShift DNS name, and also edit the *upstream.nameOverride* to *rhdh*.

@@ -110,11 +110,11 @@ $ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6
 $ oc project devhub
 ```
 
-. Assuming there is a new version of the RHDH helm chart (for example, *0.3.0*), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a *new-values.yml* file on your workstation with values that override the attributes in the installed chart, or add new attributes.
+. Assuming there is a new version of the RHDH helm chart (for example, *1.1.0*), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a *new-values.yml* file on your workstation with values that override the attributes in the installed chart, or add new attributes.
 +
 ```bash
 $ helm upgrade -i rhdh -f new-values.yml \
-  openshift-helm-charts/redhat-developer-hub --version developer-hub-0.3.0
+  openshift-helm-charts/redhat-developer-hub --version 1.1.0
 ```
  
 == Upgrading the RHDH Operator using the OpenShift Web Console
