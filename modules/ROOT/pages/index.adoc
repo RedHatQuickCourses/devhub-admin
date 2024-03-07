@@ -8,7 +8,7 @@ This course is the `second` in a series of `three` courses about Red Hat Develop
 
 1. https://redhatquickcourses.github.io/devhub-intro[Introduction to Red Hat Developer Hub^]
 2. Red Hat Developer Hub Administration  (_This course_)
-3. https://redhatquickcourses.github.io/devhub-intro[Building Developer Portals with Red Hat Developer Hub^]
+3. https://redhatquickcourses.github.io/devhub-build[Building Developer Portals with Red Hat Developer Hub^]
 
 This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using GitHub along with configuring authorization policies using Role Based Access Control (RBAC).
 
