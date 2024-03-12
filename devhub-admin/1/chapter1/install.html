@@ -187,7 +187,7 @@ The chart contains an opinionated default configuration of Backstage with a pre-
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Order the <a href="https://demo.redhat.com/catalog?item=babylon-catalog-prod/openshift-cnv.ocp413-single-node-cnv.prod&amp;utm_source=webapp&amp;utm_medium=share-link" target="_blank" rel="noopener">OpenShift 4.13 Single Node Workshop</a> catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.</p>
+<p>Order the <a href="https://demo.redhat.com/catalog?search=single&amp;item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod" target="_blank" rel="noopener">OpenShift Single Node Cluster</a> catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.</p>
 </li>
 </ol>
 </div>
@@ -270,7 +270,7 @@ The chart contains an opinionated default configuration of Backstage with a pre-
 <p>Change the <code>Release Name</code> to <code>rhdh</code>. Ensure that the latest helm chart is selected in the <code>Chart version</code> drop-down (As of Dec 2023, latest RHDH version is 0.2).</p>
 </li>
 <li>
-<p>Expand <code>Root Schema &gt; global</code> and change the first field value from <code>apps.example.com</code> to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format <code>apps.cluster-&lt;guid&gt;.dynamic.opentlc.com</code>, where <code>&lt;guid&gt;</code> is unique to your provisioned OpenShift cluster.</p>
+<p>Expand <code>Root Schema &gt; global</code> and change the first field value from <code>apps.example.com</code> to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format <code>apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code>, where <code>&lt;guid&gt;</code> is unique to your provisioned OpenShift cluster.</p>
 </li>
 <li>
 <p>The final screen should look like the following:</p>
