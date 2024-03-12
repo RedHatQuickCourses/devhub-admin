@@ -29,7 +29,7 @@ The PTL team acknowledges the valuable contributions of the following Red Hat as
 
 === For Red Hat Associates
 
-Red Hat associates and others who have access to the Red Hat Demo Platform (RHDP) should use the https://demo.redhat.com/catalog?item=babylon-catalog-prod/openshift-cnv.ocp413-single-node-cnv.prod&utm_source=webapp&utm_medium=share-link[OpenShift 4.13 Single Node Workshop^] catalog item.
+Red Hat associates and others who have access to the Red Hat Demo Platform (RHDP) should use the https://demo.redhat.com/catalog?search=single&item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod[OpenShift Single Node Cluster^] catalog item.
 
 This classroom does *NOT* have RHDH pre-installed. You install and configure a basic RHDH instance, and then continue using this instance with other courses in the learning path.
 
