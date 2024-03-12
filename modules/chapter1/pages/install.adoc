@@ -28,7 +28,7 @@ The Helm chart option is the most up to date and recommended method of installat
 
 === Pre-requisites
 
-. Order the https://demo.redhat.com/catalog?item=babylon-catalog-prod/openshift-cnv.ocp413-single-node-cnv.prod&utm_source=webapp&utm_medium=share-link[OpenShift 4.13 Single Node Workshop^] catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.
+. Order the https://demo.redhat.com/catalog?search=single&item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod[OpenShift Single Node Cluster^] catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.
 
 === Create a Project for RHDH
 
@@ -63,7 +63,7 @@ image::search-devhub-chart.png[title=Search for RHDH Helm Chart]
 
 .. Change the `Release Name` to `rhdh`. Ensure that the latest helm chart is selected in the `Chart version` drop-down (As of Dec 2023, latest RHDH version is 0.2).
 
-.. Expand `Root Schema > global` and change the first field value from `apps.example.com` to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format `apps.cluster-<guid>.dynamic.opentlc.com`, where `<guid>` is unique to your provisioned OpenShift cluster.
+.. Expand `Root Schema > global` and change the first field value from `apps.example.com` to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format `apps.cluster-<guid>.dynamic.redhatworkshops.io`, where `<guid>` is unique to your provisioned OpenShift cluster.
 
 .. The final screen should look like the following:
 +
