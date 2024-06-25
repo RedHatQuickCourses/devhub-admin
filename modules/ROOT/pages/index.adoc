@@ -12,7 +12,7 @@ This course is the `second` in a series of `three` courses about Red Hat Develop
 
 This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using GitHub along with configuring authorization policies using Role Based Access Control (RBAC).
 
-NOTE: The hands-on labs for this course have been tested on *RHDH v1.0-200*. The labs should mostly work in minor update releases of RHDH. If you encounter any issues, please open a GitHub issue in the course repository.
+NOTE: The hands-on labs for this course have been tested on *RHDH 1.2*. The labs should mostly work in minor update releases of RHDH. If you encounter any issues, please open a GitHub issue in the course repository.
 
 == Contributors
 
@@ -33,9 +33,23 @@ Red Hat associates and others who have access to the Red Hat Demo Platform (RHDP
 
 This classroom does *NOT* have RHDH pre-installed. You install and configure a basic RHDH instance, and then continue using this instance with other courses in the learning path.
 
+Log in to RHDP and click `Order` to request a new SNO cluster. In the order page for the catalog item, do the following:
+
+* *Activity*: Select `Practice/Enablement`
+* *Purpose*: Select `Learning about the Product`
+* *Salesforce ID*: If you have an opportunity ID, enter it into this field, otherwise leave this field blank
+* *Features*: Select `true`
+* *OpenShift node cores*: `16`
+* *OpenShift node memory size*: `32GB`
+* *OpenShift Version*: `4.15` or higher
+
+Select the checkbox at the bottom of the page to confirm that lab costs will be charged to your cost center, and click `Order`.
+
+The lab environment will take an hour to provision. You can check the status and details of the OpenShift cluster from the `Services` page of RHDP.
+
 === For Red Hat Partners
 
-Red Hat partners and others who do not have access to RHDP, should provision their own Red Hat OpenShift 4.13 cluster using the Red Hat Hybrid Cloud Console at https://console.redhat.com/openshift/overview. Ensure that you provision an OpenShift 4.13 cluster with at least 16 vCPUs and 32GB of RAM.
+Red Hat partners and others who do not have access to RHDP, should provision their own Red Hat OpenShift 4.15 cluster using the Red Hat Hybrid Cloud Console at https://console.redhat.com/openshift/overview. Ensure that you provision an OpenShift 4.15 cluster with at least 16 vCPUs and 32GB of RAM.
 
 NOTE: You can also install RHDH and run the hands-on labs using OpenShift Local, provided you allocate 8 vCPUs and 24GB+ RAM. Go to https://developers.redhat.com/products/openshift-local/overview and click on `Install OpenShift on your laptop`.
 
