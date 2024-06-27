@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Upgrading Red Hat Developer Hub :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="install-operator.html">
+    <link rel="next" href="uninstall.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operator.html">Installing RHDH (Operator)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/git-auth.html">GitHub Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Installation</a></li>
+    <li><a href="upgrade.html">Upgrading RHDH</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Upgrading Red Hat Developer Hub</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Upgrading RHDH depends on your install method that you selected.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Before you perform any updates to RHDH, ensure that you back up <strong>ALL</strong> the data in the RHDH PostreSQL database!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_backup_the_rhdh_postgresql_database"><a class="anchor" href="#_backup_the_rhdh_postgresql_database"></a>Backup the RHDH PostgreSQL Database</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need to install several CLI tools on your <strong>local workstation</strong> before upgrading the database.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install the OpenShift CLI tool <strong>oc</strong></p>
+</li>
+<li>
+<p>Install the PostgreSQL CLI client <strong>psql</strong> and <strong>pg_dump</strong></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_backup_process"><a class="anchor" href="#_backup_process"></a>Backup Process</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use the <strong>oc</strong> CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the <strong>devhub</strong> project.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
+$ oc project devhub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Scale the <strong>rhdh-developer-hub</strong> pods to <strong>0</strong> to prevent requests from modifying the database state during backup.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc scale --replicas=0 deployment/rhdh-developer-hub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Get the name of the PostgreSQL database pod and set it to an environment variable.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ POD=`oc get pods --selector app.kubernetes.io/name=postgresql \
+  -o custom-columns=name:.metadata.name --no-headers`; echo $POD</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>List the RHDH databases in the PostgreSQL instance. The RHDH databases are prefixed by <strong>backstage_</strong>.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ <strong>oc rsh $POD</strong>
+sh-5.1$ <strong>psql postgres</strong>
+psql (15.3)
+Type "help" for help.
+
+postgres=# <strong>\l</strong>
+...
+ backstage_plugin_app
+ backstage_plugin_auth
+ backstage_plugin_catalog
+ backstage_plugin_scaffolder
+ backstage_plugin_search
+...
+(8 rows)
+postgres=# <strong>\q</strong>
+sh-5.1$ <strong>exit</strong></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Enable port forwarding to the database pod.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc port-forward $POD 5432:5432
+Forwarding from 127.0.0.1:5432 -&gt; 5432
+Forwarding from [::1]:5432 -&gt; 5432</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Backup all the <strong>backstage_</strong> the databases using the <strong>pg_dump</strong> command. Store the database backups in a safe location, for restoration at a later point in time in case of a disaster or failure.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ pg_dump backstage_plugin_app &gt; /tmp/backstage_plugin_app.sql \
+  --host=127.0.0.1 --port=5432 -U postgres</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat the command for all the other <strong>backstage_</strong> databases.</p>
+</div>
+</li>
+<li>
+<p>After all the databases have been backed up, you can scale the <strong>rhdh-developer-hub</strong> back to your original count.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc scale --replicas=1 deployment/rhdh-developer-hub</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are using a non-default (that is, from a third party or commercial vendor) PostgreSQL database, refer to the backup instructions from the provider of the PostgreSQL database. Ensure that you scale the <strong>rhdh-developer-hub</strong> pod count to <strong>0</strong> before starting the backup procedure.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_helm_chart"><a class="anchor" href="#_upgrading_the_rhdh_helm_chart"></a>Upgrading the RHDH Helm Chart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update RHDH using the OpenShift web console.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ensure that you are in the <strong>Developer</strong> perspective of the OpenShift console. Click on <code>Helm</code> to view the installed releases in the <code>Helm Releases</code> tab.</p>
+</li>
+<li>
+<p>Expand the hamburger menu on the right of the <code>rhdh</code> release and click <code>Upgrade</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/helm-release-upgrade.png" alt="helm release upgrade">
+</div>
+<div class="title">Figure 1. Upgrade Helm Release</div>
+</div>
+</li>
+<li>
+<p>In the <code>Upgrade Helm Release</code> page, select the version of RHDH you want to upgrade to in the <code>Chart version</code> drop-down. This list shows the different helm chart versions of RHDH that have been publicly released.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/select-chart-upgrade.png" alt="select chart upgrade">
+</div>
+<div class="title">Figure 2. Select Upgrade Version</div>
+</div>
+</li>
+<li>
+<p>After you have selected a version for upgrade, click <code>Upgrade</code>. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.</p>
+</li>
+<li>
+<p>Close all open RHDH web pages, and log in again to verify that the upgrade was successful.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_helm_chart_using_the_cli"><a class="anchor" href="#_upgrading_the_rhdh_helm_chart_using_the_cli"></a>Upgrading the RHDH Helm Chart using the CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update RHDH using the <strong>helm</strong> CLI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
+$ oc project devhub</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.1.0</strong>), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a <strong>new-values.yml</strong> file on your workstation with values that override the attributes in the installed chart, or add new attributes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version 1.1.0</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_operator_using_the_openshift_web_console"><a class="anchor" href="#_upgrading_the_rhdh_operator_using_the_openshift_web_console"></a>Upgrading the RHDH Operator using the OpenShift Web Console</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can refer to the instructions <a href="https://docs.openshift.com/container-platform/4.13/operators/admin/olm-upgrading-operators.html#olm-upgrading-operators" target="_blank" rel="noopener">here</a> to upgrade the RHDH operator.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="install-operator.html">Installing RHDH (Operator)</a></span>
+  <span class="next"><a href="uninstall.html">Uninstalling RHDH</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
