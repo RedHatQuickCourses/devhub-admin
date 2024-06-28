@@ -133,7 +133,7 @@
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database!. Follow the instructions in the previous section to back up the PostgreSQL database.
+Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database, plus any RHDH configuration stored in ConfigMaps and Secrets!
 </td>
 </tr>
 </table>
@@ -200,20 +200,30 @@ release "rhdh" uninstalled</pre>
 <div class="sect1">
 <h2 id="_uninstalling_the_rhdh_operator"><a class="anchor" href="#_uninstalling_the_rhdh_operator"></a>Uninstalling the RHDH Operator</h2>
 <div class="sectionbody">
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>You can refer to the instructions <a href="https://docs.openshift.com/container-platform/4.13/operators/admin/olm-deleting-operators-from-cluster.html" target="_blank" rel="noopener">here</a> to uninstall the RHDH operator.</p>
+<p>To uninstall the RHDH operator, do the following:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Switch to the <code>Developer</code> perspective, and click <code>Topolgy</code>. Click the hamburger menu option (three vertical dots) next to the <code>Backstage</code> instance (Blue badge marked 'B'), and then click <code>Delete Backstage</code> to delete the RHDH instance.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/del-rhdh-op-instance.png" alt="del rhdh op instance">
+</div>
+<div class="title">Figure 2. Delete RHDH instance</div>
+</div>
+</li>
+<li>
+<p>Now, switch to the <code>Administrator</code> perspective, and then click <code>Operators &gt; Installed Operators</code>. Select the project where you installed the operator (<strong>devhub</strong>), and expand the menu option against the <code>Red Hat Developer Hub Operator</code>. Click <code>Uninstall Operator</code> to remove the operator.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/uninstall-rhdh-op.png" alt="uninstall rhdh op">
+</div>
+<div class="title">Figure 3. Uninstall RHDH operator</div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>

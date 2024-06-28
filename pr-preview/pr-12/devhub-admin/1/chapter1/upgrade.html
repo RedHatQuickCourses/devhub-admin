@@ -136,126 +136,10 @@
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Before you perform any updates to RHDH, ensure that you back up <strong>ALL</strong> the data in the RHDH PostreSQL database!
+Before you perform any updates to RHDH, ensure that you back up <strong>ALL</strong> the data in the RHDH PostreSQL database, plus any RHDH configuration stored in ConfigMaps and Secrets!
 </td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_backup_the_rhdh_postgresql_database"><a class="anchor" href="#_backup_the_rhdh_postgresql_database"></a>Backup the RHDH PostgreSQL Database</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You need to install several CLI tools on your <strong>local workstation</strong> before upgrading the database.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Install the OpenShift CLI tool <strong>oc</strong></p>
-</li>
-<li>
-<p>Install the PostgreSQL CLI client <strong>psql</strong> and <strong>pg_dump</strong></p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_backup_process"><a class="anchor" href="#_backup_process"></a>Backup Process</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Use the <strong>oc</strong> CLI to log in to the OpenShift cluster as the cluster administrator, and switch to the <strong>devhub</strong> project.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
-$ oc project devhub</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Scale the <strong>rhdh-developer-hub</strong> pods to <strong>0</strong> to prevent requests from modifying the database state during backup.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc scale --replicas=0 deployment/rhdh-developer-hub</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Get the name of the PostgreSQL database pod and set it to an environment variable.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ POD=`oc get pods --selector app.kubernetes.io/name=postgresql \
-  -o custom-columns=name:.metadata.name --no-headers`; echo $POD</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>List the RHDH databases in the PostgreSQL instance. The RHDH databases are prefixed by <strong>backstage_</strong>.</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ <strong>oc rsh $POD</strong>
-sh-5.1$ <strong>psql postgres</strong>
-psql (15.3)
-Type "help" for help.
-
-postgres=# <strong>\l</strong>
-...
- backstage_plugin_app
- backstage_plugin_auth
- backstage_plugin_catalog
- backstage_plugin_scaffolder
- backstage_plugin_search
-...
-(8 rows)
-postgres=# <strong>\q</strong>
-sh-5.1$ <strong>exit</strong></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Enable port forwarding to the database pod.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc port-forward $POD 5432:5432
-Forwarding from 127.0.0.1:5432 -&gt; 5432
-Forwarding from [::1]:5432 -&gt; 5432</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Backup all the <strong>backstage_</strong> the databases using the <strong>pg_dump</strong> command. Store the database backups in a safe location, for restoration at a later point in time in case of a disaster or failure.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ pg_dump backstage_plugin_app &gt; /tmp/backstage_plugin_app.sql \
-  --host=127.0.0.1 --port=5432 -U postgres</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Repeat the command for all the other <strong>backstage_</strong> databases.</p>
-</div>
-</li>
-<li>
-<p>After all the databases have been backed up, you can scale the <strong>rhdh-developer-hub</strong> back to your original count.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc scale --replicas=1 deployment/rhdh-developer-hub</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you are using a non-default (that is, from a third party or commercial vendor) PostgreSQL database, refer to the backup instructions from the provider of the PostgreSQL database. Ensure that you scale the <strong>rhdh-developer-hub</strong> pod count to <strong>0</strong> before starting the backup procedure.
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 </div>
@@ -316,11 +200,27 @@ $ oc project devhub</code></pre>
 </div>
 </li>
 <li>
-<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.1.0</strong>), run the following command to upgrade RHDH. You can also supply extra values to the chart by creating a <strong>new-values.yml</strong> file on your workstation with values that override the attributes in the installed chart, or add new attributes.</p>
+<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.2.1</strong>), run the following command to upgrade RHDH.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh \
+  openshift-helm-charts/redhat-developer-hub --version 1.2.1
+
+Release "rhdh" has been upgraded. Happy Helming!
+NAME: rhdh
+LAST DEPLOYED: Fri Jun 28 18:06:47 2024
+NAMESPACE: devhub
+STATUS: deployed
+REVISION: 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also supply extra values to the chart by creating a <strong>new-values.yml</strong> file on your workstation with values that override the attributes in the installed chart, or add new attributes.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh -f new-values.yml \
-  openshift-helm-charts/redhat-developer-hub --version 1.1.0</code></pre>
+  openshift-helm-charts/redhat-developer-hub --version 1.2.1</code></pre>
 </div>
 </div>
 </li>
@@ -331,20 +231,17 @@ $ oc project devhub</code></pre>
 <div class="sect1">
 <h2 id="_upgrading_the_rhdh_operator_using_the_openshift_web_console"><a class="anchor" href="#_upgrading_the_rhdh_operator_using_the_openshift_web_console"></a>Upgrading the RHDH Operator using the OpenShift Web Console</h2>
 <div class="sectionbody">
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The default setting during operator install is set to <strong>Automatic</strong> mode. In this mode, new versions of the operator are <em>automatically</em> downloaded and applied. If you chose the <strong>Manual</strong> mode, a cluster administrator needs to <em>manually</em> approve each upgrade. In such cases, switch to the <code>Administrator</code> perspective, and then click on <code>Operators &gt; Installed Operators</code> to view the updates for the RHDH operator.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/op-upgrade.png" alt="op upgrade">
+</div>
+<div class="title">Figure 3. Operator Updates</div>
 </div>
 <div class="paragraph">
-<p>You can refer to the instructions <a href="https://docs.openshift.com/container-platform/4.13/operators/admin/olm-upgrading-operators.html#olm-upgrading-operators" target="_blank" rel="noopener">here</a> to upgrade the RHDH operator.</p>
+<p>Click <code>Upgrade Available</code> for the RHDH operator, and then click <code>Preview InstallPlan</code>. Click <code>Approve</code> to approve the update.</p>
 </div>
 </div>
 </div>

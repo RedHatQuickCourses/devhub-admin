@@ -171,6 +171,9 @@
 <div class="title">Figure 1. RHDP OpenShift Cluster Details</div>
 </div>
 </li>
+<li>
+<p>Create a new OpenShift project named <strong>devhub</strong>. You will install the RHDH operator and instance into this project.</p>
+</li>
 </ol>
 </div>
 </div>
@@ -191,7 +194,13 @@
 </div>
 </li>
 <li>
-<p>In the <code>Red Hat Developer Hub</code> operator details page, click <code>Install</code>. In the <code>Install Operator</code> page, select the default values for all fields and click <code>Install</code> to begin the installation.</p>
+<p>In the <code>Red Hat Developer Hub</code> operator details page, click <code>Install</code>. In the <code>Install Operator</code> page, select the <strong>devhub</strong> project in the <code>Installed Namespace</code> field. Leave all other fields at their default values, and click <code>Install</code> to begin the operator installation.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-op-details.png" alt="rhdh op details">
+</div>
+<div class="title">Figure 3. RHDP Operator Details</div>
+</div>
 </li>
 <li>
 <p>Wait for 5-10 minutes while the operator is installed. You should see <code>Installed operator:  ready for use</code> message when the operator is successfully installed.</p>
@@ -199,7 +208,7 @@
 <div class="content">
 <img src="_images/rhdh-operator-installed.png" alt="rhdh operator installed">
 </div>
-<div class="title">Figure 3. RHDH Operator Installed</div>
+<div class="title">Figure 4. RHDH Operator Installed</div>
 </div>
 </li>
 <li>
@@ -208,19 +217,19 @@
 <div class="content">
 <img src="_images/rhdh-create-op-instance.png" alt="rhdh create op instance">
 </div>
-<div class="title">Figure 4. RHDH Create new Instance</div>
+<div class="title">Figure 5. RHDH Create new Instance</div>
 </div>
 </li>
 <li>
 <p>In the <code>Create Backstage</code> page, change the <code>Name</code> to <strong>rhdh</strong>, leave all other fields at default values, and then click <code>Create</code> to deploy a new RHDH instance.</p>
 </li>
 <li>
-<p>Switch to the <code>Developer</code> perspective in the OpenShift web console, and select the <code>rhdh-operator</code> project. Verify that a new instance called <code>rhdh</code> is seen with two pods in running state.</p>
+<p>Switch to the <code>Developer</code> perspective in the OpenShift web console, and select the <code>devhub</code> project. Verify that a new instance called <code>rhdh</code> is seen with two pods in running state.</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rhdh-op-instance-running.png" alt="rhdh op instance running">
 </div>
-<div class="title">Figure 5. RHDH instance running</div>
+<div class="title">Figure 6. RHDH instance running</div>
 </div>
 </li>
 <li>
@@ -229,7 +238,7 @@
 <div class="content">
 <img src="_images/rhdh-op-installed.png" alt="rhdh op installed">
 </div>
-<div class="title">Figure 6. RHDH Open URL</div>
+<div class="title">Figure 7. RHDH Open URL</div>
 </div>
 </li>
 <li>
@@ -238,7 +247,7 @@
 <div class="content">
 <img src="_images/rhdh-homepage.png" alt="rhdh homepage">
 </div>
-<div class="title">Figure 7. RHDH Log in Page</div>
+<div class="title">Figure 8. RHDH Log in Page</div>
 </div>
 </li>
 <li>
@@ -248,7 +257,7 @@ You will configure RHDH to authenticate against GitHub and other identity provid
 <div class="content">
 <img src="_images/rhdh-guest-user.png" alt="rhdh guest user">
 </div>
-<div class="title">Figure 8. Log in as a guest user</div>
+<div class="title">Figure 9. Log in as a guest user</div>
 </div>
 <div class="paragraph">
 <p>You have now successfully installed Red Hat Developer Hub on your OpenShift cluster using the RHDH operator.</p>
