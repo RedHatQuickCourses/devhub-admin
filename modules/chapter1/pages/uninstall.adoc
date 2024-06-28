@@ -1,7 +1,7 @@
 = Red Hat Developer Hub Uninstallation
 :navtitle: Uninstalling RHDH
 
-IMPORTANT: Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database!. Follow the instructions in the previous section to back up the PostgreSQL database.
+IMPORTANT: Before you uninstall RHDH, verify if you need to back up the data in the RHDH PostgreSQL database, plus any RHDH configuration stored in ConfigMaps and Secrets!
 
 == Uninstalling the RHDH Helm Chart
 
@@ -36,6 +36,12 @@ release "rhdh" uninstalled
 
 == Uninstalling the RHDH Operator
 
-NOTE: The operator is not yet available publicly (ETA: Q1 2024). Watch this section for updates once the operator is GA.
+To uninstall the RHDH operator, do the following:
 
-You can refer to the instructions https://docs.openshift.com/container-platform/4.13/operators/admin/olm-deleting-operators-from-cluster.html[here^] to uninstall the RHDH operator.
+. Switch to the `Developer` perspective, and click `Topolgy`. Click the hamburger menu option (three vertical dots) next to the `Backstage` instance (Blue badge marked 'B'), and then click `Delete Backstage` to delete the RHDH instance.
++
+image::del-rhdh-op-instance.png[title=Delete RHDH instance]
+
+. Now, switch to the `Administrator` perspective, and then click `Operators > Installed Operators`. Select the project where you installed the operator (*devhub*), and expand the menu option against the `Red Hat Developer Hub Operator`. Click `Uninstall Operator` to remove the operator.
++
+image::uninstall-rhdh-op.png[title=Uninstall RHDH operator]
