@@ -23,6 +23,8 @@ Refer to the instructions https://docs.redhat.com/en/documentation/red_hat_devel
 +
 image::03-rhdp-cluster-details.png[title=RHDP OpenShift Cluster Details]
 
+2. Create a new OpenShift project named *devhub*. You will install the RHDH operator and instance into this project.
+
 === Install the RHDH Operator
 
 . Click `Operators > OperatorHub` in the left side navigation bar of the `Administrator` perspective in the OpenShift web console.
@@ -31,7 +33,9 @@ image::03-rhdp-cluster-details.png[title=RHDP OpenShift Cluster Details]
 +
 image::search-devhub-operator.png[title=Search for RHDH Operator]
 
-. In the `Red Hat Developer Hub` operator details page, click `Install`. In the `Install Operator` page, select the default values for all fields and click `Install` to begin the installation.
+. In the `Red Hat Developer Hub` operator details page, click `Install`. In the `Install Operator` page, select the *devhub* project in the `Installed Namespace` field. Leave all other fields at their default values, and click `Install` to begin the operator installation.
++
+image::rhdh-op-details.png[title=RHDP Operator Details]
 
 . Wait for 5-10 minutes while the operator is installed. You should see `Installed operator:  ready for use` message when the operator is successfully installed.
 +
@@ -43,7 +47,7 @@ image::rhdh-create-op-instance.png[title=RHDH Create new Instance]
 
 . In the `Create Backstage` page, change the `Name` to *rhdh*, leave all other fields at default values, and then click `Create` to deploy a new RHDH instance.
 
-. Switch to the `Developer` perspective in the OpenShift web console, and select the `rhdh-operator` project. Verify that a new instance called `rhdh` is seen with two pods in running state. 
+. Switch to the `Developer` perspective in the OpenShift web console, and select the `devhub` project. Verify that a new instance called `rhdh` is seen with two pods in running state. 
 +
 image::rhdh-op-instance-running.png[title=RHDH instance running]
 
