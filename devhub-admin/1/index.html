@@ -49,7 +49,10 @@
     <a class="nav-link" href="chapter1/index.html">Installation</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter1/install.html">Installing RHDH</a>
+    <a class="nav-link" href="chapter1/install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="chapter1/install-operator.html">Installing RHDH (Operator)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="chapter1/upgrade.html">Upgrading RHDH</a>
@@ -77,13 +80,6 @@
     <a class="nav-link" href="chapter2/rbac.html">Role Based Access Control</a>
   </li>
 </ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="appendix/appendix-a.html">Appendix A: External PostgreSQL DB</a>
   </li>
 </ul>
   </li>
@@ -242,7 +238,7 @@ The hands-on labs for this course have been tested on <strong>RHDH 1.2</strong>.
 <div class="sect2">
 <h3 id="_for_red_hat_partners"><a class="anchor" href="#_for_red_hat_partners"></a>For Red Hat Partners</h3>
 <div class="paragraph">
-<p>Red Hat partners and others who do not have access to RHDP, should provision their own Red Hat OpenShift 4.15 cluster using the Red Hat Hybrid Cloud Console at <a href="https://console.redhat.com/openshift/overview" class="bare">https://console.redhat.com/openshift/overview</a>. Ensure that you provision an OpenShift 4.15 cluster with at least 16 vCPUs and 32GB of RAM.</p>
+<p>Red Hat partners and others who do not have access to RHDP, should provision their own Red Hat OpenShift 4.15 cluster using the Red Hat Hybrid Cloud Console at <a href="https://console.redhat.com/openshift/overview" class="bare">https://console.redhat.com/openshift/overview</a>. Ensure that you provision an OpenShift 4.15 cluster with at least 8 vCPUs and 32GB of RAM.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -251,7 +247,7 @@ The hands-on labs for this course have been tested on <strong>RHDH 1.2</strong>.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You can also install RHDH and run the hands-on labs using OpenShift Local, provided you allocate 8 vCPUs and 24GB+ RAM. Go to <a href="https://developers.redhat.com/products/openshift-local/overview" class="bare">https://developers.redhat.com/products/openshift-local/overview</a> and click on <code>Install OpenShift on your laptop</code>.
+You can also install RHDH and run the hands-on labs using OpenShift Local, provided you allocate a minimum of 8 vCPUs and 24GB+ RAM. Go to <a href="https://developers.redhat.com/products/openshift-local/overview" class="bare">https://developers.redhat.com/products/openshift-local/overview</a> and click on <code>Install OpenShift on your laptop</code>.
 </td>
 </tr>
 </table>
