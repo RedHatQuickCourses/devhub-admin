@@ -1,41 +1,41 @@
 # Basics of Red Hat Developer Hub Configuration
 :navtitle: Basic Configuration
 
-RHDH uses YAML files for configuration. Various runtime variables, plugin configuration, and other behaviors can be controlled using one or more YAML configuration files.
+Recall that RHDH is deployed as an immutable container on OpenShift. Upgrading RHDH to new versions deploys a new container, so the configuration is maintained outside the container as YAML files, which are parsed at container start up and the state persisted to the PostgreSQL database used by RHDH.
+
+RHDH uses a number of different YAML files for configuration. Various runtime variables, plugin configuration, and other behaviors can be controlled using these YAML configuration files.
+
+NOTE: The sections in this chapter assume you have installed RHDH using the operator. If you used a Helm chart for installation, the configuration should more or less work with minimal changes. Consult the product documentation for details.
 
 == Exploring the default RHDH Configuration
 
-Let us briefly inspect the OpenShift resources created by the RHDH helm chart after installation.
+Let us briefly inspect the OpenShift resources created by the RHDH operator after installation.
 
 Log in as the OpenShift cluster administrator user in the web console and switch to the *Developer* perspective.
-Click on `Helm` in the left sidebar, and then click the `rhdh` helm release.
+Click on `Topology` in the left sidebar, and then expand the hamburger menu (three vertical dots) next to the `rhdh` Backstage custom resource (CR) to select the `Edit Backstage` option
 
-Click the `Resources` tab to view the resources created by the helm chart after installation.
+image::edit-backstage-cr.png[title=Edit Backstage CR]
 
-image::helm-resources.png[title=Helm Chart Resources,width=600]
+In the `Backstage details` page, click the `Resources` tab to view the resources created by the operator installation.
 
-The two `ConfigMap` resources, *dynamic-plugins* and *rhdh-developer-hub-app-config* are used to configure the dynamic plugins, and the overall configuration of RHDH respectively.
+image::rhdh-op-resources.png[title=Resources created by the operator]
 
-The default *app-config.yaml* configuration stored in the *rhdh-developer-hub-app-config* ConfigMap is as follows:
+The two `ConfigMap` resources, *backstage-dynamic-plugins-rhdh* and *backstage-appconfig-rhdh* are used to configure the dynamic plugins, and the overall configuration of RHDH respectively.
+
+The *default.app-config.yaml* configuration stored in the *backstage-appconfig-rhdh* ConfigMap is as follows:
 
 [subs=+quotes]
 ----
-app:
-  baseUrl: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
-backend:
-  auth:
-    keys:
-    - secret: ${BACKEND_SECRET}
-  baseUrl: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
-  cors:
-    origin: https://rhdh-developer-hub-devhub.apps.cluster-6tkk4.dynamic.redhatworkshops.io
-  database:
-    connection:
-      password: ${POSTGRESQL_ADMIN_PASSWORD}
-      user: postgres
+data:
+  default.app-config.yaml: |
+    backend:
+      auth:
+        keys:
+          # This is a default value, which you should change by providing your own app-config
+          - secret: "pl4s3Ch4ng3M3"
 ----
 
-IMPORTANT: This default *app-config.yaml* should not be edited directly to avoid problems during helm chart upgrades. Instead you must define your own custom *app-config-rhdh.yaml* configuration file as a separate ConfigMap resource, and override the default configuration values.
+IMPORTANT: This  *default.app-config.yaml* section should not be edited directly to avoid problems during operator upgrades. Instead you must define your own custom *app-config-rhdh.yaml* configuration file as a separate ConfigMap resource, and override the default configuration values.
 
 == Application Configuration Files (app-config-*.yaml)
 
@@ -89,11 +89,11 @@ The priority of the configurations is determined by the following rules, in orde
 
 == Lab: Adding a Custom app-config YAML File
 
-It is a good practice to override the default *app-config.yaml* file using your own custom configuration file embedded inside a ConfigMap, and passing it as an argument using `--config` flags. At runtime, the values from the default configuration are merged with the values from your custom configuration file.
+It is a good practice to override the *default.app-config.yaml* file using your own custom configuration file embedded inside a ConfigMap, and passing it as an argument using `--config` flags. At runtime, the values from the default configuration are merged with the values from your custom configuration file.
 
 To create the custom configuration file, do the following:
 
-. Create a new ConfigMap named *app-config-rhdh* resource in the same OpenShift project where you installed RHDH (*devhub*)
+. Create a new ConfigMap named *app-config-rhdh* resource in the same OpenShift project where you installed RHDH (*devhub*). Click on `ConfigMap > Create ConfigMap > YAML view` and paste the following YAML snippet.
 +
 [subs=+quotes]
 ----
@@ -102,30 +102,81 @@ apiVersion: v1
 metadata:
   name: app-config-rhdh
 data:
-  app-config-rhdh.yaml: |
+  "app-config-rhdh.yaml": |
     app:
       title: Red Hat Developer Hub
+      baseUrl: *https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io* <1>
+    backend:
+      auth:
+        keys:
+          - secret: *"${BACKEND_SECRET}"* <2>
+      baseUrl: *https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io* <1>
+      cors:
+        origin: *https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io* <1>
+----
+<1> The RHDH URL. Replace *guid* with your unique guid from RHDP
+<2> A secret to define the mandatory RHDH backend authentication key
+
+. Click `Create` to create the ConfigMap.
+
+. The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *secrets-rhdh*, and reference it in the Developer Hub CR. Click `Secrets > Create Key/value secret`.
+
+. In the `Create key/value secret` page, enter *secrets-rhdh* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
++
+```bash
+$ node -p 'require("crypto").randomBytes(24).toString("base64")'
+```
+
+. Copy the randomly generated string to the *Value* field, and then click `Create` to create the secret.
++
+image::create-rhdh-secrets.png[title=Create a new secret]
+
+. Now that you have created your own custom configuration file with an embedded secret, you need to reference the new custom configuration file in the backstage custom resource (CR) and restart the RHDH container for the changes to take effect. Click on `Topology` in the left sidebar, and then expand the hamburger menu (three vertical dots) next to the `rhdh` Backstage custom resource (CR) to select the `Edit Backstage` option
++
+image::edit-backstage-cr.png[title=Edit Backstage CR]
+
+. Reference the `app-config-rhdh` ConfigMap and the `rhdh-secrets` secret in the CR:
++
+[subs=+quotes]
+----
+apiVersion: rhdh.redhat.com/v1alpha1
+kind: Backstage
+metadata:
+...
+spec:
+  application:
+    appConfig:
+      mountPath: /opt/app-root/src
+      *configMaps:
+         - name: app-config-rhdh
+    extraEnvs:
+      secrets:
+         - name: secrets-rhdh*
+    extraFiles:
+      mountPath: /opt/app-root/src
+    replicas: 1
+    route:
+      enabled: true
+  database:
+    enableLocalDb: true
+...
 ----
 
-. In the `Helm Releases` page, select the `Upgrade` option for the *rhdh* helm chart.
+. Click `Save` to save the changes to the Backstage CR. 
 
-. Expand `Root Schema → Backstage Chart Schema → Backstage Parameters → Extra App Configuration files to inline into command arguments`, and then click `Add Extra app configuration files to inline into command arguments`.
+. Switch to the `Topology` view, and expand the menu next to the `backstage-rhdh` pod. Click `Restart rollout` to restart the RHDH pod.
++
+image::restart-rollout.png[title=Restart RHDH pod to re-read configuration value changes]
 
-. Add *app-config-rhdh* in the `configMapRef` field, and *app-config-rhdh.yaml* in the `filename` field.
-
-. Click `Upgrade` to redeploy the RHDH container. It may take a few minutes for the RHDH container to be redeployed with the new configuration.
+Wait for the RHDH pod to restart (It may take a few minutes). Ensure that the pod is restarted without any errors. To troubleshoot failed startup, click on the `backstage-rhdh` pod, and then click the `Resources` tab. Click `View logs` to view the pod logs. Ensure that you correctly indent the CR yaml file when referencing the secret and ConfigMap. Incorrect indentation may cause the pod restart to fail.
 
 Throughout the rest of the course, you will edit the *app-config-rhdh* ConfigMap to configure and enable plugins for RHDH.
 
-Whenever you change the configuration in the `app-config-rhdh` ConfigMap, or create/edit any new secrets, you can force RHDH to re-read the configuration by clicking on the RHDH pod in the `Topology` page and then selecting `Restart rollout` in the `Action` drop-down:
-
-image::restart-rollout.png[title=Restart RHDH Rollout to re-read configuration value changes]
+Whenever you change the configuration in the `app-config-rhdh` ConfigMap, or create/edit any new secrets, you can force RHDH to re-read the configuration by clicking on the RHDH pod in the `Topology` page and then selecting `Restart rollout`.
 
 You can also scale down the RHDH pod to zero (0), and then scale it up back to one or more to reload the configuration.
 
-NOTE: One advantage of using helm charts to deploy and manage RHDH is versioned deployments. If for some reason, your configuration causes RHDH to fail deployment, you can rollback to  previous releases and recover your old configuration. Correct your configuration file errors and retry the deployment.
-
 == References
 
-* https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/getting_started_with_red_hat_developer_hub/index#ref-rhdh-supported-configs_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
 * https://backstage.io/docs/conf[Configuration in Backstage^]
