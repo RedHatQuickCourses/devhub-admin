@@ -74,7 +74,7 @@
     <a class="nav-link" href="basic-config.html">Basic Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="git-auth.html">GitHub Authentication</a>
+    <a class="nav-link" href="git-auth.html">GitHub Integration and Authentication</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="rbac.html">Role Based Access Control</a>
@@ -226,10 +226,10 @@ The main reason to declare policy administrators is to allow a certain limited n
 <div class="content">
 <pre>catalog:
       providers:
+        github:
+          ...
         githubOrg:
-          default:
-            id: development
-            orgUrl: ${GITHUB_ORG_URL}
+          ...
 <strong>permission:
       enabled: true
       rbac:
@@ -240,157 +240,112 @@ The main reason to declare policy administrators is to allow a certain limited n
 </div>
 </li>
 <li>
-<p>Re-deploy the <code>rhdh</code> helm chart for the changes to take effect.</p>
-</li>
-<li>
-<p>Sign out from the existing RHDH session and login again using the GitHub ID of the declared policy administrator.</p>
-</li>
-<li>
-<p>Navigate to the <code>Catalog</code> page in RHDH, and click <code>CREATE</code>. Note that you are not allowed to create new components.</p>
-</li>
-<li>
-<p>Next, try navigating to the <code>API</code> page and click on <code>REGISTER EXISTING API</code>. You will be shown an <code>ERROR 404</code> page. With RBAC enabled, most features are disabled by default. You need to explicitly enable permissions to resources in RHDH.</p>
-<div class="imageblock">
+<p>The RBAC plugin is disabled by default. Enable it by adding it to the list of dynamic plugins in the ConfigMap <strong>dynamic-plugins-rhdh-local</strong>.</p>
+<div class="listingblock">
 <div class="content">
-<img src="_images/404-error-rbac.png" alt="404 error rbac">
+<pre>...
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic'
+        disabled: false
+      <strong>- package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+        disabled: false</strong></pre>
 </div>
-<div class="title">Figure 1. Not allowed to register APIs</div>
 </div>
+</li>
+<li>
+<p>Restart rollout of the RHDH pod from the <code>Topology</code> view.</p>
+</li>
+<li>
+<p>Sign out from the existing RHDH session and log in again using the GitHub ID of the declared policy administrator.</p>
+</li>
+<li>
+<p>Navigate to the <code>Catalog</code> page in RHDH. Note that the <code>Create</code> button is not visible. You are not allowed to create new components.</p>
+</li>
+<li>
+<p>Next, try navigating to the <code>API</code> page. The <code>Register</code> button is not visible. With RBAC enabled, most features are disabled by default. You need to explicitly enable permissions to resources in RHDH.</p>
 </li>
 </ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_declarative_policy_definition_in_csv_files"><a class="anchor" href="#_lab_declarative_policy_definition_in_csv_files"></a>Lab: Declarative Policy Definition in CSV Files</h2>
+<h2 id="_lab_rbac_administration_ui"><a class="anchor" href="#_lab_rbac_administration_ui"></a>Lab: RBAC Administration UI</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To selectively allow RHDH features, you need to declare <code>roles</code> with allowed policies, and then assign these roles to users or groups.</p>
+<p>To selectively allow RHDH features, you need to declare <code>roles</code> with allowed policies, and then assign these roles to users or groups. Previous versions of RHDH allowed you to do this using CSV files stored in ConfigMaps. Recent versions of RHDH have introduced a convienient web based UI to manage policies.</p>
+</div>
+<div class="paragraph">
+<p>This section covers the RBAC Admin UI. Consult the product documentation for the process to manually specify policies using CSV files.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+It is recommended to keep the RBAC system <strong>disabled</strong> when trying out features and functionality of RHDH like Software Templates, plugins, Search, and more. Turn it back on only if you know what you are doing, and you fully understand the impact of policies.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Edit the <code>app-config-rhdh</code> ConfigMap, and add a reference to the policy CSV file under the <code>rbac</code> attribute that you enabled previously:</p>
-<div class="listingblock">
-<div class="content">
-<pre>catalog:
-      providers:
-        githubOrg:
-          default:
-            id: development
-            orgUrl: ${GITHUB_ORG_URL}
-permission:
-      enabled: true
-      rbac:
-        <strong>policies-csv-file: ./rbac/rbac-policy.csv</strong>
-        admin:
-          users:
-            - name: user:default/rsriniva</pre>
-</div>
-</div>
+<p>After you have enabled the RBAC dynamic plugin and add users to the <code>rbac.admin.users</code> list in the <code>app-config-rhdh</code> ConfigMap, log in to RHDH and then click <code>Administration</code> in the bottom of the left sidebar.</p>
 </li>
 <li>
-<p>You will create a new ConfigMap to store the contents of the CSV policy file. Create a new ConfigMap named <code>rhdh-rbac-policy</code> with the following content. These policies allow the user with the <code>admins</code> role to read, create and update components, but fetching catalog information from remote locations is denied:</p>
-<div class="listingblock">
-<div class="content">
-<pre>kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: rhdh-rbac-policy
-  namespace: devhub
-immutable: false
-data:
-  rbac-policy.csv: |-
-    p, role:default/admins, catalog-entity, read, allow
-    p, role:default/admins, catalog.entity.create, create, allow
-    p, role:default/admins, catalog.entity.refresh, update, allow
-    p, role:default/admins, catalog.location.create, create, deny
-    p, role:default/admins, catalog.location.read, read, deny
-    g, user:default/rsriniva, role:default/admins</pre>
-</div>
-</div>
-</li>
-<li>
-<p>To mount the contents of the RBAC policy CSV file into the RHDH container, edit the <code>rhdh</code> helm chart in <code>Form View</code> and follow the instructions as outlined in <a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart" class="bare">https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#mounting-literal-policy-csv-literal-file-to-the-developer-hub-helm-chart</a>. Ensure that the paths and name of ConfigMap match your set up.</p>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Exercise caution when adding new volume mounts and new volumes in the helm chart form view. Do NOT delete the existing volume mounts, otherwise various features and functionality in RHDH will be broken
-</td>
-</tr>
-</table>
-</div>
+<p>Notice that a new tab called <code>RBAC</code> is now enabled. There is a single role named <code>rbac_admin</code> declared with the users you declared in the <code>rbac.admin.users</code> list assigned to this role.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/container-vol-mounts.png" alt="container vol mounts">
+<img src="_images/rbac-admin-ui.png" alt="rbac admin ui">
 </div>
-<div class="title">Figure 2. Container Volume Mounts Configuration</div>
+<div class="title">Figure 1. RBAC Admin UI</div>
 </div>
+</li>
+<li>
+<p>Click on the <code>role:default/rbac_admin</code> link. The policy details page lists the users assigned to this role in the left column, and the list of permitted policies on the right.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/container-volumes.png" alt="container volumes">
+<img src="_images/rbac-policy-details.png" alt="rbac policy details">
 </div>
-<div class="title">Figure 3. Container Volumes Configuration</div>
+<div class="title">Figure 2. RBAC Policy Mapping</div>
 </div>
+<div class="paragraph">
+<p>This user is allowed to create, edit, update and delete RBAC policies and view catalog items. With RBAC enabled, you need to explicitly allow users to create catalog items.</p>
+</div>
+</li>
+<li>
+<p>Switch back the RBAC <code>Administration</code> page. Click <code>Create</code> to add a new policy.</p>
+</li>
+<li>
+<p>In the <code>Create Role</code> screen, enter <code>allow-catalog-create-policy</code> as the policy name, and enter a brief description. Click <code>Next</code>.</p>
+</li>
+<li>
+<p>In the <code>Add users and groups</code> screen, select users and groups that should be assigned to this role and click <code>Next</code>.</p>
+</li>
+<li>
+<p>In the <code>Add permission policies</code> screen, select <strong>catalog</strong> in the <code>Plugin</code> field, and <strong>catalog.entity.create</strong> in the <code>Resource type</code> field. Ensure <code>Create</code> is selected in the actions and click <code>Next</code>.</p>
+</li>
+<li>
+<p>Review your choices and click <code>Create</code> to create the policy.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/rbac-configmap.png" alt="rbac configmap">
+<img src="_images/rbac-allow-catalog-create.png" alt="rbac allow catalog create">
 </div>
-<div class="title">Figure 4. RBAC ConfigMap Configuration</div>
-</div>
-</li>
-<li>
-<p>Re-deploy the helm chart to re-read the new configuration.</p>
-</li>
-<li>
-<p>Sign out and sign in again as the user (the user who was assigned the <code>admins</code> role) you mentioned in the policy CSV file. Navigate to the <code>Catalog</code> page, and click <code>CREATE</code>. Note that you are now allowed to create new components.</p>
-</li>
-<li>
-<p>Click <code>API</code> and note that you are now allowed to register new APIs.</p>
-</li>
-<li>
-<p>Try and register a new API or component by entering <code><a href="https://github.com/backstage/backstage/blob/master/catalog-info.yaml" class="bare">https://github.com/backstage/backstage/blob/master/catalog-info.yaml</a></code> into the <code>Select URL</code> field, and then click <code>ANALYZE</code>. Note that the <strong>deny</strong> policy for <code>catalog.location</code> in your RBAC prevents RHDH from fetching the metadata about the component. You will see an error:</p>
-<div class="listingblock">
-<div class="content">
-<pre>{"error":{"name":"NotAllowedError","message":""},"request":{"method":"POST","url":"/locations?dryRun=true"},"response":{"statusCode":403}}</pre>
-</div>
+<div class="title">Figure 3. RBAC Policy to allow creation of catalog items</div>
 </div>
 </li>
 <li>
-<p>Change the <code>rhdh-rbac-policy</code> ConfigMap to <strong>allow</strong> <code>create</code> and <code>read</code> actions for the <code>catalog.location</code> resource and re-deploy your helm chart. You should now be able to create new components and the metadata fetches from remote Git repositories should work as before.</p>
-</li>
-<li>
-<p>You can experiment with enabling and disabling various components of RHDH by following the permissions guide at <a href="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md" class="bare">https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md</a>. Some plugins and their features can be controlled using RBAC.</p>
+<p>You should get a confirmation message that the policy creation was successful. Log out and log in as the user to whom you assigned the policy. Navigate to the <code>Catalog</code> page. Verify that a <code>Create</code> button is now visible. Similarly, click <code>APIs</code> and verify that you can see a <code>Register Existing API</code> button. This user is now allowed to create catalog items. You can assign permissions to delete and update catalog items in a similar manner using the RBAC Admin UI.</p>
 </li>
 </ol>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-There is a bug in the RBAC system when database persistence is enabled for RBAC. Do not enable the <code>database</code> attribute in the rbac <code>permission</code> block in <code>app-config-rhdh</code>!
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-You may encounter inconsistencies and bugs with RBAC, and policy examples are scarcely documented. There are plans to introduce a web based UI for policy management in future releases of RHDH. It is recommended to keep the RBAC system <strong>disabled</strong> when you trying out features and functionality of RHDH like Software Templates, plugins, Search, and more. Turn it back on only if you know what you are doing and you fully understand the impact of policy files.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -434,18 +389,89 @@ If RBAC is enabled, you may need to permit actions on the <code>policy.entity</c
 </div>
 </div>
 <div class="sect1">
+<h2 id="_lab_rbac_rest_api"><a class="anchor" href="#_lab_rbac_rest_api"></a>Lab: RBAC REST API</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To send requests to the RBAC API, you need a JWT token from RHDH to authenticate yourself. In RHDH, log in as a user who can access RBAC policies, and navigate to the <code>Catalog</code> page. Open the browser&#8217;s developer tools pane (for example, on Chrome Ctrl+Shift+C), and click the <code>Network</code> tab. Look for HTTP requests like <code>entity-facets?facet=kind</code> and click on that entry. In the <code>Request Headers</code> section look for the <code>Authorization</code> entry. Copy the token value to the clipboard.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rbac-token.png" alt="rbac token">
+</div>
+<div class="title">Figure 4. Get the Bearer token for the logged in RHDH user</div>
+</div>
+</li>
+<li>
+<p>Save the token value and RHDH URL to environment variables:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ export token=&lt;your token value&gt;
+$ export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the <code>curl</code> and <code>jq</code> CLI tools, or a REST API client, to invoke the RBAC REST API. For example, to list the policies existing in the current RHDH instance:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl $RHDH_URL/api/permission/roles \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" \
+  -k -s | jq .
+[
+  {
+    "memberReferences": [
+      "user:default/rsriniva"
+    ],
+    "name": "role:default/rbac_admin",
+    "metadata": {
+      "source": "configuration",
+      "description": "The default permission policy for the admin role allows for the creation, deletion, updating, and reading of roles and permission policies.",
+      "author": "application configuration",
+      "modifiedBy": "application configuration",
+      "createdAt": "2024-06-28T11:17:50.000Z",
+      "lastModified": "2024-07-11T11:00:02.000Z"
+    }
+  },
+  {
+    "memberReferences": [
+      "user:default/rsriniva"
+    ],
+    "name": "role:default/allow-catalog-create-policy",
+    "metadata": {
+      "source": "rest",
+      "description": "This policy allows users to create catalog items",
+      "author": "user:default/rsriniva",
+      "modifiedBy": "user:default/rsriniva",
+      "createdAt": "2024-07-11T12:03:27.000Z",
+      "lastModified": "2024-07-11T12:03:27.000Z"
+    }
+  }
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consult the RBAC REST API product documentation to send other queries (POST, PUT etc) to add, modify, update and delete policies.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#con-rbac-overview_admin-rhdh" target="_blank" rel="noopener">RBAC in RHDH</a></p>
+<p><a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#con-rbac-overview_assembly-rhdh-integration-aks" target="_blank" rel="noopener">RBAC in RHDH</a></p>
 </li>
 <li>
 <p><a href="https://backstage.io/docs/permissions/overview" target="_blank" rel="noopener">Permissions Policy in Backstage</a></p>
 </li>
 <li>
-<p><a href="https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0/html-single/administration_guide_for_red_hat_developer_hub/index#ref-rbac-rest-api-endpoints_admin-rhdh" target="_blank" rel="noopener">RBAC REST API</a></p>
+<p><a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#con-rbac-rest-api_assembly-rhdh-integration-aks" target="_blank" rel="noopener">RBAC REST API</a></p>
 </li>
 <li>
 <p><a href="https://www.youtube.com/watch?v=V8SwbSRE8CQ" target="_blank" rel="noopener">Janus IDP Community Meeting - RBAC</a></p>
@@ -461,7 +487,7 @@ If RBAC is enabled, you may need to permit actions on the <code>policy.entity</c
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="git-auth.html">GitHub Authentication</a></span>
+  <span class="prev"><a href="git-auth.html">GitHub Integration and Authentication</a></span>
 </nav>
 </article>
   </div>
