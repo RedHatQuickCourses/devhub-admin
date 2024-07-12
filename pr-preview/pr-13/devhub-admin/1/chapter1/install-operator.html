@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Red Hat Developer Hub Installation using OperatorHub :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="install-helm.html">
+    <link rel="next" href="upgrade.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="install-operator.html">Installing RHDH (Operator)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/git-auth.html">GitHub Integration and Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Installation</a></li>
+    <li><a href="install-operator.html">Installing RHDH (Operator)</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Red Hat Developer Hub Installation using OperatorHub</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Red Hat provides a fully supported operator for RHDH in the OpenShift <strong>OperatorHub</strong>, which provides a convienient, easy to use web based user interface for installing RHDH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_using_the_rhdh_operator"><a class="anchor" href="#_installation_using_the_rhdh_operator"></a>Installation Using the RHDH Operator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RHDH can be installed from within the OpenShift web console just like any other operator from <code>OperatorHub</code>.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the instructions <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#proc-install-rhdh-ocp-operator_assembly-install-rhdh-ocp" target="_blank" rel="noopener">here</a> to install the RHDH operator on OpenShift.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_installation_using_rhdh_operator"><a class="anchor" href="#_lab_installation_using_rhdh_operator"></a>Lab: Installation using RHDH Operator</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Order the <a href="https://demo.redhat.com/catalog?search=single&amp;item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod" target="_blank" rel="noopener">OpenShift Single Node Cluster</a> catalog item from Red Hat Demo Platform (RHDP). It should take an hour approximately for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.</p>
+</li>
+<li>
+<p>Download the OpenShift client <code>oc</code> for your platform from from the OpenShift web console by clicking the "?" icon on the top right navigation bar. Uncompress the archive file, and then copy the <code>oc</code> binary for your platform to the system path (usually /usr/local/bin on UNIX systems).</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_project_for_rhdh"><a class="anchor" href="#_create_a_project_for_rhdh"></a>Create a Project for RHDH</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to your OpenShift web console as the cluster administrator user (usually username is <code>admin</code>). The username and password details for your OpenShift cluster are accessible in the RHDP <code>Services</code> dashboard. You should have also received an email with the details of your OpenShift cluster.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03-rhdp-cluster-details.png" alt="03 rhdp cluster details">
+</div>
+<div class="title">Figure 1. RHDP OpenShift Cluster Details</div>
+</div>
+</li>
+<li>
+<p>Create a new OpenShift project named <strong>devhub</strong>. You will install the RHDH operator and instance into this project.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_the_rhdh_operator"><a class="anchor" href="#_install_the_rhdh_operator"></a>Install the RHDH Operator</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click <code>Operators &gt; OperatorHub</code> in the left side navigation bar of the <code>Administrator</code> perspective in the OpenShift web console.</p>
+</li>
+<li>
+<p>Search for <code>"developer hub"</code> in the search field on this page, and then select the <code>Red Hat Developer Hub</code> operator.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-devhub-operator.png" alt="search devhub operator">
+</div>
+<div class="title">Figure 2. Search for RHDH Operator</div>
+</div>
+</li>
+<li>
+<p>In the <code>Red Hat Developer Hub</code> operator details page, click <code>Install</code>. In the <code>Install Operator</code> page, select the <strong>devhub</strong> project in the <code>Installed Namespace</code> field. Leave all other fields at their default values, and click <code>Install</code> to begin the operator installation.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-op-details.png" alt="rhdh op details">
+</div>
+<div class="title">Figure 3. RHDP Operator Details</div>
+</div>
+</li>
+<li>
+<p>Wait for 5-10 minutes while the operator is installed. You should see <code>Installed operator:  ready for use</code> message when the operator is successfully installed.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-operator-installed.png" alt="rhdh operator installed">
+</div>
+<div class="title">Figure 4. RHDH Operator Installed</div>
+</div>
+</li>
+<li>
+<p>Click <code>View Operator</code>, and then click <code>Create instance</code> to create a new RHDH instance.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-create-op-instance.png" alt="rhdh create op instance">
+</div>
+<div class="title">Figure 5. RHDH Create new Instance</div>
+</div>
+</li>
+<li>
+<p>In the <code>Create Backstage</code> page, change the <code>Name</code> to <strong>rhdh</strong>, leave all other fields at default values, and then click <code>Create</code> to deploy a new RHDH instance.</p>
+</li>
+<li>
+<p>Switch to the <code>Developer</code> perspective in the OpenShift web console, and select the <code>devhub</code> project. Verify that a new instance called <code>rhdh</code> is seen with two pods in running state.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-op-instance-running.png" alt="rhdh op instance running">
+</div>
+<div class="title">Figure 6. RHDH instance running</div>
+</div>
+</li>
+<li>
+<p>Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-op-installed.png" alt="rhdh op installed">
+</div>
+<div class="title">Figure 7. RHDH Open URL</div>
+</div>
+</li>
+<li>
+<p>You should now see the Red Hat Developer Hub log in page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-homepage.png" alt="rhdh homepage">
+</div>
+<div class="title">Figure 8. RHDH Log in Page</div>
+</div>
+</li>
+<li>
+<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.
+You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-guest-user.png" alt="rhdh guest user">
+</div>
+<div class="title">Figure 9. Log in as a guest user</div>
+</div>
+<div class="paragraph">
+<p>You have now successfully installed Red Hat Developer Hub on your OpenShift cluster using the RHDH operator.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rhdh_postgresql_database"><a class="anchor" href="#_rhdh_postgresql_database"></a>RHDH PostgreSQL Database</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.</p>
+</div>
+<div class="paragraph">
+<p>You should follow the installation instructions and install the default single instance PostgreSQL to complete the install. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp" target="_blank" rel="noopener">Configuring an external PostgreSQL instance using the Helm Chart</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="install-helm.html">Installing RHDH (Helm Charts)</a></span>
+  <span class="next"><a href="upgrade.html">Upgrading RHDH</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
