@@ -173,7 +173,7 @@ app-config-rhdh.yaml: |
           timeout:
             minutes: 15
     githubOrg:
-      githubUrl: "${GITHUB_URL}"
+      githubUrl: "${GITHUB_HOST_DOMAIN}"
       orgs: [ "${GITHUB_ORGANIZATION}" ]
       schedule: <2>
         frequency:
