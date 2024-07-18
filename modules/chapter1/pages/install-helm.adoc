@@ -70,7 +70,7 @@ image::rhdh-installed.png[title=RHDH Topology View]
 +
 image::rhdh-homepage.png[title=RHDH Log in Page]
 
-. Click `Enter` in the `Guest` card to log in as a guest user. You will a warning message pop up with the text `Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?`. Click `Yes` to log in as a guest user.
+. Click `Enter` in the `Guest` card to log in as a guest user. You will see a warning message pop up with the text `Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?`. Click `Yes` to log in as a guest user.
 You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.
 +
 image::rhdh-guest-user.png[title=Log in as a guest user]

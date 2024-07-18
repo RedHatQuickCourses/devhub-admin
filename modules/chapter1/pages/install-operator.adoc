@@ -1,7 +1,7 @@
 = Red Hat Developer Hub Installation using OperatorHub
 :navtitle: Installing RHDH (Operator)
 
-Red Hat provides a fully supported operator for RHDH in the OpenShift *OperatorHub*, which provides a convienient, easy to use web based user interface for installing RHDH.
+Red Hat provides a fully supported operator for RHDH in the OpenShift *OperatorHub*, which provides a convenient, easy to use web based user interface for installing RHDH.
 
 == Installation Using the RHDH Operator
 
@@ -72,5 +72,5 @@ You have now successfully installed Red Hat Developer Hub on your OpenShift clus
 ====
 The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.
 
-You should follow the installation instructions and install the default single instance PostgreSQL to complete the install. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
+You should follow the installation instructions and install the default single instance PostgreSQL to complete the installation. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
 ====
