@@ -160,6 +160,7 @@ app-config-rhdh.yaml: |
 +
 [subs=+quotes]
 ----
+signInPage: github
 *catalog:
   providers:
     github: <1>
@@ -265,6 +266,70 @@ image::view-kind-groups.png[title=View Groups (Teams) from GitHub]
 . Select `User` in the `Kind` drop-down to view the users imported from the GitHub organization. If you have not invited users to your organization in GitHub, then do so now before proceeding. You may have to wait for a few minutes while the data is fetched from GitHub.
 +
 image::view-kind-users.png[title=View Users Imported from GitHub]
+
+At the end of this section, you `app-config-rhdh` ConfigMap should look like the following:
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+  namespace: devhub
+...
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+    backend:
+      auth:
+        keys:
+          - secret: "${BACKEND_SECRET}" 
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+      cors:
+        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    auth:
+      environment: production
+      providers:
+        github:
+          production:
+            clientId: ${GITHUB_APP_CLIENT_ID}
+            clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+    integrations:
+      github:
+        - host: github.com
+          apps:
+            - appId: ${GITHUB_APP_ID}
+              clientId: ${GITHUB_APP_CLIENT_ID}
+              clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+              webhookUrl: ${GITHUB_APP_WEBHOOK_URL}
+              webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+              privateKey: |
+                ${GITHUB_APP_PRIVATE_KEY_FILE}
+    signInPage: github
+    catalog:
+      providers:
+        github:
+          providerId:
+            organization: "${GITHUB_ORGANIZATION}"
+            schedule:
+              frequency:
+                minutes: 60
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
+        githubOrg:
+          githubUrl: "${GITHUB_URL}"
+          orgs: [ "${GITHUB_ORGANIZATION}" ]
+          schedule:
+            frequency:
+              minutes: 60
+            initialDelay:
+              seconds: 15
+            timeout:
+              minutes: 15
+```
 
 ### Troubleshooting Tips
 

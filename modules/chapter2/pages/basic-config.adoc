@@ -119,9 +119,9 @@ data:
 
 . Click `Create` to create the ConfigMap.
 
-. The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *secrets-rhdh*, and reference it in the Developer Hub CR. Click `Secrets > Create Key/value secret`.
+. The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *rhdh-secrets*, and reference it in the Developer Hub CR. Click `Secrets > Create Key/value secret`.
 
-. In the `Create key/value secret` page, enter *secrets-rhdh* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
+. In the `Create key/value secret` page, enter *rhdh-secrets* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
 +
 ```bash
 $ node -p 'require("crypto").randomBytes(24).toString("base64")'
@@ -151,7 +151,7 @@ spec:
          - name: app-config-rhdh
     extraEnvs:
       secrets:
-         - name: secrets-rhdh*
+         - name: rhdh-secrets*
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1
