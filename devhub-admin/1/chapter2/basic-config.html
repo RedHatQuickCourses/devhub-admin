@@ -345,10 +345,10 @@ data:
 <p>Click <code>Create</code> to create the ConfigMap.</p>
 </li>
 <li>
-<p>The custom application configuration file contains a sensitive environment variable, named <strong>BACKEND_SECRET</strong>. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named <strong>secrets-rhdh</strong>, and reference it in the Developer Hub CR. Click <code>Secrets &gt; Create Key/value secret</code>.</p>
+<p>The custom application configuration file contains a sensitive environment variable, named <strong>BACKEND_SECRET</strong>. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named <strong>rhdh-secrets</strong>, and reference it in the Developer Hub CR. Click <code>Secrets &gt; Create Key/value secret</code>.</p>
 </li>
 <li>
-<p>In the <code>Create key/value secret</code> page, enter <strong>secrets-rhdh</strong> in the <code>Secret name</code> field, enter <strong>BACKEND_SECRET</strong> in the <code>Key</code> field. For the <strong>Value</strong> field, open a new command line terminal and generate a base64 encoded string using the following command:</p>
+<p>In the <code>Create key/value secret</code> page, enter <strong>rhdh-secrets</strong> in the <code>Secret name</code> field, enter <strong>BACKEND_SECRET</strong> in the <code>Key</code> field. For the <strong>Value</strong> field, open a new command line terminal and generate a base64 encoded string using the following command:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ node -p 'require("crypto").randomBytes(24).toString("base64")'</code></pre>
@@ -389,7 +389,7 @@ spec:
          - name: app-config-rhdh
     extraEnvs:
       secrets:
-         - name: secrets-rhdh</strong>
+         - name: rhdh-secrets</strong>
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1

@@ -437,7 +437,8 @@ app-config-rhdh.yaml: |
 <p>To enable GitHub Organization member discovery, add the following YAML configuration at the same indentation level as the <code>app</code> attribute, and below the <code>signInPage</code> attribute:</p>
 <div class="listingblock">
 <div class="content">
-<pre><strong>catalog:
+<pre>signInPage: github
+<strong>catalog:
   providers:
     github: <i class="conum" data-value="1"></i><b>(1)</b>
       providerId:
@@ -615,6 +616,72 @@ spec:
 </div>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>At the end of this section, you <code>app-config-rhdh</code> ConfigMap should look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+  namespace: devhub
+...
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    backend:
+      auth:
+        keys:
+          - secret: "${BACKEND_SECRET}"
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+      cors:
+        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    auth:
+      environment: production
+      providers:
+        github:
+          production:
+            clientId: ${GITHUB_APP_CLIENT_ID}
+            clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+    integrations:
+      github:
+        - host: github.com
+          apps:
+            - appId: ${GITHUB_APP_ID}
+              clientId: ${GITHUB_APP_CLIENT_ID}
+              clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+              webhookUrl: ${GITHUB_APP_WEBHOOK_URL}
+              webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+              privateKey: |
+                ${GITHUB_APP_PRIVATE_KEY_FILE}
+    signInPage: github
+    catalog:
+      providers:
+        github:
+          providerId:
+            organization: "${GITHUB_ORGANIZATION}"
+            schedule:
+              frequency:
+                minutes: 60
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
+        githubOrg:
+          githubUrl: "${GITHUB_URL}"
+          orgs: [ "${GITHUB_ORGANIZATION}" ]
+          schedule:
+            frequency:
+              minutes: 60
+            initialDelay:
+              seconds: 15
+            timeout:
+              minutes: 15</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
