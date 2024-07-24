@@ -62,7 +62,7 @@ catalog:
       rbac:
         admin:
           users:
-            - name: user:/default/rsriniva*
+            - name: user:default/rsriniva*
 ----
 
 . The RBAC plugin is disabled by default. Enable it by adding it to the list of dynamic plugins in the ConfigMap *dynamic-plugins-rhdh-local*.
