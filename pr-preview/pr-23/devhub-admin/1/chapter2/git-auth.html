@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuring Authentication using GitHub :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="basic-config.html">
+    <link rel="next" href="rbac.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/install-operator.html">Installing RHDH (Operator)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="git-auth.html">GitHub Integration and Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Basic Configuration</a></li>
+    <li><a href="git-auth.html">GitHub Integration and Authentication</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuring Authentication using GitHub</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The authentication system in RHDH is handled by <strong>Authentication Providers</strong>. RHDH uses the providers to access identity and user information, which can be used to delegate access rights to various plugins and services in RHDH. You can configure RHDH to have multiple authentication providers, with only <strong>ONE</strong> provider being actively used at any given time for logging in users.</p>
+</div>
+<div class="paragraph">
+<p>RHDH supports many common authentication providers by default like GitHub, GitLab, Auth0, Okta, and more. Consult the references section at the bottom of this page for the full list.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Authentication providers are responsible <strong>only</strong> for authenticating the <strong>identity</strong> of the user, and passing on this information to RHDH. Authorization, that is, <strong>what</strong> actions an authenticated identity can perform in RHDH are handled by a different component of RHDH called <strong>Role Based Access Control (RBAC)</strong> using <strong>Permission Policies</strong>. RBAC is covered in a separate section of this course.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Consider the scenario where your organization&#8217;s developers use GitHub to manage source code. You would ideally like developers to use their GitHub credentials to log in to RHDH, and also import team and user information from GitHub. Very often, developers are added to a GitHub <code>Organization</code> to manage groups of developers. The following exercise configures RHDH to use GitHub for authentication, and imports the GitHub organization member and team details into the RHDH database.</p>
+</div>
+<div class="paragraph">
+<p>RHDH also ingtegrates with GitHub to offer various other features. There are separate plugins to interact with GitHub repositories and visualize issues, releases, deployments and other GitHub features. You can also fetch and synchronize team information from <code>GitHub Organizations</code> and visualize them as <code>Groups</code> and <code>Users</code> in RHDH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_configuring_integration_and_authentication_with_github"><a class="anchor" href="#_lab_configuring_integration_and_authentication_with_github"></a>Lab: Configuring Integration and Authentication with GitHub</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>A GitHub account</p>
+</li>
+<li>
+<p>Administrator rights to a GitHub Organization (Create a new Github Org if it does not exist)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create one or more <strong>teams</strong> within your GitHub Organization</p>
+</li>
+<li>
+<p>Invite one or more <strong>users</strong> to your GitHub Organization</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>OpenShift cluster administrator access</p>
+</li>
+<li>
+<p>Ability to create <code>GitHub Apps</code> on GitHub</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Configuring GitHub for RHDH authentication involves two major steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a new GitHub App for your GitHub organization</p>
+</li>
+<li>
+<p>Edit the <code>app-config-rhdh</code> ConfigMap and configure RHDH to use the GitHub App for authentication. To prevent storing credentials in plain text in the ConfigMap, you will embed the credentials for GitHub in a secret, and then refer the secret keys in the <code>app-config-rhdh</code> ConfigMap.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_new_github_app"><a class="anchor" href="#_create_a_new_github_app"></a>Create a new GitHub App</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to <a href="https://github.com/organizations/&lt;YOUR_ORGANIZATION&gt;/settings/apps" class="bare">https://github.com/organizations/&lt;YOUR_ORGANIZATION&gt;/settings/apps</a>, and then click <code>New GitHub App</code>.</p>
+</li>
+<li>
+<p>In the <code>Register new GitHub App</code> page, fill out the following details:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GitHub App name</code>: <strong>rhdh-app-&lt;your_RHDP_GUID&gt;</strong> (A unique name)</p>
+</li>
+<li>
+<p><code>Homepage URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io</a></strong> (Your RHDH Route URL)</p>
+</li>
+<li>
+<p><code>Callback URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io/api/auth/github/handler/frame" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io/api/auth/github/handler/frame</a></strong></p>
+</li>
+<li>
+<p><code>Webhook URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io</a></strong></p>
+</li>
+<li>
+<p><code>Webhook secret</code>: <strong>5up3rS3cret</strong> (Provide a strong secret)</p>
+</li>
+<li>
+<p>Under <code>Permissions</code>, expand <code>Repository Permissions</code> and ensure that you provide appropriate access (Read-Only, Read and Write etc) to the GitHub features you would like to integrate from RHDH. At a minimum, toggle the following permissions. <code>Read-only</code> permissions should be enough. Toggle <code>Read and write</code> permissions only if you are sure you will make changes via the GitHub API:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Administration</p>
+</li>
+<li>
+<p>Commit statuses</p>
+</li>
+<li>
+<p>Contents</p>
+</li>
+<li>
+<p>Dependabot alerts</p>
+</li>
+<li>
+<p>Deployments</p>
+</li>
+<li>
+<p>Pull Requests</p>
+</li>
+<li>
+<p>Webhooks</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Toggle other permissions as per your needs.</p>
+</li>
+<li>
+<p>Under <code>Organization permissions</code>, ensure that you toggle <code>Read-only</code> permissions for <code>Members</code> so that RHDH can import team and user information from GitHub.</p>
+</li>
+<li>
+<p>Select <code>Only on this account</code> for the <code>Where can this GitHub App be installed?</code> option.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Verify your form entries, and when you are satisfied click <code>Create GitHub App</code>.</p>
+</li>
+<li>
+<p>You will be shown your <code>App ID</code> and a client ID. Make note of these values for the next step.</p>
+</li>
+<li>
+<p>Click <code>Generate a new client secret</code>. Copy the generated secret for the next steps.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/2-gh-auth.png" alt="2 gh auth" width="600">
+</div>
+<div class="title">Figure 1. Generate Client Secret</div>
+</div>
+</li>
+<li>
+<p>Scroll down to the <code>Private Keys</code> section and click <code>Generate a private key</code>. The private key will be downloaded. Copy the generated private key certificate (it is in PEM format) to a safe location.</p>
+</li>
+<li>
+<p>In the left sidebar menu of the generated app, select <code>Install App</code>, and then click <code>Install</code>.</p>
+</li>
+<li>
+<p>Select <code>All Repositories</code> for <code>Repository access</code> and then click <code>Install</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/8-gh-auth.png" alt="8 gh auth" width="400">
+</div>
+<div class="title">Figure 2. Install GitHub App</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_secret_to_store_github_app_credentials"><a class="anchor" href="#_create_a_secret_to_store_github_app_credentials"></a>Create a Secret to Store GitHub App Credentials</h3>
+<div class="paragraph">
+<p>Rather than storing the GitHub App credentials in plain text directly in the <code>app-config-rhdh</code> ConfigMap, you will create a secret to store the credentials. You will then refer to the credentials as environment variables in the ConfigMap.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a file named <code>env.sh</code> with the following environment variables and replace the values with the GitHub App details you created in the previous step. Replace the <code>GITHUB_APP_PRIVATE_KEY_FILE</code> with your private key file that you downloaded from GitHub. Change <code>guid</code> to your unique RHDP GUID.</p>
+<div class="listingblock">
+<div class="content">
+<pre>export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.<strong>https...api//' | sed 's/.6443.</strong>$//')
+export K8S_CLUSTER_API=$(oc cluster-info | head -n 1 |  sed 's/^.*https/https/')
+
+export GITHUB_HOST_DOMAIN=https://github.com
+export GITHUB_ORGANIZATION='Your Org Name'
+export GITHUB_ORG_URL=$GITHUB_HOST_DOMAIN/$GITHUB_ORGANIZATION
+
+export GITHUB_APP_ID='Your App ID'
+export GITHUB_APP_CLIENT_ID='Your client ID'
+export GITHUB_APP_CLIENT_SECRET='Your client secret'
+export GITHUB_APP_PRIVATE_KEY_FILE="$(&lt; rhdh-app-&lt;guid&gt;.2024-01-17.private-key.pem)"
+
+export GITHUB_APP_WEBHOOK_URL='https://rhdh-developer-hub-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io'
+export GITHUB_APP_WEBHOOK_SECRET='Your webhook secret'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log in to the OpenShift cluster as the <code>admin</code> user using the <code>oc</code> CLI.</p>
+</li>
+<li>
+<p>Switch to the <code>devhub</code> namespace where you installed RHDH.</p>
+</li>
+<li>
+<p>Source the <code>env.sh</code> file to export the environment variables:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ source env.sh</pre>
+</div>
+</div>
+</li>
+<li>
+<p>You created a secret named <code>rhdh-secrets</code> to store the backend API token after installation. You need to add more keys to this secret. Execute the following command to add keys related to GitHub authentication:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc set data secret/rhdh-secrets -n devhub \
+  GITHUB_HOST_DOMAIN=$GITHUB_HOST_DOMAIN \
+  GITHUB_ORGANIZATION=$GITHUB_ORGANIZATION \
+  GITHUB_ORG_URL=$GITHUB_ORG_URL \
+  GITHUB_APP_ID=$GITHUB_APP_ID \
+  GITHUB_APP_CLIENT_ID=$GITHUB_APP_CLIENT_ID  \
+  GITHUB_APP_CLIENT_SECRET=$GITHUB_APP_CLIENT_SECRET \
+  GITHUB_APP_PRIVATE_KEY_FILE=$GITHUB_APP_PRIVATE_KEY_FILE \
+  GITHUB_APP_WEBHOOK_URL=$GITHUB_APP_WEBHOOK_URL \
+  GITHUB_APP_WEBHOOK_SECRET=$GITHUB_APP_WEBHOOK_SECRET</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_rhdh_for_github_authentication"><a class="anchor" href="#_configure_rhdh_for_github_authentication"></a>Configure RHDH for GitHub Authentication</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the OpenShift web console as the <code>admin</code> user and switch to the <code>Developer Perspective</code>.</p>
+</li>
+<li>
+<p>Click <code>ConfigMaps</code> and select the <code>app-config-rhdh</code>. Toggle the <code>YAML</code> tab to switch to YAML editing mode.</p>
+</li>
+<li>
+<p>Add the following YAML configuration at the same indentation level as the <code>app</code> attribute. Note the reference to environment variables instead of hard coded credentials:</p>
+<div class="listingblock">
+<div class="content">
+<pre>...
+app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    backend:
+      auth:
+        keys:
+          - secret: "${BACKEND_SECRET}"
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+      cors:
+        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    <strong>auth:
+      environment: production <i class="conum" data-value="1"></i><b>(1)</b>
+      providers:
+        github: <i class="conum" data-value="2"></i><b>(2)</b>
+          production:
+            clientId: ${GITHUB_APP_CLIENT_ID}
+            clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+    integrations: <i class="conum" data-value="3"></i><b>(3)</b>
+      github:
+        - host: github.com
+          apps:
+            - appId: ${GITHUB_APP_ID}
+              clientId: ${GITHUB_APP_CLIENT_ID}
+              clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+              webhookUrl: ${GITHUB_APP_WEBHOOK_URL}
+              webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+              privateKey: |
+                ${GITHUB_APP_PRIVATE_KEY_FILE}
+    signInPage: github</strong> <i class="conum" data-value="4"></i><b>(4)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Marking the environment as <code>production</code> hides the Guest login in the RHDH home page</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add configuration for the <code>GitHub</code> auth provider</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Generic integration plugin for GitHub. This is used by various GitHub plugins to integrate with the GitHub API</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Enable log in using GitHub credentials in the RHDH front end</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_rhdh_to_import_users_and_groups_in_a_github_organization"><a class="anchor" href="#_configure_rhdh_to_import_users_and_groups_in_a_github_organization"></a>Configure RHDH to Import Users and Groups in a GitHub Organization</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To enable GitHub Organization member discovery, add the following YAML configuration at the same indentation level as the <code>app</code> attribute, and below the <code>signInPage</code> attribute:</p>
+<div class="listingblock">
+<div class="content">
+<pre>signInPage: github
+<strong>catalog:
+  providers:
+    github: <i class="conum" data-value="1"></i><b>(1)</b>
+      providerId:
+        organization: "${GITHUB_ORGANIZATION}"
+        schedule: <i class="conum" data-value="2"></i><b>(2)</b>
+          frequency:
+            minutes: 30
+          initialDelay:
+            seconds: 15
+          timeout:
+            minutes: 15
+    githubOrg:
+      githubUrl: "${GITHUB_HOST_DOMAIN}"
+      orgs: [ "${GITHUB_ORGANIZATION}" ]
+      schedule: <i class="conum" data-value="2"></i><b>(2)</b>
+        frequency:
+          minutes: 30
+        initialDelay:
+          seconds: 15
+        timeout:
+          minutes: 15</strong></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configuration for GitHub plugin to periodically scan GitHub repositories and import into the RHDH catalog</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Scheduled polling of Git repositories and Organization</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Click <code>Save</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enable_the_github_plugins"><a class="anchor" href="#_enable_the_github_plugins"></a>Enable the GitHub Plugins</h3>
+<div class="paragraph">
+<p>The final step is to enable the <code>GitHub</code> and <code>GitHub Organization discovery</code> dynamic plugins.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You need to create a new ConfigMap named <code>dynamic-plugins-rhdh-local</code> and enable the GitHub related plugins. You will enable other plugins in the upcoming courses to enable other RHDH functionality. Create a new ConfigMap using the following YAML snippet:</p>
+<div class="listingblock">
+<div class="content">
+<pre>kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dynamic-plugins-rhdh-local
+  namespace: devhub
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins: <i class="conum" data-value="1"></i><b>(1)</b>
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic'
+        disabled: false</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Plugin definition and enable or disable on a per-plugin basis</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Edit the Backstage custom resource (CR) by clicking <code>Topology</code> and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting <code>Edit Backstage</code>. Add a new attribute named <strong>dynamicPluginsConfigMapName</strong> under <strong>spec.application</strong> as follows and reference the new ConfigMap for the dynamic plugin configuration.</p>
+<div class="listingblock">
+<div class="content">
+<pre>...
+spec:
+  application:
+    appConfig:
+      configMaps:
+        - name: app-config-rhdh
+      mountPath: /opt/app-root/src
+    <strong>dynamicPluginsConfigMapName: dynamic-plugins-rhdh-local</strong>
+    extraEnvs:
+      secrets:
+        - name: rhdh-secrets
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Click <code>Save</code> when done.</p>
+</div>
+</li>
+<li>
+<p>Restart the RHDH pod by selecting the <code>Restart rollout</code> option in the <code>Topology</code> view. Wait for a few minutes and verify that the pod is restarted without any errors. If there are errors, check the pod logs for missing attributes in the YAML files, or wrong indentation.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_user_sign_in"><a class="anchor" href="#_verify_user_sign_in"></a>Verify User Sign In</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you are signed in as a <code>Guest</code> RHDH user, then sign out by selecting the <code>Sign Out</code> (expand the <code>&#8230;&#8203;</code> next to the Profile card) in the <code>Settings &gt; Profile</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/guest-sign-out.png" alt="guest sign out" width="600">
+</div>
+<div class="title">Figure 3. Guest Sign out</div>
+</div>
+</li>
+<li>
+<p>Sign in using <code>GitHub</code> sign-in method in the RHDH home page</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/sign-in-github.png" alt="sign in github" width="600">
+</div>
+<div class="title">Figure 4. GitHub Sign in</div>
+</div>
+</li>
+<li>
+<p>You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/4-gh-auth.png" alt="4 gh auth" width="400">
+</div>
+<div class="title">Figure 5. GitHub Allow Access Prompt</div>
+</div>
+</li>
+<li>
+<p>After you are signed in, navigate to the <code>Settings</code> page. Notice that GitHub has authenticated the user and provided identity information to RHDH.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/gh-identity-visible.png" alt="gh identity visible" width="500">
+</div>
+<div class="title">Figure 6. GitHub Identity in Settings Page</div>
+</div>
+</li>
+<li>
+<p>Click on the logged in <code>User Entity</code> in the <code>Settings</code> page to view the detail imported from GitHub. Notice that the plugin has fetched the details of the logged in user from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-gh-profile.png" alt="view gh profile" width="400">
+</div>
+<div class="title">Figure 7. View Profile Data</div>
+</div>
+</li>
+<li>
+<p>Click on the RHDH <code>Catalog</code> in the sidebar. Select the <code>Kind</code> drop-down, and note that two new entities called <code>User</code> and <code>Group</code> are now visible. You may have to wait for a few minutes while the data is fetched from GitHub.</p>
+</li>
+<li>
+<p>Select <code>Group</code> in the <code>Kind</code> drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization. If you have not created teams in GitHub, then do so now before proceeding. You may have to wait for a few minutes while the data is fetched from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-groups.png" alt="view kind groups">
+</div>
+<div class="title">Figure 8. View Groups (Teams) from GitHub</div>
+</div>
+</li>
+<li>
+<p>Select <code>User</code> in the <code>Kind</code> drop-down to view the users imported from the GitHub organization. If you have not invited users to your organization in GitHub, then do so now before proceeding. You may have to wait for a few minutes while the data is fetched from GitHub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/view-kind-users.png" alt="view kind users">
+</div>
+<div class="title">Figure 9. View Users Imported from GitHub</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>At the end of this section, you <code>app-config-rhdh</code> ConfigMap should look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+  namespace: devhub
+...
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    backend:
+      auth:
+        keys:
+          - secret: "${BACKEND_SECRET}"
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+      cors:
+        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+    auth:
+      environment: production
+      providers:
+        github:
+          production:
+            clientId: ${GITHUB_APP_CLIENT_ID}
+            clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+    integrations:
+      github:
+        - host: github.com
+          apps:
+            - appId: ${GITHUB_APP_ID}
+              clientId: ${GITHUB_APP_CLIENT_ID}
+              clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+              webhookUrl: ${GITHUB_APP_WEBHOOK_URL}
+              webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+              privateKey: |
+                ${GITHUB_APP_PRIVATE_KEY_FILE}
+    signInPage: github
+    catalog:
+      providers:
+        github:
+          providerId:
+            organization: "${GITHUB_ORGANIZATION}"
+            schedule:
+              frequency:
+                minutes: 60
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
+        githubOrg:
+          githubUrl: "${GITHUB_URL}"
+          orgs: [ "${GITHUB_ORGANIZATION}" ]
+          schedule:
+            frequency:
+              minutes: 60
+            initialDelay:
+              seconds: 15
+            timeout:
+              minutes: 15</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting_tips"><a class="anchor" href="#_troubleshooting_tips"></a>Troubleshooting Tips</h3>
+<div class="paragraph">
+<p>To troubleshoot issues with the RHDH container, enable debug logging as follows to get verbose logging in container logs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc set env deployment rhdh-developer-hub LOG_LEVEL=debug -n devhub</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once debugging is complete switch log level back to <strong>info</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://backstage.io/docs/auth" target="_blank" rel="noopener">Authentication providers in Backstage</a></p>
+</li>
+<li>
+<p><a href="https://backstage.io/docs/overview/threat-model#integrator-responsibilities" target="_blank" rel="noopener">Backstage Security Threat Model</a></p>
+</li>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/getting_started_with_red_hat_developer_hub/index#assembly-auth-provider-github" target="_blank" rel="noopener">Set up GitHub Authentication</a></p>
+</li>
+<li>
+<p><a href="https://backstage.io/docs/integrations/github/github-apps#app-permissions" target="_blank" rel="noopener">Required GitHub App Permissions</a></p>
+</li>
+<li>
+<p><a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations" target="_blank" rel="noopener">Managing GitHub Organizations</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="basic-config.html">Basic Configuration</a></span>
+  <span class="next"><a href="rbac.html">Role Based Access Control</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
