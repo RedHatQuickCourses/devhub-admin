@@ -178,5 +178,5 @@ You can also scale down the RHDH pod to zero (0), and then scale it up back to o
 
 == References
 
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
 * https://backstage.io/docs/conf[Configuration in Backstage^]

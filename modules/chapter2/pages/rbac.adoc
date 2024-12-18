@@ -194,8 +194,8 @@ $ curl $RHDH_URL/api/permission/roles \
 Consult the RBAC REST API product documentation to send other queries (POST, PUT etc) to add, modify, update and delete policies.
 
 ## References
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/authorization/index[Configuring authorization in Red Had Developer Hub]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/authorization/index[Configuring authorization in Red Had Developer Hub^]
 * https://backstage.io/docs/permissions/overview[Permissions Policy in Backstage^]
 * https://www.youtube.com/watch?v=V8SwbSRE8CQ[Janus IDP Community Meeting - RBAC^]
-* https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/apis.md[Janus IDP RBAC REST API^]
-* https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md[RBAC resource types in RHDH^]
+* https://www.npmjs.com/package/@janus-idp/backstage-plugin-rbac-backend[Janus IDP RBAC REST API^]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.0/html/administration_guide_for_red_hat_developer_hub/con-rbac-overview_admin-rhdh[RBAC resource types in RHDH^]
