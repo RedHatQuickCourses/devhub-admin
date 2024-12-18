@@ -346,6 +346,6 @@ Once debugging is complete switch log level back to *info*.
 
 * https://backstage.io/docs/auth[Authentication providers in Backstage^]
 * https://backstage.io/docs/overview/threat-model#integrator-responsibilities[Backstage Security Threat Model^]
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#assembly-auth-provider-github[Set up GitHub Authentication^]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/getting_started_with_red_hat_developer_hub/index#assembly-auth-provider-github[Set up GitHub Authentication^]
 * https://backstage.io/docs/integrations/github/github-apps#app-permissions[Required GitHub App Permissions^]
 * https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations[Managing GitHub Organizations^]

@@ -37,6 +37,13 @@ image::new-ocp-project.png[title=Create a new OpenShift Project]
 
 === Install the RHDH Helm Chart
 
+. Create a chart repo for installing RHDH v.14 by executing the following command:
++
+```bash
+$ oc apply -f https://github.com/rhdh-bot/openshift-helm-charts/raw/redhat-developer-hub-1.4-123-CI/installation/rhdh-next-ci-repo.yaml
+helmchartrepository.helm.openshift.io/rhdh-next-ci-repo created
+```
+
 . Switch to the `Developer` perspective in the OpenShift console and select the `devhub` project.
 +
 image::switch-dev-perspective.png[title=Switch to the Developer Perspective]
@@ -47,17 +54,17 @@ image::add-helm-chart.png[title=Add Helm Chart]
 
 . Search for `"developer hub"` in the search field on this page, and then select the `Red Hat Developer Hub` chart.
 +
-image::search-devhub-chart.png[title=Search for RHDH Helm Chart]
+image::rhdh14.png[title=Search for RHDH Helm Chart]
 
 . In the `Red Hat Developer Hub` chart page, click `Create`. You will see the `Create Helm Release` page with some fields that need to be edited.
 
-.. Change the `Release Name` to `rhdh`. Ensure that the latest helm chart is selected in the `Chart version` drop-down (As of Jun 2024, latest RHDH version is 1.2.1).
+.. Change the `Release Name` to `rhdh`. Ensure that the latest helm chart is selected in the `Chart version` drop-down (As of Jun 2024, latest RHDH version is 1.4).
 
 .. Expand `Root Schema > global` and change the first field value from `apps.example.com` to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format `apps.cluster-<guid>.dynamic.redhatworkshops.io`, where `<guid>` is unique to your provisioned OpenShift cluster.
 
 .. The final screen should look like the following:
 +
-image::edit-helm-chart-values.png[title=Edit Helm Chart Details]
+image::rhdhcreate.png[title=Edit Helm Chart Details]
 
 .. Click `Create` to deploy the helm chart.
 
@@ -85,68 +92,52 @@ image::cli-tools.png[title=Download CLI Tools]
 
 === CLI Install Steps
 
-. Add the OpenShift helm chart repository
+. Use curl to download the installation script and make it executable:
 +
 ```bash
-$ helm repo add openshift-helm-charts https://charts.openshift.io/
+$ curl -sSLO https://raw.githubusercontent.com/rhdh-bot/openshift-helm-charts/redhat-developer-hub-1.4-123-CI/installation/install.sh && chmod +x install.sh
 ```
 
-. Download the default *values.yaml* file for the RHDH helm chart
+. Execute the installation script by running the script with the mentioned parameters:
 +
 ```bash
-$ helm show values \
-  openshift-helm-charts/redhat-developer-hub \
-  --version 1.2.1 > /tmp/values.yaml
-```
+$ ./install.sh 1.4-123-CI --namespace rhdh-1-4-123-ci --chartrepo
+Now using project "rhdh-1-4-123-ci" on server "https://api.cluster-zv42l.dynamic.redhatworkshops.io:6443".
 
-. Change the value of the *global.clusterRouterBase* attribute to the wildcard OpenShift DNS name, and also edit the *upstream.nameOverride* to *rhdh*.
-+
-[subs=+quotes]
-----
-global:
-  clusterRouterBase: *apps.cluster-<guid>.dynamic.redhatworkshops.io*
-  host: ""
+You can add applications to this project with the 'new-app' command. For example, try:
 
-upstream:
-  nameOverride: *rhdh*
-  backstage:
-...
-----
+    oc new-app ruby~https://github.com/sclorg/ruby-ex.git
 
-. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
-+
-```bash
-$ oc login -u admin \
-    https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
 
-$ oc project devhub
-```
+    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
 
-. Install the RHDH helm chart with the updated *values.yaml* file
-+
-[subs=+quotes]
-----
-$ *helm upgrade \
-  -i rhdh -f /tmp/values.yaml \
-  openshift-helm-charts/redhat-developer-hub*
-
-Release "rhdh" does not exist. Installing it now.
-...
-NAME: rhdh
-LAST DEPLOYED: Thu Jun 27 13:59:33 2024
-NAMESPACE: devhub
+helmchartrepository.helm.openshift.io/rhdh-next-ci-repo unchanged
+Release "redhat-developer-hub" does not exist. Installing it now.
+NAME: redhat-developer-hub
+LAST DEPLOYED: Wed Dec 18 17:24:28 2024
+NAMESPACE: rhdh-1-4-123-ci
 STATUS: deployed
 REVISION: 1
-----
+Release "redhat-developer-hub" has been upgraded. Happy Helming!
+NAME: redhat-developer-hub
+LAST DEPLOYED: Wed Dec 18 17:24:57 2024
+NAMESPACE: rhdh-1-4-123-ci
+STATUS: deployed
+REVISION: 2
 
-. Wait for 10-15 minutes while the helm chart is installed. Verify that the *rhdh-devhub* and *rhdh-postgresql* pods are in *Running* state.
+Once deployed, Developer Hub 1.4-123-CI will be available at
+https://redhat-developer-hub-rhdh-1-4-123-ci.apps.cluster-<guid>.dynamic.redhatworkshops.io
+```
+
+. Wait for 10-15 minutes while the helm chart is installed. Verify that the *redhat-developer-hub* and *redhat-developer-hub-postgresql* pods are in *Running* state.
 +
 [subs=+quotes]
 ----
 $ *oc get pods*
-NAME                    READY   STATUS    RESTARTS   AGE
-rhdh-84fb7ddd9d-nvdcf   1/1     Running   0          2m17s
-rhdh-postgresql-0       1/1     Running   0          2m16s
+NAME                                    READY   STATUS    RESTARTS   AGE
+redhat-developer-hub-67644fd55d-lxm4d   1/1     Running   0          11m
+redhat-developer-hub-postgresql-0       1/1     Running   0          11m
 ----
 
 . Fetch the OpenShift route for RHDH and open the URL in a browser to navigate to the RHDH home page.
@@ -154,19 +145,19 @@ rhdh-postgresql-0       1/1     Running   0          2m16s
 [subs=+quotes]
 ----
 $ *oc get route \
-rhdh-redhat-developer-hub \
+redhat-developer-hub \
 --output jsonpath={.spec.host}*
 
-rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
+redhat-developer-hub-rhdh-1-4-123-ci.apps.cluster-<guid>.dynamic.redhatworkshops.ioyogita
 ----
 
 == RHDH PostgreSQL Database
 
-[WARNING] 
+[WARNING]
 ====
 The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.
 
-You should follow the installation instructions and install the default single instance PostgreSQL to complete the install. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
+You should follow the installation instructions and install the default single instance PostgreSQL to complete the install. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_admin-rhdh[Configuring an external PostgreSQL instance using the Helm Chart^].
 ====
 
 == Installation Troubleshooting
@@ -184,7 +175,7 @@ Backend failed to start up Error: Missing required config value at
 'backend.database.client'
 ```
 +
-*Solution*: This is happening because the configuration files are not being appropriately accessed by the RHDH container. You may have edited the helm chart values before installation, and one or more attributes are missing or configured incorrectly. It is recommended to keep the default values (except for the wildcard DNS name of the OpenShift cluster) during installation. 
+*Solution*: This is happening because the configuration files are not being appropriately accessed by the RHDH container. You may have edited the helm chart values before installation, and one or more attributes are missing or configured incorrectly. It is recommended to keep the default values (except for the wildcard DNS name of the OpenShift cluster) during installation.
 +
 You can always edit and update the RHDH configuration after the installation is completed successfully.
 

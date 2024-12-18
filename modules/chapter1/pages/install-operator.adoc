@@ -7,7 +7,7 @@ Red Hat provides a fully supported operator for RHDH in the OpenShift *OperatorH
 
 RHDH can be installed from within the OpenShift web console just like any other operator from `OperatorHub`.
 
-Refer to the instructions https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#proc-install-rhdh-ocp-operator_assembly-install-rhdh-ocp[here^] to install the RHDH operator on OpenShift.
+Refer to the instructions https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.1/html/administration_guide_for_red_hat_developer_hub/proc-install-operator_admin-rhdh#proc-install-operator_admin-rhdh[here^] to install the RHDH operator on OpenShift.
 
 == Lab: Installation using RHDH Operator
 
@@ -27,33 +27,38 @@ image::03-rhdp-cluster-details.png[title=RHDP OpenShift Cluster Details]
 
 === Install the RHDH Operator
 
-. Click `Operators > OperatorHub` in the left side navigation bar of the `Administrator` perspective in the OpenShift web console.
-
-. Search for `"developer hub"` in the search field on this page, and then select the `Red Hat Developer Hub` operator.
+. Download the installation script to create the RHDH Operator CatalogSource in your cluster.
 +
-image::search-devhub-operator.png[title=Search for RHDH Operator]
+```bash
+$ curl -sSLO https://raw.githubusercontent.com/redhat-developer/rhdh-operator/main/.rhdh/scripts/install-rhdh-catalog-source.sh
+$ chmod +x install-rhdh-catalog-source.sh
+```
 
-. In the `Red Hat Developer Hub` operator details page, click `Install`. In the `Install Operator` page, select the *devhub* project in the `Installed Namespace` field. Leave all other fields at their default values, and click `Install` to begin the operator installation.
+. Execute the installation script by running the script with the mentioned parameters:
 +
-image::rhdh-op-details.png[title=RHDP Operator Details]
+```bash
+$ ./install-rhdh-catalog-source.sh --latest --install-operator rhdh
+```
 
-. Wait for 5-10 minutes while the operator is installed. You should see `Installed operator:  ready for use` message when the operator is successfully installed.
+. Select `Operators` and click `Installed Operator`, to confirm operator is installedcreate a new RHDH instance.
 +
-image::rhdh-operator-installed.png[title=RHDH Operator Installed]
+image::rhdh142.png[title=RHDH Operator Installed]
 
-. Click `View Operator`, and then click `Create instance` to create a new RHDH instance.  
+. On the same page, click `Create instance` to create a new RHDH instance.
 +
-image::rhdh-create-op-instance.png[title=RHDH Create new Instance]
+image::rhdh14create.png[title=RHDH Create new Instance]
 
 . In the `Create Backstage` page, change the `Name` to *rhdh*, leave all other fields at default values, and then click `Create` to deploy a new RHDH instance.
-
-. Switch to the `Developer` perspective in the OpenShift web console, and select the `devhub` project. Verify that a new instance called `rhdh` is seen with two pods in running state. 
 +
-image::rhdh-op-instance-running.png[title=RHDH instance running]
+image::rhdh14edit.png[title=RHDH Create new Instance]
+
+. Switch to the `Developer` perspective in the OpenShift web console, and select the `rhdh-operator` project and click on `Topology`. Verify that a new instance called `rhdh` is seen with two pods in running state.
++
+image::rhdhtopp.png[title=RHDH instance running]
 
 . Click the `Open URL` link to access Red Hat Developer Hub.
 +
-image::rhdh-op-installed.png[title=RHDH Open URL]
+image::rhdhscreen.png[title=RHDH Open URL]
 
 . You should now see the Red Hat Developer Hub log in page.
 +
@@ -68,9 +73,9 @@ You have now successfully installed Red Hat Developer Hub on your OpenShift clus
 
 == RHDH PostgreSQL Database
 
-[WARNING] 
+[WARNING]
 ====
 The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.
 
-You should follow the installation instructions and install the default single instance PostgreSQL to complete the installation. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
+You should follow the installation instructions and install the default single instance PostgreSQL to complete the installation. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
 ====

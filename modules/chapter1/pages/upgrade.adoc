@@ -13,11 +13,11 @@ You can update RHDH using the OpenShift web console.
 
 . Expand the hamburger menu on the right of the `rhdh` release and click `Upgrade`.
 +
-image::helm-release-upgrade.png[title=Upgrade Helm Release]
+image::upgradehelm.png[title=Upgrade Helm Release]
 
 . In the `Upgrade Helm Release` page, select the version of RHDH you want to upgrade to in the `Chart version` drop-down. This list shows the different helm chart versions of RHDH that have been publicly released.
 +
-image::select-chart-upgrade.png[title=Select Upgrade Version]
+image::upgradehelm2.png[title=Select Upgrade Version]
 
 . After you have selected a version for upgrade, click `Upgrade`. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.
 
@@ -34,11 +34,11 @@ $ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6
 $ oc project devhub
 ```
 
-. Assuming there is a new version of the RHDH helm chart (for example, *1.2.1*), run the following command to upgrade RHDH. 
+. Assuming there is a new version of the RHDH helm chart (for example, *1.4*), run the following command to upgrade RHDH.
 +
 ```bash
 $ helm upgrade -i rhdh \
-  openshift-helm-charts/redhat-developer-hub --version 1.2.1
+  openshift-helm-charts/redhat-developer-hub --version 1.4.0
 
 Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
@@ -52,9 +52,9 @@ You can also supply extra values to the chart by creating a *new-values.yml* fil
 +
 ```bash
 $ helm upgrade -i rhdh -f new-values.yml \
-  openshift-helm-charts/redhat-developer-hub --version 1.2.1
+  openshift-helm-charts/redhat-developer-hub --version 1.4.0
 ```
- 
+
 == Upgrading the RHDH Operator using the OpenShift Web Console
 
 The default setting during operator install is set to *Automatic* mode. In this mode, new versions of the operator are _automatically_ downloaded and applied. If you chose the *Manual* mode, a cluster administrator needs to _manually_ approve each upgrade. In such cases, switch to the `Administrator` perspective, and then click on `Operators > Installed Operators` to view the updates for the RHDH operator.
