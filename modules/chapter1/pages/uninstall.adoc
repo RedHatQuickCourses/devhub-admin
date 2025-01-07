@@ -19,10 +19,19 @@ image::helm-release-delete.png[title=Delete Helm Release]
 
 You can uninstall RHDH using the *helm* CLI.
 
-. Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the *devhub* project.
+. Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' -> 'Copy login command' and select "Display Token".
++
+image::login.png[title=Login Command]
+
+.. Select the *Log in with this token* command and login into the OpenShift cluster.
 +
 ```bash
-$ oc login -u admin https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+$ oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+```
+
+Ensure that you switch to the *devhub* project.
++
+```bash
 $ oc project devhub
 ```
 

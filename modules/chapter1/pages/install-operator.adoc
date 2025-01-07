@@ -7,7 +7,7 @@ Red Hat provides a fully supported operator for RHDH in the OpenShift *OperatorH
 
 RHDH can be installed from within the OpenShift web console just like any other operator from `OperatorHub`.
 
-Refer to the instructions https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#proc-install-rhdh-ocp-operator_assembly-install-rhdh-ocp[here^] to install the RHDH operator on OpenShift.
+Refer to the instructions https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html/installing_red_hat_developer_hub_on_openshift_container_platform/assembly-install-rhdh-ocp-operator[here^] to install the RHDH operator on OpenShift.
 
 == Lab: Installation using RHDH Operator
 
@@ -41,13 +41,15 @@ image::rhdh-op-details.png[title=RHDP Operator Details]
 +
 image::rhdh-operator-installed.png[title=RHDH Operator Installed]
 
-. Click `View Operator`, and then click `Create instance` to create a new RHDH instance.  
+. Click `Installed Operator` and select `Red Hat Developer Hub Operator`, and then click `Create instance` to create a new RHDH instance.
 +
 image::rhdh-create-op-instance.png[title=RHDH Create new Instance]
 
 . In the `Create Backstage` page, change the `Name` to *rhdh*, leave all other fields at default values, and then click `Create` to deploy a new RHDH instance.
++
+image::rhdh-backstage.png[title=RHDH Create Backstage]
 
-. Switch to the `Developer` perspective in the OpenShift web console, and select the `devhub` project. Verify that a new instance called `rhdh` is seen with two pods in running state. 
+. Switch to the `Developer` perspective in the OpenShift web console, select `Topology` option and select the `devhub` project. Verify that a new instance called `rhdh` is seen with two pods in running state.
 +
 image::rhdh-op-instance-running.png[title=RHDH instance running]
 
@@ -60,17 +62,11 @@ image::rhdh-op-installed.png[title=RHDH Open URL]
 image::rhdh-homepage.png[title=RHDH Log in Page]
 
 . Click `Enter` in the `Guest` card to log in as a guest user. You will a warning message pop up with the text `Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?`. Click `Yes` to log in as a guest user.
-You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.
++
+image::rhdh-message.png[title=Warning message]
+
+.. You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.
 +
 image::rhdh-guest-user.png[title=Log in as a guest user]
 +
 You have now successfully installed Red Hat Developer Hub on your OpenShift cluster using the RHDH operator.
-
-== RHDH PostgreSQL Database
-
-[WARNING] 
-====
-The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.
-
-You should follow the installation instructions and install the default single instance PostgreSQL to complete the installation. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp[Configuring an external PostgreSQL instance using the Helm Chart^].
-====
