@@ -197,5 +197,3 @@ Consult the RBAC REST API product documentation to send other queries (POST, PUT
 * https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/authorization/index[Configuring authorization in Red Had Developer Hub]
 * https://backstage.io/docs/permissions/overview[Permissions Policy in Backstage^]
 * https://www.youtube.com/watch?v=V8SwbSRE8CQ[Janus IDP Community Meeting - RBAC^]
-* https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/apis.md[Janus IDP RBAC REST API^]
-* https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md[RBAC resource types in RHDH^]
