@@ -233,11 +233,17 @@ The chart contains an opinionated default configuration of Backstage with a pre-
 </div>
 </li>
 <li>
-<p>In the <code>Red Hat Developer Hub</code> chart page, click <code>Create</code>. You will see the <code>Create Helm Release</code> page with some fields that need to be edited.</p>
+<p>In the <code>Red Hat Developer Hub</code> chart page, click <code>Create</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-devhub-create.png" alt="search devhub create">
+</div>
+<div class="title">Figure 6. Create RHDH Helm Chart</div>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Change the <code>Release Name</code> to <code>rhdh</code>. Ensure that the latest helm chart is selected in the <code>Chart version</code> drop-down (As of Jun 2024, latest RHDH version is 1.2.1).</p>
+<p>Change the <code>Release Name</code> to <code>rhdh</code>. Ensure that the latest helm chart is selected in the <code>Chart version</code> drop-down (As of Jan 2025, latest RHDH version is 1.4.0).</p>
 </li>
 <li>
 <p>Expand <code>Root Schema &gt; global</code> and change the first field value from <code>apps.example.com</code> to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format <code>apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code>, where <code>&lt;guid&gt;</code> is unique to your provisioned OpenShift cluster.</p>
@@ -248,7 +254,7 @@ The chart contains an opinionated default configuration of Backstage with a pre-
 <div class="content">
 <img src="_images/edit-helm-chart-values.png" alt="edit helm chart values">
 </div>
-<div class="title">Figure 6. Edit Helm Chart Details</div>
+<div class="title">Figure 7. Edit Helm Chart Details</div>
 </div>
 </li>
 <li>
@@ -264,7 +270,7 @@ Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
 <div class="content">
 <img src="_images/rhdh-installed.png" alt="rhdh installed">
 </div>
-<div class="title">Figure 7. RHDH Topology View</div>
+<div class="title">Figure 8. RHDH Topology View</div>
 </div>
 </li>
 <li>
@@ -273,23 +279,30 @@ Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
 <div class="content">
 <img src="_images/rhdh-homepage.png" alt="rhdh homepage">
 </div>
-<div class="title">Figure 8. RHDH Log in Page</div>
+<div class="title">Figure 9. RHDH Log in Page</div>
 </div>
 </li>
 <li>
-<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will see a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.
-You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
+<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will see a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/rhdh-guest-user.png" alt="rhdh guest user">
+<img src="_images/rhdh-message.png" alt="rhdh message">
 </div>
-<div class="title">Figure 9. Log in as a guest user</div>
-</div>
-<div class="paragraph">
-<p>You have now successfully installed Red Hat Developer Hub on your OpenShift cluster.</p>
+<div class="title">Figure 10. Warning message</div>
 </div>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
+</div>
+<div class="paragraph">
+<p>+
+image::rhdh-guest-user.png[title=Log in as a guest user]</p>
+</div>
+<div class="paragraph">
+<p>+
+You have now successfully installed Red Hat Developer Hub on your OpenShift cluster.</p>
 </div>
 </div>
 </div>
@@ -304,7 +317,7 @@ You will configure RHDH to authenticate against GitHub and other identity provid
 <div class="content">
 <img src="_images/cli-tools.png" alt="cli tools">
 </div>
-<div class="title">Figure 10. Download CLI Tools</div>
+<div class="title">Figure 11. Download CLI Tools</div>
 </div>
 <div class="sect2">
 <h3 id="_cli_install_steps"><a class="anchor" href="#_cli_install_steps"></a>CLI Install Steps</h3>
@@ -324,7 +337,7 @@ You will configure RHDH to authenticate against GitHub and other identity provid
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm show values \
   openshift-helm-charts/redhat-developer-hub \
-  --version 1.2.1 &gt; /tmp/values.yaml</code></pre>
+  --version 1.4.0 &gt; /tmp/values.yaml</code></pre>
 </div>
 </div>
 </li>
@@ -344,16 +357,41 @@ upstream:
 </div>
 </li>
 <li>
-<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<p>Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' &#8594; 'Copy login command' and select "Display Token".</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/login.png" alt="login">
+</div>
+<div class="title">Figure 12. Login Command</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin \
-    https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
-
-$ oc project devhub</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
 </div>
 </div>
 </li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ensure that you switch to the <strong>devhub</strong> project.</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Install the RHDH helm chart with the updated <strong>values.yaml</strong> file</p>
 <div class="listingblock">
@@ -362,10 +400,9 @@ $ oc project devhub</code></pre>
   -i rhdh -f /tmp/values.yaml \
   openshift-helm-charts/redhat-developer-hub</strong>
 
-Release "rhdh" does not exist. Installing it now.
-...
+Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
-LAST DEPLOYED: Thu Jun 27 13:59:33 2024
+LAST DEPLOYED: Tue Jan  7 16:27:07 2025
 NAMESPACE: devhub
 STATUS: deployed
 REVISION: 1</pre>
@@ -377,48 +414,14 @@ REVISION: 1</pre>
 <div class="listingblock">
 <div class="content">
 <pre>$ <strong>oc get pods</strong>
-NAME                    READY   STATUS    RESTARTS   AGE
-rhdh-84fb7ddd9d-nvdcf   1/1     Running   0          2m17s
-rhdh-postgresql-0       1/1     Running   0          2m16s</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Fetch the OpenShift route for RHDH and open the URL in a browser to navigate to the RHDH home page.</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ <strong>oc get route \
-rhdh-redhat-developer-hub \
---output jsonpath={.spec.host}</strong>
-
-rhdh-developer-hub-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</pre>
+NAME                   READY   STATUS    RESTARTS   AGE
+rhdh-7485cc8cd-b4dpp   1/1     Running   0          103s
+rhdh-postgresql-0      1/1     Running   0          25m</pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rhdh_postgresql_database"><a class="anchor" href="#_rhdh_postgresql_database"></a>RHDH PostgreSQL Database</h2>
-<div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.</p>
-</div>
-<div class="paragraph">
-<p>You should follow the installation instructions and install the default single instance PostgreSQL to complete the install. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp" target="_blank" rel="noopener">Configuring an external PostgreSQL instance using the Helm Chart</a>.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>

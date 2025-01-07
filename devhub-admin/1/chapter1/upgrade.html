@@ -191,24 +191,51 @@ Before you perform any updates to RHDH, ensure that you back up <strong>ALL</str
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<p>Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' &#8594; 'Copy login command' and select "Display Token".</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/login.png" alt="login">
+</div>
+<div class="title">Figure 3. Login Command</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
-$ oc project devhub</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
 </div>
 </div>
 </li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ensure that you switch to the <strong>devhub</strong> project.</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.2.1</strong>), run the following command to upgrade RHDH.</p>
+<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.4.1</strong>), run the following command to upgrade RHDH.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh \
-  openshift-helm-charts/redhat-developer-hub --version 1.2.1
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1
 
 Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
-LAST DEPLOYED: Fri Jun 28 18:06:47 2024
+LAST DEPLOYED: Tue Jan  7 16:27:07 2025
 NAMESPACE: devhub
 STATUS: deployed
 REVISION: 2</code></pre>
@@ -220,7 +247,7 @@ REVISION: 2</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm upgrade -i rhdh -f new-values.yml \
-  openshift-helm-charts/redhat-developer-hub --version 1.2.1</code></pre>
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1</code></pre>
 </div>
 </div>
 </li>
@@ -238,7 +265,7 @@ REVISION: 2</code></pre>
 <div class="content">
 <img src="_images/op-upgrade.png" alt="op upgrade">
 </div>
-<div class="title">Figure 3. Operator Updates</div>
+<div class="title">Figure 4. Operator Updates</div>
 </div>
 <div class="paragraph">
 <p>Click <code>Upgrade Available</code> for the RHDH operator, and then click <code>Preview InstallPlan</code>. Click <code>Approve</code> to approve the update.</p>

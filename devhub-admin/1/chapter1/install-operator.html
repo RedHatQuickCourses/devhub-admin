@@ -138,7 +138,7 @@
 <p>RHDH can be installed from within the OpenShift web console just like any other operator from <code>OperatorHub</code>.</p>
 </div>
 <div class="paragraph">
-<p>Refer to the instructions <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/administration_guide_for_red_hat_developer_hub/index#proc-install-rhdh-ocp-operator_assembly-install-rhdh-ocp" target="_blank" rel="noopener">here</a> to install the RHDH operator on OpenShift.</p>
+<p>Refer to the instructions <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html/installing_red_hat_developer_hub_on_openshift_container_platform/assembly-install-rhdh-ocp-operator" target="_blank" rel="noopener">here</a> to install the RHDH operator on OpenShift.</p>
 </div>
 </div>
 </div>
@@ -212,7 +212,7 @@
 </div>
 </li>
 <li>
-<p>Click <code>View Operator</code>, and then click <code>Create instance</code> to create a new RHDH instance.</p>
+<p>Click <code>Installed Operator</code> and select <code>Red Hat Developer Hub Operator</code>, and then click <code>Create instance</code> to create a new RHDH instance.</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rhdh-create-op-instance.png" alt="rhdh create op instance">
@@ -222,14 +222,20 @@
 </li>
 <li>
 <p>In the <code>Create Backstage</code> page, change the <code>Name</code> to <strong>rhdh</strong>, leave all other fields at default values, and then click <code>Create</code> to deploy a new RHDH instance.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-backstage.png" alt="rhdh backstage">
+</div>
+<div class="title">Figure 6. RHDH Create Backstage</div>
+</div>
 </li>
 <li>
-<p>Switch to the <code>Developer</code> perspective in the OpenShift web console, and select the <code>devhub</code> project. Verify that a new instance called <code>rhdh</code> is seen with two pods in running state.</p>
+<p>Switch to the <code>Developer</code> perspective in the OpenShift web console, select <code>Topology</code> option and select the <code>devhub</code> project. Verify that a new instance called <code>rhdh</code> is seen with two pods in running state.</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rhdh-op-instance-running.png" alt="rhdh op instance running">
 </div>
-<div class="title">Figure 6. RHDH instance running</div>
+<div class="title">Figure 7. RHDH instance running</div>
 </div>
 </li>
 <li>
@@ -238,7 +244,7 @@
 <div class="content">
 <img src="_images/rhdh-op-installed.png" alt="rhdh op installed">
 </div>
-<div class="title">Figure 7. RHDH Open URL</div>
+<div class="title">Figure 8. RHDH Open URL</div>
 </div>
 </li>
 <li>
@@ -247,17 +253,26 @@
 <div class="content">
 <img src="_images/rhdh-homepage.png" alt="rhdh homepage">
 </div>
-<div class="title">Figure 8. RHDH Log in Page</div>
+<div class="title">Figure 9. RHDH Log in Page</div>
 </div>
 </li>
 <li>
-<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.
-You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
+<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-message.png" alt="rhdh message">
+</div>
+<div class="title">Figure 10. Warning message</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rhdh-guest-user.png" alt="rhdh guest user">
 </div>
-<div class="title">Figure 9. Log in as a guest user</div>
+<div class="title">Figure 11. Log in as a guest user</div>
 </div>
 <div class="paragraph">
 <p>You have now successfully installed Red Hat Developer Hub on your OpenShift cluster using the RHDH operator.</p>
@@ -265,28 +280,9 @@ You will configure RHDH to authenticate against GitHub and other identity provid
 </li>
 </ol>
 </div>
+</li>
+</ol>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rhdh_postgresql_database"><a class="anchor" href="#_rhdh_postgresql_database"></a>RHDH PostgreSQL Database</h2>
-<div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The default installation of RHDH (for both Helm Charts and Operator based installs) deploys a single PostgreSQL 15 database pod. This is a potential single point of failure and could prevent RHDH from being highly available.</p>
-</div>
-<div class="paragraph">
-<p>You should follow the installation instructions and install the default single instance PostgreSQL to complete the installation. You can then configure the RHDH container to integrate with an external PostgreSQL database instance using the instructions provided in the product documentation at <a href="https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/assembly-configuring-external-postgresql-databases#proc-configuring-postgresql-instance-using-helm_assembly-install-rhdh-ocp" target="_blank" rel="noopener">Configuring an external PostgreSQL instance using the Helm Chart</a>.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>

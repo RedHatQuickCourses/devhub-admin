@@ -176,14 +176,41 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Log in to the OpenShift cluster as the cluster administrator. Ensure that you switch to the <strong>devhub</strong> project.</p>
+<p>Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' &#8594; 'Copy login command' and select "Display Token".</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/login.png" alt="login">
+</div>
+<div class="title">Figure 2. Login Command</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login -u admin https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443
-$ oc project devhub</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
 </div>
 </div>
 </li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ensure that you switch to the <strong>devhub</strong> project.</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Run the following command to uninstall RHDH</p>
 <div class="listingblock">
@@ -211,7 +238,7 @@ release "rhdh" uninstalled</pre>
 <div class="content">
 <img src="_images/del-rhdh-op-instance.png" alt="del rhdh op instance">
 </div>
-<div class="title">Figure 2. Delete RHDH instance</div>
+<div class="title">Figure 3. Delete RHDH instance</div>
 </div>
 </li>
 <li>
@@ -220,7 +247,7 @@ release "rhdh" uninstalled</pre>
 <div class="content">
 <img src="_images/uninstall-rhdh-op.png" alt="uninstall rhdh op">
 </div>
-<div class="title">Figure 3. Uninstall RHDH operator</div>
+<div class="title">Figure 4. Uninstall RHDH operator</div>
 </div>
 </li>
 </ol>
