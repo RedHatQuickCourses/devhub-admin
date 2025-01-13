@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Red Hat Developer Hub Installation using Helm Charts :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="install-operator.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operator.html">Installing RHDH (Operator)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/git-auth.html">GitHub Integration and Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Installation</a></li>
+    <li><a href="install-helm.html">Installing RHDH (Helm Charts)</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Red Hat Developer Hub Installation using Helm Charts</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Red Hat builds and ships RHDH as a container image that is based on the <em>Red Hat Enterprise Linux Universal Base Image</em> (<strong>RHEL UBI</strong>).</p>
+</div>
+<div class="paragraph">
+<p>There are several ways to install RHDH on OpenShift. This section covers installation using <strong>Helm</strong> charts. The next section covers installation using the RHDH <strong>Operator</strong> from <strong>OperatorHub</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_using_helm_charts"><a class="anchor" href="#_installation_using_helm_charts"></a>Installation Using Helm Charts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Red Hat Developer Hub helm chart is available in the <code>Helm Catalog</code> in Openshift, and on <a href="https://artifacthub.io/packages/helm/openshift/redhat-developer-hub" target="_blank" rel="noopener">ArtifactHUB</a> (A repository of Helm Charts).</p>
+</div>
+<div class="paragraph">
+<p>A short refresher on how to work with Helm Charts on OpenShift is <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/building_applications/working-with-helm-charts" target="_blank" rel="noopener">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The source code, templates, and the <code>values.yaml</code> file for the helm chart are available <a href="https://github.com/redhat-developer/rhdh-chart" target="_blank" rel="noopener">here</a> for inspection.
+The chart contains an opinionated default configuration of Backstage with a pre-integrated set of useful plugins, and it also uses a PostgreSQL database to persist the configuration state of RHDH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_installation_using_helm_charts"><a class="anchor" href="#_lab_installation_using_helm_charts"></a>Lab: Installation using Helm Charts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Order the <a href="https://demo.redhat.com/catalog?search=single&amp;item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod" target="_blank" rel="noopener">OpenShift Single Node Cluster</a> catalog item from Red Hat Demo Platform (RHDP). It should take approximately an <strong>hour</strong> for the classroom to be fully provisioned. You will receive an email with the details on how to access the OpenShift cluster. Verify that you can log in to the OpenShift web console as a cluster administrator.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_project_for_rhdh"><a class="anchor" href="#_create_a_project_for_rhdh"></a>Create a Project for RHDH</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to your OpenShift web console as the cluster administrator user (usually username is <code>admin</code>). The username and password details for your OpenShift cluster are accessible in the RHDP <code>Services</code> dashboard. You should have also received an email with the details of your OpenShift cluster.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03-rhdp-cluster-details.png" alt="03 rhdp cluster details">
+</div>
+<div class="title">Figure 1. RHDP OpenShift Cluster Details</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can install the RHDH Helm chart as a regular, non-cluster administrator user, but this is not recommended. Many organizations have strict policies on who can install operators and charts in the OpenShift cluster.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Click on <code>Home &gt; Projects</code> (Ensure you are in the <code>Administrator</code> perspective of the OpenShift console). Click <code>Create Project</code>, and then create a new OpenShift project named <code>devhub</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/new-ocp-project.png" alt="new ocp project">
+</div>
+<div class="title">Figure 2. Create a new OpenShift Project</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_the_rhdh_helm_chart"><a class="anchor" href="#_install_the_rhdh_helm_chart"></a>Install the RHDH Helm Chart</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Switch to the <code>Developer</code> perspective in the OpenShift console and select the <code>devhub</code> project.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/switch-dev-perspective.png" alt="switch dev perspective">
+</div>
+<div class="title">Figure 3. Switch to the Developer Perspective</div>
+</div>
+</li>
+<li>
+<p>Click <code>+Add</code> in the left side navigation bar of the <code>Developer</code> perspective, and then select <code>Helm Chart</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/add-helm-chart.png" alt="add helm chart">
+</div>
+<div class="title">Figure 4. Add Helm Chart</div>
+</div>
+</li>
+<li>
+<p>Search for <code>"developer hub"</code> in the search field on this page, and then select the <code>Red Hat Developer Hub</code> chart.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-devhub-chart.png" alt="search devhub chart">
+</div>
+<div class="title">Figure 5. Search for RHDH Helm Chart</div>
+</div>
+</li>
+<li>
+<p>In the <code>Red Hat Developer Hub</code> chart page, click <code>Create</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-devhub-create.png" alt="search devhub create">
+</div>
+<div class="title">Figure 6. Create RHDH Helm Chart</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Change the <code>Release Name</code> to <code>rhdh</code>. Ensure that the latest helm chart is selected in the <code>Chart version</code> drop-down (As of Jan 2025, latest RHDH version is 1.4.0).</p>
+</li>
+<li>
+<p>Expand <code>Root Schema &gt; global</code> and change the first field value from <code>apps.example.com</code> to the wildcard domain name of your OpenShift cluster. In RHDP, it is in the format <code>apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code>, where <code>&lt;guid&gt;</code> is unique to your provisioned OpenShift cluster.</p>
+</li>
+<li>
+<p>The final screen should look like the following:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/edit-helm-chart-values.png" alt="edit helm chart values">
+</div>
+<div class="title">Figure 7. Edit Helm Chart Details</div>
+</div>
+</li>
+<li>
+<p>Click <code>Create</code> to deploy the helm chart.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Wait for 10-15 minutes while the helm chart is deployed. The <code>PostgreSQL</code> and <code>Red Hat Developer Hub</code> pods should be fully started (dark blue circles around the icons).
+Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-installed.png" alt="rhdh installed">
+</div>
+<div class="title">Figure 8. RHDH Topology View</div>
+</div>
+</li>
+<li>
+<p>You should now see the Red Hat Developer Hub log in page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-homepage.png" alt="rhdh homepage">
+</div>
+<div class="title">Figure 9. RHDH Log in Page</div>
+</div>
+</li>
+<li>
+<p>Click <code>Enter</code> in the <code>Guest</code> card to log in as a guest user. You will see a warning message pop up with the text <code>Failed to sign in as a guest using the auth backend. Do you want to fallback to the legacy guest token?</code>. Click <code>Yes</code> to log in as a guest user.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rhdh-message.png" alt="rhdh message">
+</div>
+<div class="title">Figure 10. Warning message</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You will configure RHDH to authenticate against GitHub and other identity providers in later chapters of this course.</p>
+</div>
+<div class="paragraph">
+<p>+
+image::rhdh-guest-user.png[title=Log in as a guest user]</p>
+</div>
+<div class="paragraph">
+<p>+
+You have now successfully installed Red Hat Developer Hub on your OpenShift cluster.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_using_helm_cli"><a class="anchor" href="#_installation_using_helm_cli"></a>Installation using Helm CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Download the <strong>helm</strong> and <strong>oc</strong> CLI tools from the OpenShift web console by clicking the <strong>"?"</strong> icon on the top right navigation bar. Uncompress the archive files, and then copy the <strong>oc</strong> and <strong>helm</strong> binaries for your platform to the system path (usually <code>/usr/local/bin</code> on UNIX systems).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cli-tools.png" alt="cli tools">
+</div>
+<div class="title">Figure 11. Download CLI Tools</div>
+</div>
+<div class="sect2">
+<h3 id="_cli_install_steps"><a class="anchor" href="#_cli_install_steps"></a>CLI Install Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the OpenShift helm chart repository</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm repo add openshift-helm-charts https://charts.openshift.io/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Download the default <strong>values.yaml</strong> file for the RHDH helm chart</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm show values \
+  openshift-helm-charts/redhat-developer-hub \
+  --version 1.4.0 &gt; /tmp/values.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the value of the <strong>global.clusterRouterBase</strong> attribute to the wildcard OpenShift DNS name, and also edit the <strong>upstream.nameOverride</strong> to <strong>rhdh</strong>.</p>
+<div class="listingblock">
+<div class="content">
+<pre>global:
+  clusterRouterBase: <strong>apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</strong>
+  host: ""
+
+upstream:
+  nameOverride: <strong>rhdh</strong>
+  backstage:
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' &#8594; 'Copy login command' and select "Display Token".</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/login.png" alt="login">
+</div>
+<div class="title">Figure 12. Login Command</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ensure that you switch to the <strong>devhub</strong> project.</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install the RHDH helm chart with the updated <strong>values.yaml</strong> file</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ <strong>helm upgrade \
+  -i rhdh -f /tmp/values.yaml \
+  openshift-helm-charts/redhat-developer-hub</strong>
+
+Release "rhdh" has been upgraded. Happy Helming!
+NAME: rhdh
+LAST DEPLOYED: Tue Jan  7 16:27:07 2025
+NAMESPACE: devhub
+STATUS: deployed
+REVISION: 1</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for 10-15 minutes while the helm chart is installed. Verify that the <strong>rhdh-devhub</strong> and <strong>rhdh-postgresql</strong> pods are in <strong>Running</strong> state.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ <strong>oc get pods</strong>
+NAME                   READY   STATUS    RESTARTS   AGE
+rhdh-7485cc8cd-b4dpp   1/1     Running   0          103s
+rhdh-postgresql-0      1/1     Running   0          25m</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_troubleshooting"><a class="anchor" href="#_installation_troubleshooting"></a>Installation Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following are some problems you could see during installation, and the potential fix for them.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Problem</strong>: The <code>rhdh-developer-hub</code> pod is stuck in a <code>CrashLoopBackOff</code> error with the following seen in the logs:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Loaded config from app-config-from-configmap.yaml, env
+...
+2023-07-24T19:44:46.223Z auth info Configuring "database" as KeyStore provider
+type=plugin
+Backend failed to start up Error: Missing required config value at
+'backend.database.client'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Solution</strong>: This is happening because the configuration files are not being appropriately accessed by the RHDH container. You may have edited the helm chart values before installation, and one or more attributes are missing or configured incorrectly. It is recommended to keep the default values (except for the wildcard DNS name of the OpenShift cluster) during installation.</p>
+</div>
+<div class="paragraph">
+<p>You can always edit and update the RHDH configuration after the installation is completed successfully.</p>
+</div>
+</li>
+<li>
+<p><strong>Problem</strong>: I see the following error when installing the RHDH helm chart using the <strong>helm</strong> CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre>Error: query: failed to query with labels: secrets is forbidden: User "system:anonymous" cannot list resource "secrets" in API group "" in the namespace "devhub"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Solution</strong>: Ensure that you are logged in to the OpenShift cluster as a cluster administrator before installing, removing or upgrading the RHDH helm chart. Also ensure that you are in the correct OpenShift project, so that the resources are created in it.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Installation</a></span>
+  <span class="next"><a href="install-operator.html">Installing RHDH (Operator)</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
