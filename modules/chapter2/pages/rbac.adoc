@@ -47,7 +47,13 @@ It defines a custom role named `myrole` that permits read only access to the RHD
 
 NOTE: The main reason to declare policy administrators is to allow a certain limited number of authenticated users to invoke the RBAC REST API. The actual policies are defined in a separate CSV file and referenced in the `app-config-rhdh` ConfigMap. This can be done by OpenShift platform or cluster administrators who have access to the namespace where RHDH is running.
 
-. To declare users as policy administrators, add the following `permission` attribute to the `app-config-rhdh` ConfigMap (At the same indentation level as the *app* and below the *catalog* attribute). Ensure that you added a valid authenticated user for the `admin.users` attribute:
+. To declare users as policy administrators, add the following `permission` attribute to the `app-config-rhdh` ConfigMap (At the same indentation level as the *app* and below the *catalog* attribute).
+
+.. Switch to `Developer` profile and select `ConfigMaps` and click on **app-config-rhdh**:
++
+image::config2.png[title=Select ConfigMaps]
+
+.. Select `YAML` view and ensure that you added a valid authenticated user for the `admin.users` attribute:
 +
 [subs=+quotes]
 ----
@@ -58,11 +64,11 @@ catalog:
         githubOrg:
           ...
 *permission:
-      enabled: true
-      rbac:
-        admin:
-          users:
-            - name: user:default/rsriniva*
+  enabled: true
+  rbac:
+    admin:
+      users:
+        - name: user:default/<your_policy_administrator_name>*
 ----
 
 . The RBAC plugin is disabled by default. Enable it by adding it to the list of dynamic plugins in the ConfigMap *dynamic-plugins-rhdh-local*.
@@ -79,7 +85,7 @@ data:
         disabled: false
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic'
         disabled: false
-      *- package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+      *- package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
         disabled: false*
 ----
 
@@ -194,6 +200,6 @@ $ curl $RHDH_URL/api/permission/roles \
 Consult the RBAC REST API product documentation to send other queries (POST, PUT etc) to add, modify, update and delete policies.
 
 ## References
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/authorization/index[Configuring authorization in Red Had Developer Hub]
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#enabling-and-giving-access-to-rbac[Configuring authorization in Red Had Developer Hub]
 * https://backstage.io/docs/permissions/overview[Permissions Policy in Backstage^]
 * https://www.youtube.com/watch?v=V8SwbSRE8CQ[Janus IDP Community Meeting - RBAC^]

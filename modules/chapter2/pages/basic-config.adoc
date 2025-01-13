@@ -93,7 +93,13 @@ It is a good practice to override the *default.app-config.yaml* file using your 
 
 To create the custom configuration file, do the following:
 
-. Create a new ConfigMap named *app-config-rhdh* resource in the same OpenShift project where you installed RHDH (*devhub*). Click on `ConfigMap > Create ConfigMap > YAML view` and paste the following YAML snippet.
+. Create a new ConfigMap named *app-config-rhdh* resource in the same OpenShift project where you installed RHDH (*devhub*).
+
+.. Click on `ConfigMap` -> click `Create ConfigMap`
++
+image::create_config.png[title=ConfigMap]
+
+.. Select `YAML` view and paste the following YAML snippet.
 +
 [subs=+quotes]
 ----
@@ -119,17 +125,21 @@ data:
 
 . Click `Create` to create the ConfigMap.
 
-. The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *rhdh-secrets*, and reference it in the Developer Hub CR. Click `Secrets > Create Key/value secret`.
+. The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *rhdh-secrets*, and reference it in the Developer Hub CR. 
 
-. In the `Create key/value secret` page, enter *rhdh-secrets* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
+.. Click `Secrets > Create -> Key/value secret`:
++
+image::secret.png[title=Create Secret]
+
+.. Enter *rhdh-secrets* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
 +
 ```bash
 $ node -p 'require("crypto").randomBytes(24).toString("base64")'
 ```
 
-. Copy the randomly generated string to the *Value* field, and then click `Create` to create the secret.
+.. Copy the randomly generated string to the *Value* field, and then click `Create` to create the secret.
 +
-image::create-rhdh-secrets.png[title=Create a new secret]
+image::random.png[title=Create a new secret]
 
 . Now that you have created your own custom configuration file with an embedded secret, you need to reference the new custom configuration file in the backstage custom resource (CR) and restart the RHDH container for the changes to take effect. Click on `Topology` in the left sidebar, and then expand the hamburger menu (three vertical dots) next to the `rhdh` Backstage custom resource (CR) to select the `Edit Backstage` option
 +
@@ -139,19 +149,58 @@ image::edit-backstage-cr.png[title=Edit Backstage CR]
 +
 [subs=+quotes]
 ----
-apiVersion: rhdh.redhat.com/v1alpha1
+apiVersion: rhdh.redhat.com/v1alpha3
 kind: Backstage
 metadata:
-...
+  creationTimestamp: '2025-01-09T11:28:30Z'
+  generation: 1
+  managedFields:
+    - apiVersion: rhdh.redhat.com/v1alpha3
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:application':
+            .: {}
+            'f:appConfig':
+              .: {}
+              'f:mountPath': {}
+            'f:extraFiles':
+              .: {}
+              'f:mountPath': {}
+            'f:replicas': {}
+            'f:route':
+              .: {}
+              'f:enabled': {}
+          'f:database':
+            .: {}
+            'f:enableLocalDb': {}
+      manager: Mozilla
+      operation: Update
+      time: '2025-01-09T11:28:30Z'
+    - apiVersion: rhdh.redhat.com/v1alpha3
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          .: {}
+          'f:conditions': {}
+      manager: manager
+      operation: Update
+      subresource: status
+      time: '2025-01-09T11:28:30Z'
+  name: rhdh
+  namespace: devhub
+  resourceVersion: '57412'
+  uid: ed5c1be6-c7c4-4d49-b0b5-67b83a84a878
 spec:
   application:
     appConfig:
       mountPath: /opt/app-root/src
-      *configMaps:
-         - name: app-config-rhdh
-    extraEnvs:
-      secrets:
-         - name: rhdh-secrets*
+      *configMaps:*
+         *- name: app-config-rhdh*
+    *extraEnvs:*
+      *secrets:*
+         *- name: rhdh-secrets*
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1
@@ -159,16 +208,28 @@ spec:
       enabled: true
   database:
     enableLocalDb: true
-...
+status:
+  conditions:
+    - lastTransitionTime: '2025-01-09T11:28:30Z'
+      message: ''
+      reason: Deployed
+      status: 'True'
+      type: Deployed
 ----
 
-. Click `Save` to save the changes to the Backstage CR. 
+. Click `Save` to save the changes to the Backstage CR.
 
 . Switch to the `Topology` view, and expand the menu next to the `backstage-rhdh` pod. Click `Restart rollout` to restart the RHDH pod.
 +
 image::restart-rollout.png[title=Restart RHDH pod to re-read configuration value changes]
++
+Wait for the RHDH pod to restart (It may take a few minutes). Ensure that the pod is restarted without any errors.
 
-Wait for the RHDH pod to restart (It may take a few minutes). Ensure that the pod is restarted without any errors. To troubleshoot failed startup, click on the `backstage-rhdh` pod, and then click the `Resources` tab. Click `View logs` to view the pod logs. Ensure that you correctly indent the CR yaml file when referencing the secret and ConfigMap. Incorrect indentation may cause the pod restart to fail.
+. To troubleshoot failed startup, click on the `backstage-rhdh` pod, and then click the `Resources` tab. Click `View logs` to view the pod logs.
++
+image::logs.png[title=View Pod logs]
+
+.. Ensure that you correctly indent the CR yaml file when referencing the secret and ConfigMap. Incorrect indentation may cause the pod restart to fail.
 
 Throughout the rest of the course, you will edit the *app-config-rhdh* ConfigMap to configure and enable plugins for RHDH.
 
