@@ -203,6 +203,12 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <ol class="arabic">
 <li>
 <p>Navigate to <a href="https://github.com/organizations/&lt;YOUR_ORGANIZATION&gt;/settings/apps" class="bare">https://github.com/organizations/&lt;YOUR_ORGANIZATION&gt;/settings/apps</a>, and then click <code>New GitHub App</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/github_app.png" alt="github app">
+</div>
+<div class="title">Figure 1. New GitHub App</div>
+</div>
 </li>
 <li>
 <p>In the <code>Register new GitHub App</code> page, fill out the following details:</p>
@@ -210,18 +216,48 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <ul>
 <li>
 <p><code>GitHub App name</code>: <strong>rhdh-app-&lt;your_RHDP_GUID&gt;</strong> (A unique name)</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git1.png" alt="git1">
+</div>
+<div class="title">Figure 2. GitHub App name</div>
+</div>
 </li>
 <li>
 <p><code>Homepage URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io</a></strong> (Your RHDH Route URL)</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git2.png" alt="git2">
+</div>
+<div class="title">Figure 3. Homepage URL</div>
+</div>
 </li>
 <li>
 <p><code>Callback URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io/api/auth/github/handler/frame" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io/api/auth/github/handler/frame</a></strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git3.png" alt="git3">
+</div>
+<div class="title">Figure 4. Callback URL</div>
+</div>
 </li>
 <li>
 <p><code>Webhook URL</code>: <strong><a href="https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io" class="bare">https://backstage-rhdh-devhub.apps.cluster-&lt;GUID&gt;.dynamic.redhatworkshops.io</a></strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git4.png" alt="git4">
+</div>
+<div class="title">Figure 5. Webhook URL</div>
+</div>
 </li>
 <li>
 <p><code>Webhook secret</code>: <strong>5up3rS3cret</strong> (Provide a strong secret)</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git5.png" alt="git5">
+</div>
+<div class="title">Figure 6. Webhook secret</div>
+</div>
 </li>
 <li>
 <p>Under <code>Permissions</code>, expand <code>Repository Permissions</code> and ensure that you provide appropriate access (Read-Only, Read and Write etc) to the GitHub features you would like to integrate from RHDH. At a minimum, toggle the following permissions. <code>Read-only</code> permissions should be enough. Toggle <code>Read and write</code> permissions only if you are sure you will make changes via the GitHub API:</p>
@@ -259,6 +295,12 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 </li>
 <li>
 <p>Select <code>Only on this account</code> for the <code>Where can this GitHub App be installed?</code> option.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git6.png" alt="git6">
+</div>
+<div class="title">Figure 7. Only on this account</div>
+</div>
 </li>
 </ul>
 </div>
@@ -273,24 +315,36 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <p>Click <code>Generate a new client secret</code>. Copy the generated secret for the next steps.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/2-gh-auth.png" alt="2 gh auth" width="600">
+<img src="_images/git8.png" alt="git8" width="600">
 </div>
-<div class="title">Figure 1. Generate Client Secret</div>
+<div class="title">Figure 8. Generate Client Secret</div>
 </div>
 </li>
 <li>
 <p>Scroll down to the <code>Private Keys</code> section and click <code>Generate a private key</code>. The private key will be downloaded. Copy the generated private key certificate (it is in PEM format) to a safe location.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git9.png" alt="git9" width="600">
+</div>
+<div class="title">Figure 9. Generate a private key</div>
+</div>
 </li>
 <li>
 <p>In the left sidebar menu of the generated app, select <code>Install App</code>, and then click <code>Install</code>.</p>
-</li>
-<li>
-<p>Select <code>All Repositories</code> for <code>Repository access</code> and then click <code>Install</code>.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/8-gh-auth.png" alt="8 gh auth" width="400">
+<img src="_images/git11.png" alt="git11">
 </div>
-<div class="title">Figure 2. Install GitHub App</div>
+<div class="title">Figure 10. Click Install</div>
+</div>
+</li>
+<li>
+<p>Once the installation is complete, you shall get a prompt as shown below.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/git12.png" alt="git12" width="400">
+</div>
+<div class="title">Figure 11. Installation Complete</div>
 </div>
 </li>
 </ol>
@@ -304,31 +358,49 @@ Authentication providers are responsible <strong>only</strong> for authenticatin
 <div class="olist arabic">
 <ol class="arabic">
 <li>
+<p>. Log in to the OpenShift cluster as the <code>admin</code> user using the <code>oc</code> CLI. Switch to the <code>devhub</code> namespace where you installed RHDH.</p>
+<div class="listingblock">
+<div class="content">
+<pre>oc login --token=XXXXX --server=https://api.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io:6443
+The server uses a certificate signed by an unknown authority.
+You can bypass the certificate check, but any data you send to the server could be intercepted by others.
+Use insecure connections? (y/n): y
+
+Logged into "https://api.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io:6443" as "admin" using the token provided.
+
+You have access to 75 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "devhub".</pre>
+</div>
+</div>
+</li>
+<li>
 <p>Create a file named <code>env.sh</code> with the following environment variables and replace the values with the GitHub App details you created in the previous step. Replace the <code>GITHUB_APP_PRIVATE_KEY_FILE</code> with your private key file that you downloaded from GitHub. Change <code>guid</code> to your unique RHDP GUID.</p>
 <div class="listingblock">
 <div class="content">
-<pre>export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.<strong>https...api//' | sed 's/.6443.</strong>$//')
+<pre>$ cat env.sh
+export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.<strong>https...api//' | sed 's/.6443.</strong>$//')
 export K8S_CLUSTER_API=$(oc cluster-info | head -n 1 |  sed 's/^.*https/https/')
 
 export GITHUB_HOST_DOMAIN=https://github.com
-export GITHUB_ORGANIZATION='Your Org Name'
+
+export GITHUB_ORGANIZATION='&lt;Your Org Name&gt;'
+
 export GITHUB_ORG_URL=$GITHUB_HOST_DOMAIN/$GITHUB_ORGANIZATION
 
 export GITHUB_APP_ID='Your App ID'
+
 export GITHUB_APP_CLIENT_ID='Your client ID'
+
 export GITHUB_APP_CLIENT_SECRET='Your client secret'
-export GITHUB_APP_PRIVATE_KEY_FILE="$(&lt; rhdh-app-&lt;guid&gt;.2024-01-17.private-key.pem)"
+
+export GITHUB_APP_PRIVATE_KEY_FILE='rhdh-app-&lt;guid&gt;.2024-01-17.private-key.pem'
 
 export GITHUB_APP_WEBHOOK_URL='https://rhdh-developer-hub-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io'
+
 export GITHUB_APP_WEBHOOK_SECRET='Your webhook secret'</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Log in to the OpenShift cluster as the <code>admin</code> user using the <code>oc</code> CLI.</p>
-</li>
-<li>
-<p>Switch to the <code>devhub</code> namespace where you installed RHDH.</p>
 </li>
 <li>
 <p>Source the <code>env.sh</code> file to export the environment variables:</p>
@@ -518,7 +590,16 @@ data:
 </div>
 </li>
 <li>
-<p>Edit the Backstage custom resource (CR) by clicking <code>Topology</code> and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting <code>Edit Backstage</code>. Add a new attribute named <strong>dynamicPluginsConfigMapName</strong> under <strong>spec.application</strong> as follows and reference the new ConfigMap for the dynamic plugin configuration.</p>
+<p>Edit the Backstage custom resource (CR) by clicking <code>Topology</code> and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting <code>Edit Backstage</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/edit.png" alt="edit" width="600">
+</div>
+<div class="title">Figure 12. Edit Backstage</div>
+</div>
+<div class="paragraph">
+<p>Add a new attribute named <strong>dynamicPluginsConfigMapName</strong> under <strong>spec.application</strong> as follows and reference the new ConfigMap for the dynamic plugin configuration.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>...
@@ -540,7 +621,16 @@ spec:
 </div>
 </li>
 <li>
-<p>Restart the RHDH pod by selecting the <code>Restart rollout</code> option in the <code>Topology</code> view. Wait for a few minutes and verify that the pod is restarted without any errors. If there are errors, check the pod logs for missing attributes in the YAML files, or wrong indentation.</p>
+<p>Restart the RHDH pod by selecting the <code>Restart rollout</code> option in the <code>Topology</code> view.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/restart.png" alt="restart" width="600">
+</div>
+<div class="title">Figure 13. Restart rollout</div>
+</div>
+<div class="paragraph">
+<p>Wait for a few minutes and verify that the pod is restarted without any errors. If there are errors, check the pod logs for missing attributes in the YAML files, or wrong indentation.</p>
+</div>
 </li>
 </ol>
 </div>
@@ -550,48 +640,48 @@ spec:
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>If you are signed in as a <code>Guest</code> RHDH user, then sign out by selecting the <code>Sign Out</code> (expand the <code>&#8230;&#8203;</code> next to the Profile card) in the <code>Settings &gt; Profile</code> page.</p>
+<p>. Click the <code>Open URL</code> link to access Red Hat Developer Hub.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/guest-sign-out.png" alt="guest sign out" width="600">
+<img src="_images/rhdh-op-installed.png" alt="rhdh op installed">
 </div>
-<div class="title">Figure 3. Guest Sign out</div>
+<div class="title">Figure 14. RHDH Open URL</div>
 </div>
 </li>
 <li>
-<p>Sign in using <code>GitHub</code> sign-in method in the RHDH home page</p>
+<p>Sign in using <code>GitHub</code> sign-in method in the RHDH home page. You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/sign-in-github.png" alt="sign in github" width="600">
+<img src="_images/login.png" alt="login" width="400">
 </div>
-<div class="title">Figure 4. GitHub Sign in</div>
-</div>
-</li>
-<li>
-<p>You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/4-gh-auth.png" alt="4 gh auth" width="400">
-</div>
-<div class="title">Figure 5. GitHub Allow Access Prompt</div>
+<div class="title">Figure 15. GitHub Allow Access Prompt</div>
 </div>
 </li>
 <li>
 <p>After you are signed in, navigate to the <code>Settings</code> page. Notice that GitHub has authenticated the user and provided identity information to RHDH.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/gh-identity-visible.png" alt="gh identity visible" width="500">
+<img src="_images/settings.png" alt="settings" width="500">
 </div>
-<div class="title">Figure 6. GitHub Identity in Settings Page</div>
+<div class="title">Figure 16. GitHub Identity in Settings Page</div>
 </div>
 </li>
 <li>
-<p>Click on the logged in <code>User Entity</code> in the <code>Settings</code> page to view the detail imported from GitHub. Notice that the plugin has fetched the details of the logged in user from GitHub.</p>
+<p>Click on the logged in <code>User Entity</code> in the <code>Settings</code> page to view the detail imported from GitHub.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/view-gh-profile.png" alt="view gh profile" width="400">
+<img src="_images/profile.png" alt="profile" width="400">
 </div>
-<div class="title">Figure 7. View Profile Data</div>
+<div class="title">Figure 17. User Entity</div>
+</div>
+<div class="paragraph">
+<p>Notice that the plugin has fetched the details of the logged in user from GitHub.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/plugin.png" alt="plugin" width="400">
+</div>
+<div class="title">Figure 18. View Profile Data</div>
 </div>
 </li>
 <li>
@@ -603,7 +693,7 @@ spec:
 <div class="content">
 <img src="_images/view-kind-groups.png" alt="view kind groups">
 </div>
-<div class="title">Figure 8. View Groups (Teams) from GitHub</div>
+<div class="title">Figure 19. View Groups (Teams) from GitHub</div>
 </div>
 </li>
 <li>
@@ -612,7 +702,7 @@ spec:
 <div class="content">
 <img src="_images/view-kind-users.png" alt="view kind users">
 </div>
-<div class="title">Figure 9. View Users Imported from GitHub</div>
+<div class="title">Figure 20. View Users Imported from GitHub</div>
 </div>
 </li>
 </ol>
@@ -632,14 +722,14 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: Red Hat Developer Hub
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io
     backend:
       auth:
         keys:
           - secret: "${BACKEND_SECRET}"
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io
       cors:
-        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+        origin: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io
     auth:
       environment: production
       providers:

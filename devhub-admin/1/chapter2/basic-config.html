@@ -307,7 +307,20 @@ The priority of the configurations is determined by the following rules, in orde
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create a new ConfigMap named <strong>app-config-rhdh</strong> resource in the same OpenShift project where you installed RHDH (<strong>devhub</strong>). Click on <code>ConfigMap &gt; Create ConfigMap &gt; YAML view</code> and paste the following YAML snippet.</p>
+<p>Create a new ConfigMap named <strong>app-config-rhdh</strong> resource in the same OpenShift project where you installed RHDH (<strong>devhub</strong>).</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Click on <code>ConfigMap</code> &#8594; click <code>Create ConfigMap</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/create_config.png" alt="create config">
+</div>
+<div class="title">Figure 3. ConfigMap</div>
+</div>
+</li>
+<li>
+<p>Select <code>YAML</code> view and paste the following YAML snippet.</p>
 <div class="listingblock">
 <div class="content">
 <pre>kind: ConfigMap
@@ -341,14 +354,27 @@ data:
 </table>
 </div>
 </li>
+</ol>
+</div>
+</li>
 <li>
 <p>Click <code>Create</code> to create the ConfigMap.</p>
 </li>
 <li>
-<p>The custom application configuration file contains a sensitive environment variable, named <strong>BACKEND_SECRET</strong>. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named <strong>rhdh-secrets</strong>, and reference it in the Developer Hub CR. Click <code>Secrets &gt; Create Key/value secret</code>.</p>
+<p>The custom application configuration file contains a sensitive environment variable, named <strong>BACKEND_SECRET</strong>. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named <strong>rhdh-secrets</strong>, and reference it in the Developer Hub CR.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Click <code>Secrets &gt; Create &#8594; Key/value secret</code>:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/secret.png" alt="secret">
+</div>
+<div class="title">Figure 4. Create Secret</div>
+</div>
 </li>
 <li>
-<p>In the <code>Create key/value secret</code> page, enter <strong>rhdh-secrets</strong> in the <code>Secret name</code> field, enter <strong>BACKEND_SECRET</strong> in the <code>Key</code> field. For the <strong>Value</strong> field, open a new command line terminal and generate a base64 encoded string using the following command:</p>
+<p>Enter <strong>rhdh-secrets</strong> in the <code>Secret name</code> field, enter <strong>BACKEND_SECRET</strong> in the <code>Key</code> field. For the <strong>Value</strong> field, open a new command line terminal and generate a base64 encoded string using the following command:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ node -p 'require("crypto").randomBytes(24).toString("base64")'</code></pre>
@@ -359,9 +385,12 @@ data:
 <p>Copy the randomly generated string to the <strong>Value</strong> field, and then click <code>Create</code> to create the secret.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/create-rhdh-secrets.png" alt="create rhdh secrets">
+<img src="_images/random.png" alt="random">
 </div>
-<div class="title">Figure 3. Create a new secret</div>
+<div class="title">Figure 5. Create a new secret</div>
+</div>
+</li>
+</ol>
 </div>
 </li>
 <li>
@@ -370,26 +399,65 @@ data:
 <div class="content">
 <img src="_images/edit-backstage-cr.png" alt="edit backstage cr">
 </div>
-<div class="title">Figure 4. Edit Backstage CR</div>
+<div class="title">Figure 6. Edit Backstage CR</div>
 </div>
 </li>
 <li>
 <p>Reference the <code>app-config-rhdh</code> ConfigMap and the <code>rhdh-secrets</code> secret in the CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>apiVersion: rhdh.redhat.com/v1alpha1
+<pre>apiVersion: rhdh.redhat.com/v1alpha3
 kind: Backstage
 metadata:
-...
+  creationTimestamp: '2025-01-09T11:28:30Z'
+  generation: 1
+  managedFields:
+    - apiVersion: rhdh.redhat.com/v1alpha3
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:application':
+            .: {}
+            'f:appConfig':
+              .: {}
+              'f:mountPath': {}
+            'f:extraFiles':
+              .: {}
+              'f:mountPath': {}
+            'f:replicas': {}
+            'f:route':
+              .: {}
+              'f:enabled': {}
+          'f:database':
+            .: {}
+            'f:enableLocalDb': {}
+      manager: Mozilla
+      operation: Update
+      time: '2025-01-09T11:28:30Z'
+    - apiVersion: rhdh.redhat.com/v1alpha3
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          .: {}
+          'f:conditions': {}
+      manager: manager
+      operation: Update
+      subresource: status
+      time: '2025-01-09T11:28:30Z'
+  name: rhdh
+  namespace: devhub
+  resourceVersion: '57412'
+  uid: ed5c1be6-c7c4-4d49-b0b5-67b83a84a878
 spec:
   application:
     appConfig:
       mountPath: /opt/app-root/src
-      <strong>configMaps:
-         - name: app-config-rhdh
-    extraEnvs:
-      secrets:
-         - name: rhdh-secrets</strong>
+      <strong>configMaps:</strong>
+         <strong>- name: app-config-rhdh</strong>
+    <strong>extraEnvs:</strong>
+      <strong>secrets:</strong>
+         <strong>- name: rhdh-secrets</strong>
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1
@@ -397,7 +465,13 @@ spec:
       enabled: true
   database:
     enableLocalDb: true
-...</pre>
+status:
+  conditions:
+    - lastTransitionTime: '2025-01-09T11:28:30Z'
+      message: ''
+      reason: Deployed
+      status: 'True'
+      type: Deployed</pre>
 </div>
 </div>
 </li>
@@ -410,13 +484,29 @@ spec:
 <div class="content">
 <img src="_images/restart-rollout.png" alt="restart rollout">
 </div>
-<div class="title">Figure 5. Restart RHDH pod to re-read configuration value changes</div>
+<div class="title">Figure 7. Restart RHDH pod to re-read configuration value changes</div>
 </div>
+<div class="paragraph">
+<p>Wait for the RHDH pod to restart (It may take a few minutes). Ensure that the pod is restarted without any errors.</p>
+</div>
+</li>
+<li>
+<p>To troubleshoot failed startup, click on the <code>backstage-rhdh</code> pod, and then click the <code>Resources</code> tab. Click <code>View logs</code> to view the pod logs.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/logs.png" alt="logs">
+</div>
+<div class="title">Figure 8. View Pod logs</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Ensure that you correctly indent the CR yaml file when referencing the secret and ConfigMap. Incorrect indentation may cause the pod restart to fail.</p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>Wait for the RHDH pod to restart (It may take a few minutes). Ensure that the pod is restarted without any errors. To troubleshoot failed startup, click on the <code>backstage-rhdh</code> pod, and then click the <code>Resources</code> tab. Click <code>View logs</code> to view the pod logs. Ensure that you correctly indent the CR yaml file when referencing the secret and ConfigMap. Incorrect indentation may cause the pod restart to fail.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>Throughout the rest of the course, you will edit the <strong>app-config-rhdh</strong> ConfigMap to configure and enable plugins for RHDH.</p>
