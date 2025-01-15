@@ -30,13 +30,31 @@ Configuring GitHub for RHDH authentication involves two major steps:
 ### Create a new GitHub App
 
 . Navigate to https://github.com/organizations/<YOUR_ORGANIZATION>/settings/apps, and then click `New GitHub App`.
++
+image::github_app.png[title=New GitHub App]
+
 . In the `Register new GitHub App` page, fill out the following details:
 
 * `GitHub App name`: *rhdh-app-<your_RHDP_GUID>* (A unique name)
++
+image::git1.png[title=GitHub App name]
+
 * `Homepage URL`: *https://backstage-rhdh-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io* (Your RHDH Route URL)
++
+image::git2.png[title=Homepage URL]
+
 * `Callback URL`: *https://backstage-rhdh-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io/api/auth/github/handler/frame*
++
+image::git3.png[title=Callback URL]
+
 * `Webhook URL`: *https://backstage-rhdh-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io*
++
+image::git4.png[title=Webhook URL]
+
 * `Webhook secret`: *5up3rS3cret* (Provide a strong secret)
++
+image::git5.png[title=Webhook secret]
+
 * Under `Permissions`, expand `Repository Permissions` and ensure that you provide appropriate access (Read-Only, Read and Write etc) to the GitHub features you would like to integrate from RHDH. At a minimum, toggle the following permissions. `Read-only` permissions should be enough. Toggle `Read and write` permissions only if you are sure you will make changes via the GitHub API:
 ** Administration
 ** Commit statuses
@@ -45,47 +63,82 @@ Configuring GitHub for RHDH authentication involves two major steps:
 ** Deployments
 ** Pull Requests
 ** Webhooks
+
 * Toggle other permissions as per your needs.
+
 * Under `Organization permissions`, ensure that you toggle `Read-only` permissions for `Members` so that RHDH can import team and user information from GitHub.
+
 * Select `Only on this account` for the `Where can this GitHub App be installed?` option.
++
+image::git6.png[title=Only on this account]
+
 . Verify your form entries, and when you are satisfied click `Create GitHub App`.
+
 . You will be shown your `App ID` and a client ID. Make note of these values for the next step.
+
 . Click `Generate a new client secret`. Copy the generated secret for the next steps.
 +
-image::2-gh-auth.png[title=Generate Client Secret,width=600]
+image::git8.png[title=Generate Client Secret,width=600]
 
 . Scroll down to the `Private Keys` section and click `Generate a private key`. The private key will be downloaded. Copy the generated private key certificate (it is in PEM format) to a safe location.
-. In the left sidebar menu of the generated app, select `Install App`, and then click `Install`.
-. Select `All Repositories` for `Repository access` and then click `Install`.
 +
-image::8-gh-auth.png[title=Install GitHub App,width=400]
+image::git9.png[title=Generate a private key,width=600]
+
+. In the left sidebar menu of the generated app, select `Install App`, and then click `Install`.
++
+image::git11.png[title=Click Install]
+
+. Once the installation is complete, you shall get a prompt as shown below.
++
+image::git12.png[title=Installation Complete,width=400]
 
 ### Create a Secret to Store GitHub App Credentials
 
 Rather than storing the GitHub App credentials in plain text directly in the `app-config-rhdh` ConfigMap, you will create a secret to store the credentials. You will then refer to the credentials as environment variables in the ConfigMap.
 
+. . Log in to the OpenShift cluster as the `admin` user using the `oc` CLI. Switch to the `devhub` namespace where you installed RHDH.
++
+[subs=+quotes]
+----
+oc login --token=XXXXX --server=https://api.cluster-<guid>.dynamic.redhatworkshops.io:6443
+The server uses a certificate signed by an unknown authority.
+You can bypass the certificate check, but any data you send to the server could be intercepted by others.
+Use insecure connections? (y/n): y
+
+Logged into "https://api.cluster-<guid>.dynamic.redhatworkshops.io:6443" as "admin" using the token provided.
+
+You have access to 75 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "devhub".
+----
+
 . Create a file named `env.sh` with the following environment variables and replace the values with the GitHub App details you created in the previous step. Replace the `GITHUB_APP_PRIVATE_KEY_FILE` with your private key file that you downloaded from GitHub. Change `guid` to your unique RHDP GUID.
 +
 [subs=+quotes]
 ----
+$ cat env.sh
 export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.*https...api//' | sed 's/.6443.*$//')
 export K8S_CLUSTER_API=$(oc cluster-info | head -n 1 |  sed 's/^.*https/https/')
 
 export GITHUB_HOST_DOMAIN=https://github.com
-export GITHUB_ORGANIZATION='Your Org Name'
+
+export GITHUB_ORGANIZATION='<Your Org Name>'
+
 export GITHUB_ORG_URL=$GITHUB_HOST_DOMAIN/$GITHUB_ORGANIZATION
 
 export GITHUB_APP_ID='Your App ID'
+
 export GITHUB_APP_CLIENT_ID='Your client ID'
+
 export GITHUB_APP_CLIENT_SECRET='Your client secret'
-export GITHUB_APP_PRIVATE_KEY_FILE="$(< rhdh-app-<guid>.2024-01-17.private-key.pem)"
+
+export GITHUB_APP_PRIVATE_KEY_FILE='rhdh-app-<guid>.2024-01-17.private-key.pem'
 
 export GITHUB_APP_WEBHOOK_URL='https://rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io'
+
 export GITHUB_APP_WEBHOOK_SECRET='Your webhook secret'
 ----
 
-. Log in to the OpenShift cluster as the `admin` user using the `oc` CLI.
-. Switch to the `devhub` namespace where you installed RHDH.
 . Source the `env.sh` file to export the environment variables:
 +
 [subs=+quotes]
@@ -112,7 +165,9 @@ $ oc set data secret/rhdh-secrets -n devhub \
 ### Configure RHDH for GitHub Authentication
 
 . Log in to the OpenShift web console as the `admin` user and switch to the `Developer Perspective`.
+
 . Click `ConfigMaps` and select the `app-config-rhdh`. Toggle the `YAML` tab to switch to YAML editing mode.
+
 . Add the following YAML configuration at the same indentation level as the `app` attribute. Note the reference to environment variables instead of hard coded credentials:
 +
 [subs=+quotes]
@@ -214,7 +269,11 @@ data:
 ----
 <1> Plugin definition and enable or disable on a per-plugin basis
 
-. Edit the Backstage custom resource (CR) by clicking `Topology` and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting `Edit Backstage`. Add a new attribute named *dynamicPluginsConfigMapName* under *spec.application* as follows and reference the new ConfigMap for the dynamic plugin configuration.
+. Edit the Backstage custom resource (CR) by clicking `Topology` and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting `Edit Backstage`.
++
+image::edit.png[title=Edit Backstage,width=600]
++
+Add a new attribute named *dynamicPluginsConfigMapName* under *spec.application* as follows and reference the new ConfigMap for the dynamic plugin configuration.
 +
 [subs=+quotes]
 ----
@@ -234,29 +293,33 @@ spec:
 +
 Click `Save` when done.
 
-. Restart the RHDH pod by selecting the `Restart rollout` option in the `Topology` view. Wait for a few minutes and verify that the pod is restarted without any errors. If there are errors, check the pod logs for missing attributes in the YAML files, or wrong indentation. 
+. Restart the RHDH pod by selecting the `Restart rollout` option in the `Topology` view.
++
+image::restart.png[title=Restart rollout,width=600]
++
+Wait for a few minutes and verify that the pod is restarted without any errors. If there are errors, check the pod logs for missing attributes in the YAML files, or wrong indentation.
 
 ### Verify User Sign In
 
-. If you are signed in as a `Guest` RHDH user, then sign out by selecting the `Sign Out` (expand the `...` next to the Profile card) in the `Settings > Profile` page.
+. . Click the `Open URL` link to access Red Hat Developer Hub.
 +
-image::guest-sign-out.png[title=Guest Sign out,width=600]
+image::rhdh-op-installed.png[title=RHDH Open URL]
 
-. Sign in using `GitHub` sign-in method in the RHDH home page
+. Sign in using `GitHub` sign-in method in the RHDH home page. You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.
 +
-image::sign-in-github.png[title=GitHub Sign in,width=600]
-
-. You will be re-directed to a GitHub prompt asking you to sign in using your GitHub credentials. Once you are signed in, you will be asked to allow access to your GitHub profile data.
-+
-image::4-gh-auth.png[title=GitHub Allow Access Prompt,width=400]
+image::login.png[title=GitHub Allow Access Prompt,width=400]
 
 . After you are signed in, navigate to the `Settings` page. Notice that GitHub has authenticated the user and provided identity information to RHDH.
 +
-image::gh-identity-visible.png[title=GitHub Identity in Settings Page,width=500]
+image::settings.png[title=GitHub Identity in Settings Page,width=500]
 
-. Click on the logged in `User Entity` in the `Settings` page to view the detail imported from GitHub. Notice that the plugin has fetched the details of the logged in user from GitHub.
+. Click on the logged in `User Entity` in the `Settings` page to view the detail imported from GitHub.
 +
-image::view-gh-profile.png[title=View Profile Data,width=400]
+image::profile.png[title=User Entity,width=400]
++
+Notice that the plugin has fetched the details of the logged in user from GitHub.
++
+image::plugin.png[title=View Profile Data,width=400]
 
 . Click on the RHDH `Catalog` in the sidebar. Select the `Kind` drop-down, and note that two new entities called `User` and `Group` are now visible. You may have to wait for a few minutes while the data is fetched from GitHub.
 . Select `Group` in the `Kind` drop-down to view the teams (mapped into RHDH Groups) imported from the GitHub organization. If you have not created teams in GitHub, then do so now before proceeding. You may have to wait for a few minutes while the data is fetched from GitHub.
@@ -280,14 +343,14 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: Red Hat Developer Hub
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io 
     backend:
       auth:
         keys:
-          - secret: "${BACKEND_SECRET}" 
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+          - secret: "${BACKEND_SECRET}"
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io 
       cors:
-        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
+        origin: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io
     auth:
       environment: production
       providers:
