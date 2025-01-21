@@ -16,7 +16,7 @@ RHDH also ingtegrates with GitHub to offer various other features. There are sep
 ### Pre-requisites
 
 * A GitHub account
-* Administrator rights to a GitHub Organization (Create a new Github Org if it does not exist)
+* Administrator rights to a GitHub Organization. Create a new Github Org if it does not exist (https://github.com/organizations/plan[create one for free])
 ** Create one or more *teams* within your GitHub Organization
 ** Invite one or more *users* to your GitHub Organization
 * OpenShift cluster administrator access
@@ -24,10 +24,88 @@ RHDH also ingtegrates with GitHub to offer various other features. There are sep
 
 Configuring GitHub for RHDH authentication involves two major steps:
 
-* Create a new GitHub App for your GitHub organization
+* Create a new GitHub App for your GitHub organization. Below are two ways of creating a new GitHub App:
+
+** Create a New GitHub App Using CLI
+** Create a new GitHub App using GitHub UI
++
+Follow either of the way and move ahead to the next section on **Create a Secret to Store GitHub App Credentials** section
+
 * Edit the `app-config-rhdh` ConfigMap and configure RHDH to use the GitHub App for authentication. To prevent storing credentials in plain text in the ConfigMap, you will embed the credentials for GitHub in a secret, and then refer the secret keys in the `app-config-rhdh` ConfigMap.
 
-### Create a new GitHub App
+=== Create a New GitHub App Using CLI
+
+* You can execute below command that will open a new window to create a new GitHub App. Pass your organization name by replacing the <replace-me> placeholder.
++
+====
+[source,subs="verbatim,quotes"]
+----
+*npx @backstage/cli create-github-app <replace-me>*
+----
+====
++
+You should see the output as follows, type **y** to proceed:
++
+[subs=+quotes]
+----
+Need to install the following packages:
+@backstage/cli@0.29.5
+Ok to proceed? (y) <Press y>
+----
++
+Press **Enter** to enable all of the permissions when requested by the CLI. Sign in to GitHub if prompted.
+
+* A browser window will appear, enter a name for the new GitHub Application.
++
+image::gitapp.png[title=GitHub App name]
+
+* You'll be prompted to install this new application in your organization. Go ahead and click **Install**, granting access to the organization's repositories.
++
+image::perm.png[title=Grant Access to the organization's repositories]
+
+* A file named **github-app-<AppName>-credentials.yaml** was created in the directory where you executed the **create-github-app command**. You'll need that file in a moment, so don't lose it as this file contains **aapID, clientID, clientSecret, privateKey** that you will need in the section **Create a Secret to Store GitHub App Credentials**:
++
+====
+[source,subs="verbatim,quotes"]
+----
+cat github-app-backstage-<AppName>-credentials.yaml
+# Name: Backstage-NewRHDH
+appId: XXXXXXXX
+webhookUrl: XXXXXXXX
+clientId: XXXXXXXX
+clientSecret: XXXXXXXX
+webhookSecret: XXXXXXXX
+privateKey: XXXXXXXX
+----
+====
+
+* Navigate to https://github.com/organizations/<YOUR_ORGANIZATION>/settings/apps, and click `Edit` in front of the app you just created:
++
+image::editapp.png[title=Edit GitHub App]
+
+* Add below details:
+
+. `Homepage URL`: *https://backstage-rhdh-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io* (Your RHDH Route URL)
++
+image::git2.png[title=Homepage URL]
+
+. `Callback URL`: *https://backstage-rhdh-devhub.apps.cluster-<GUID>.dynamic.redhatworkshops.io/api/auth/github/handler/frame*
++
+image::git3.png[title=Callback URL]
+
+. Click *Save Changes*.
+
+* Optionally, you can create teams by following the below steps:
+
+. Navigate to **https://github.com/orgs/<your-org-name>/teams**
++
+image::team.png[title=Select Team]
+
+. Set a team name and add members to the team after it has been created. This basic setup will be enough to see the integration work its magic.
++
+image::tname.png[title=Create Team]
+
+=== Create a new GitHub App using GitHub UI
 
 . Navigate to https://github.com/organizations/<YOUR_ORGANIZATION>/settings/apps, and then click `New GitHub App`.
 +
@@ -98,25 +176,20 @@ Rather than storing the GitHub App credentials in plain text directly in the `ap
 
 . . Log in to the OpenShift cluster as the `admin` user using the `oc` CLI. Switch to the `devhub` namespace where you installed RHDH.
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-oc login --token=XXXXX --server=https://api.cluster-<guid>.dynamic.redhatworkshops.io:6443
-The server uses a certificate signed by an unknown authority.
-You can bypass the certificate check, but any data you send to the server could be intercepted by others.
-Use insecure connections? (y/n): y
-
-Logged into "https://api.cluster-<guid>.dynamic.redhatworkshops.io:6443" as "admin" using the token provided.
-
-You have access to 75 projects, the list has been suppressed. You can list all projects with 'oc projects'
-
-Using project "devhub".
+*oc login --token=XXXXX --server=https://api.cluster-<guid>.dynamic.redhatworkshops.io:6443*
+*oc project devhub*
 ----
+====
 
 . Create a file named `env.sh` with the following environment variables and replace the values with the GitHub App details you created in the previous step. Replace the `GITHUB_APP_PRIVATE_KEY_FILE` with your private key file that you downloaded from GitHub. Change `guid` to your unique RHDP GUID.
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-$ cat env.sh
+*cat env.sh*
 export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.*https...api//' | sed 's/.6443.*$//')
 export K8S_CLUSTER_API=$(oc cluster-info | head -n 1 |  sed 's/^.*https/https/')
 
@@ -132,35 +205,53 @@ export GITHUB_APP_CLIENT_ID='Your client ID'
 
 export GITHUB_APP_CLIENT_SECRET='Your client secret'
 
-export GITHUB_APP_PRIVATE_KEY_FILE='rhdh-app-<guid>.2024-01-17.private-key.pem'
-
 export GITHUB_APP_WEBHOOK_URL='https://rhdh-developer-hub-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io'
 
 export GITHUB_APP_WEBHOOK_SECRET='Your webhook secret'
 ----
+====
 
 . Source the `env.sh` file to export the environment variables:
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-$ source env.sh
+*source env.sh*
 ----
+====
 
 . You created a secret named `rhdh-secrets` to store the backend API token after installation. You need to add more keys to this secret. Execute the following command to add keys related to GitHub authentication:
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-$ oc set data secret/rhdh-secrets -n devhub \
-  GITHUB_HOST_DOMAIN=$GITHUB_HOST_DOMAIN \
-  GITHUB_ORGANIZATION=$GITHUB_ORGANIZATION \
-  GITHUB_ORG_URL=$GITHUB_ORG_URL \
-  GITHUB_APP_ID=$GITHUB_APP_ID \
-  GITHUB_APP_CLIENT_ID=$GITHUB_APP_CLIENT_ID  \
-  GITHUB_APP_CLIENT_SECRET=$GITHUB_APP_CLIENT_SECRET \
-  GITHUB_APP_PRIVATE_KEY_FILE=$GITHUB_APP_PRIVATE_KEY_FILE \
-  GITHUB_APP_WEBHOOK_URL=$GITHUB_APP_WEBHOOK_URL \
-  GITHUB_APP_WEBHOOK_SECRET=$GITHUB_APP_WEBHOOK_SECRET
+oc set data secret/rhdh-secrets -n devhub \
+  --from-literal=GITHUB_HOST_DOMAIN=$GITHUB_HOST_DOMAIN \
+  --from-literal=GITHUB_ORGANIZATION=$GITHUB_ORGANIZATION
+
+oc set data secret/rhdh-secrets -n devhub --from-literal=GITHUB_APP_ID=$GITHUB_APP_ID
+
+oc set data secret/rhdh-secrets -n devhub --from-literal=GITHUB_APP_CLIENT_ID=$GITHUB_APP_CLIENT_ID
+
+oc set data secret/rhdh-secrets -n devhub --from-literal=GITHUB_APP_CLIENT_SECRET=$GITHUB_APP_CLIENT_SECRET
+
+oc set data secret/rhdh-secrets -n devhub --from-literal=GITHUB_APP_WEBHOOK_URL=$GITHUB_APP_WEBHOOK_URL
+
+oc set data secret/rhdh-secrets -n devhub --from-literal=GITHUB_APP_WEBHOOK_SECRET=$GITHUB_APP_WEBHOOK_SECRET
 ----
+====
+
+
+. Download the private key you created in **Create a new GitHub App using GitHub UI** and substitute it's name in below command.
++
+====
+[source,subs="verbatim,quotes"]
+----
+oc set data secret/rhdh-secrets -n devhub --from-file=GITHUB_APP_PRIVATE_KEY_FILE=rhdh-app-xn5zv.2025-01-10.private-key.pem
+----
+====
++
+In case you followed **Create a New GitHub App Using CLI** way of creating GitHub App, then copy the private key section mentioned in the file named **github-app-<AppName>-credentials.yaml** and save the key in a separate file, supply this new file name to above command.
 
 ### Configure RHDH for GitHub Authentication
 
@@ -170,21 +261,22 @@ $ oc set data secret/rhdh-secrets -n devhub \
 
 . Add the following YAML configuration at the same indentation level as the `app` attribute. Note the reference to environment variables instead of hard coded credentials:
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 ...
 app-config-rhdh.yaml: |
     app:
       title: Red Hat Developer Hub
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
     backend:
       auth:
         keys:
-          - secret: "${BACKEND_SECRET}" 
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io 
+          - secret: "${BACKEND_SECRET}"
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
       cors:
-        origin: https://backstage-rhdh-devhub.apps.cluster-jf4k8.dynamic.redhatworkshops.io
-    *auth:
+        origin: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
+    auth:
       environment: production <1>
       providers:
         github: <2>
@@ -202,47 +294,40 @@ app-config-rhdh.yaml: |
               webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
               privateKey: |
                 ${GITHUB_APP_PRIVATE_KEY_FILE}
-    signInPage: github* <4> 
+    signInPage: github* <4>
+    catalog:
+      providers:
+        github: <5>
+          providerId:
+            organization: "${GITHUB_ORGANIZATION}"
+            schedule: <6>
+              frequency:
+                minutes: 30
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
+        githubOrg:
+          githubUrl: "${GITHUB_HOST_DOMAIN}"
+          orgs: [ "${GITHUB_ORGANIZATION}" ]
+          schedule: <2>
+            frequency:
+              minutes: 30
+            initialDelay:
+              seconds: 15
+            timeout:
+              minutes: 15
 ----
+====
++
 <1> Marking the environment as `production` hides the Guest login in the RHDH home page
 <2> Add configuration for the `GitHub` auth provider
 <3> Generic integration plugin for GitHub. This is used by various GitHub plugins to integrate with the GitHub API
 <4> Enable log in using GitHub credentials in the RHDH front end
+<5> Configuration for GitHub plugin to periodically scan GitHub repositories and import into the RHDH catalog
+<6> Scheduled polling of Git repositories and Organization
 
-### Configure RHDH to Import Users and Groups in a GitHub Organization
-
-. To enable GitHub Organization member discovery, add the following YAML configuration at the same indentation level as the `app` attribute, and below the `signInPage` attribute:
-+
-[subs=+quotes]
-----
-signInPage: github
-*catalog:
-  providers:
-    github: <1>
-      providerId:
-        organization: "${GITHUB_ORGANIZATION}"
-        schedule: <2>
-          frequency:
-            minutes: 30
-          initialDelay:
-            seconds: 15
-          timeout:
-            minutes: 15
-    githubOrg:
-      githubUrl: "${GITHUB_HOST_DOMAIN}"
-      orgs: [ "${GITHUB_ORGANIZATION}" ]
-      schedule: <2>
-        frequency:
-          minutes: 30
-        initialDelay:
-          seconds: 15
-        timeout:
-          minutes: 15*
-----
-<1> Configuration for GitHub plugin to periodically scan GitHub repositories and import into the RHDH catalog
-<2> Scheduled polling of Git repositories and Organization
-+
-Click `Save`.
+. Click `Save`.
 
 ### Enable the GitHub Plugins
 
@@ -250,7 +335,8 @@ The final step is to enable the `GitHub` and `GitHub Organization discovery` dyn
 
 . You need to create a new ConfigMap named `dynamic-plugins-rhdh-local` and enable the GitHub related plugins. You will enable other plugins in the upcoming courses to enable other RHDH functionality. Create a new ConfigMap using the following YAML snippet:
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 kind: ConfigMap
 apiVersion: v1
@@ -267,6 +353,8 @@ data:
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic'
         disabled: false
 ----
+====
++
 <1> Plugin definition and enable or disable on a per-plugin basis
 
 . Edit the Backstage custom resource (CR) by clicking `Topology` and then expanding the Backstage instance menu (Blue badge marked 'B') and then selecting `Edit Backstage`.
@@ -275,7 +363,8 @@ image::edit.png[title=Edit Backstage,width=600]
 +
 Add a new attribute named *dynamicPluginsConfigMapName* under *spec.application* as follows and reference the new ConfigMap for the dynamic plugin configuration.
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 ...
 spec:
@@ -290,8 +379,9 @@ spec:
         - name: rhdh-secrets
 ...
 ----
-+
-Click `Save` when done.
+====
+
+. Click `Save` when done.
 
 . Restart the RHDH pod by selecting the `Restart rollout` option in the `Topology` view.
 +
@@ -331,8 +421,10 @@ image::view-kind-groups.png[title=View Groups (Teams) from GitHub]
 image::view-kind-users.png[title=View Users Imported from GitHub]
 
 At the end of this section, you `app-config-rhdh` ConfigMap should look like the following:
-
-```yaml
++
+====
+[source,subs="verbatim,quotes"]
+----
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -343,14 +435,14 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: Red Hat Developer Hub
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io 
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io 
     backend:
       auth:
         keys:
           - secret: "${BACKEND_SECRET}"
-      baseUrl: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io 
+      baseUrl: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io 
       cors:
-        origin: https://backstage-rhdh-devhub.apps.cluster-xn5zv.dynamic.redhatworkshops.io
+        origin: https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
     auth:
       environment: production
       providers:
@@ -392,16 +484,19 @@ data:
               seconds: 15
             timeout:
               minutes: 15
-```
+----
+====
 
 ### Troubleshooting Tips
 
 To troubleshoot issues with the RHDH container, enable debug logging as follows to get verbose logging in container logs:
 
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-$ oc set env deployment rhdh-developer-hub LOG_LEVEL=debug -n devhub
+*oc set env deployment rhdh-developer-hub LOG_LEVEL=debug -n devhub*
 ----
+====
 
 Once debugging is complete switch log level back to *info*.
 
@@ -412,3 +507,4 @@ Once debugging is complete switch log level back to *info*.
 * https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#assembly-auth-provider-github[Set up GitHub Authentication^]
 * https://backstage.io/docs/integrations/github/github-apps#app-permissions[Required GitHub App Permissions^]
 * https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations[Managing GitHub Organizations^]
+* https://developers.redhat.com/articles/2025/01/07/backstage-authentication-and-catalog-providers-practical-guide[Backstage authentication and catalog providers: A practical guide^]

@@ -12,13 +12,14 @@ This course is the `second` in a series of `three` courses about Red Hat Develop
 
 This course covers the install, updates and uninstall process for Red Hat Developer Hub (RHDH). You also learn about the basics of configuration in RHDH, and how to configure authentication using GitHub along with configuring authorization policies using Role Based Access Control (RBAC).
 
-NOTE: The hands-on labs for this course have been tested on *RHDH 1.2*. The labs should mostly work in minor update releases of RHDH. If you encounter any issues, please open a GitHub issue in the course repository.
+NOTE: The hands-on labs for this course have been tested on *RHDH 1.4*. The labs should mostly work in minor update releases of RHDH. If you encounter any issues, please open a GitHub issue in the course repository.
 
 == Contributors
 
 The PTL team acknowledges the valuable contributions of the following Red Hat associates:
 
 * Ravi Srinivasan
+* Yogita Soni
 * Jason Froehlich
 * Hans-Peter Grahsl
 * Rafael Soares

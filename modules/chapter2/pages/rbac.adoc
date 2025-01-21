@@ -55,7 +55,8 @@ image::config2.png[title=Select ConfigMaps]
 
 .. Select `YAML` view and ensure that you added a valid authenticated user for the `admin.users` attribute:
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 catalog:
       providers:
@@ -70,6 +71,11 @@ catalog:
       users:
         - name: user:default/<your_policy_administrator_name>*
 ----
+====
++
+Here the <your_policy_administrator_name> could be found by navigating to your Developer Hub Application, select *Settings*, select tab *Authentication Providers* and select the name highlighted in below image:
++
+image::adminname.png[title=Policy Administrator Name]
 
 . The RBAC plugin is disabled by default. Enable it by adding it to the list of dynamic plugins in the ConfigMap *dynamic-plugins-rhdh-local*.
 +
@@ -106,10 +112,12 @@ This section covers the RBAC Admin UI. Consult the product documentation for the
 WARNING: It is recommended to keep the RBAC system *disabled* when trying out features and functionality of RHDH like Software Templates, plugins, Search, and more. Turn it back on only if you know what you are doing, and you fully understand the impact of policies.
 
 . After you have enabled the RBAC dynamic plugin and add users to the `rbac.admin.users` list in the `app-config-rhdh` ConfigMap, log in to RHDH and then click `Administration` in the bottom of the left sidebar.
++
+image::admin1.png[title=Administration]
 
 . Notice that a new tab called `RBAC` is now enabled. There is a single role named `rbac_admin` declared with the users you declared in the `rbac.admin.users` list assigned to this role.
 +
-image::rbac-admin-ui.png[title=RBAC Admin UI]
+image::admin2.png[title=RBAC Admin UI]
 
 . Click on the `role:default/rbac_admin` link. The policy details page lists the users assigned to this role in the left column, and the list of permitted policies on the right.
 +
@@ -118,16 +126,24 @@ image::rbac-policy-details.png[title=RBAC Policy Mapping]
 This user is allowed to create, edit, update and delete RBAC policies and view catalog items. With RBAC enabled, you need to explicitly allow users to create catalog items.
 
 . Switch back the RBAC `Administration` page. Click `Create` to add a new policy.
++
+image::create1.png[title=Create Policy]
 
 . In the `Create Role` screen, enter `allow-catalog-create-policy` as the policy name, and enter a brief description. Click `Next`.
++
+image::rolename.png[title=Enter Role Name]
 
 . In the `Add users and groups` screen, select users and groups that should be assigned to this role and click `Next`.
++
+image::group.png[title=Enter User/Group]
 
 . In the `Add permission policies` screen, select *catalog* in the `Plugin` field, and *catalog.entity.create* in the `Resource type` field. Ensure `Create` is selected in the actions and click `Next`.
++
+image::permit.png[title=Permission policies]
 
 . Review your choices and click `Create` to create the policy. 
 +
-image::rbac-allow-catalog-create.png[title=RBAC Policy to allow creation of catalog items]
+image::review.png[title=RBAC Policy to allow creation of catalog items]
 
 . You should get a confirmation message that the policy creation was successful. Log out and log in as the user to whom you assigned the policy. Navigate to the `Catalog` page. Verify that a `Create` button is now visible. Similarly, click `APIs` and verify that you can see a `Register Existing API` button. This user is now allowed to create catalog items. You can assign permissions to delete and update catalog items in a similar manner using the RBAC Admin UI.
 
@@ -147,28 +163,70 @@ Detailed coverage of the REST API is beyond the scope of this course. Consult th
 
 ## Lab: RBAC REST API
 
-. To send requests to the RBAC API, you need a JWT token from RHDH to authenticate yourself. In RHDH, log in as a user who can access RBAC policies, and navigate to the `Catalog` page. Open the browser's developer tools pane (for example, on Chrome Ctrl+Shift+C), and click the `Network` tab. Look for HTTP requests like `entity-facets?facet=kind` and click on that entry. In the `Request Headers` section look for the `Authorization` entry. Copy the token value to the clipboard.
+* Log in to RHDH and log in as a user who has access to RBAC policies in the RHDH (Red Hat Dynamic Host Configuration) interface.
+
+* **Open Developer Tools**:
+
+. You can open the developer tools by pressing Ctrl + Shift + I (Windows/Linux) or Cmd + Option + I (Mac), or right-click anywhere on the page and select Inspect. Alternatively, you can press Ctrl + Shift + C (Windows/Linux) or Cmd + Shift + C (Mac) to open the developer tools and directly start inspecting elements on the page.
+
+* **Go to the Network Tab**:
+
+. In the developer tools pane, click on the Network tab. This tab shows all network requests made by the page, including HTTP requests.
+
+* **Navigate to the Catalog Page**:
+
+. While the developer tools are open, go back to the RHDH page, and navigate to the Catalog page or the part of the UI where RBAC policies are listed or accessed.
+
+* **Look for the Request**:
+
+. As you interact with the page (like clicking or navigating), you'll see network activity in the Network tab. The requests will appear as the page loads.
+
+. Look for HTTP requests that contain the keyword entity-facets?facet=kind. These are usually requests made to fetch certain data related to RBAC policies or catalog items.
+
+. You can filter the requests by typing **entity-facets?facet=kind** in the search box inside the Network tab or look for a request with this string in the URL.
+
+* **Click on the Request**:
+
+. When you find a request that matches **entity-facets?facet=kind**, click on it to view the request details.
+
+* **Find the Authorization Header**:
+
+. In the Request Headers section of the request details, you will find a key called Authorization. The Authorization header contains the JWT token that you need.
+
+* **Copy the value of the token (the part after Bearer)**
 +
 image::rbac-token.png[title=Get the Bearer token for the logged in RHDH user]
 
 . Save the token value and RHDH URL to environment variables:
 +
-```bash
-$ export token=<your token value>
-$ export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
-```
+====
+[source,subs="verbatim,quotes"]
+----
+export token=<your token value>
+
+export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io
+----
+====
 
 . Use the `curl` and `jq` CLI tools, or a REST API client, to invoke the RBAC REST API. For example, to list the policies existing in the current RHDH instance:
 +
-```bash
-$ curl $RHDH_URL/api/permission/roles \
+====
+[source,subs="verbatim,quotes"]
+----
+curl $RHDH_URL/api/permission/roles \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $token" \
   -k -s | jq .
+----
+====
++
+You should see the output as follows:
++
+```bash
 [
   {
     "memberReferences": [
-      "user:default/rsriniva"
+      "user:default/<you-account-name>"
     ],
     "name": "role:default/rbac_admin",
     "metadata": {
@@ -176,22 +234,22 @@ $ curl $RHDH_URL/api/permission/roles \
       "description": "The default permission policy for the admin role allows for the creation, deletion, updating, and reading of roles and permission policies.",
       "author": "application configuration",
       "modifiedBy": "application configuration",
-      "createdAt": "2024-06-28T11:17:50.000Z",
-      "lastModified": "2024-07-11T11:00:02.000Z"
+      "createdAt": "2025-01-28T11:17:50.000Z",
+      "lastModified": "2025-01-11T11:00:02.000Z"
     }
   },
   {
     "memberReferences": [
-      "user:default/rsriniva"
+      "user:default/<you-account-name>"
     ],
     "name": "role:default/allow-catalog-create-policy",
     "metadata": {
       "source": "rest",
       "description": "This policy allows users to create catalog items",
-      "author": "user:default/rsriniva",
-      "modifiedBy": "user:default/rsriniva",
-      "createdAt": "2024-07-11T12:03:27.000Z",
-      "lastModified": "2024-07-11T12:03:27.000Z"
+      "author": "user:default/<you-account-name>",
+      "modifiedBy": "user:default/<you-account-name>",
+      "createdAt": "2025-01-11T12:03:27.000Z",
+      "lastModified": "2025-01-11T12:03:27.000Z"
     }
   }
 ]

@@ -33,36 +33,53 @@ image::login.png[title=Login Command]
 
 .. Select the *Log in with this token* command and login into the OpenShift cluster.
 +
-```bash
-$ oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
-```
-
+====
+[source,subs="verbatim,quotes"]
+----
+*oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443*
+----
+====
++
 Ensure that you switch to the *devhub* project.
 +
-```bash
-$ oc project devhub
-```
+====
+[source,subs="verbatim,quotes"]
+----
+*oc project devhub*
+----
+====
 
 . Assuming there is a new version of the RHDH helm chart (for example, *1.4.1*), run the following command to upgrade RHDH.
 +
-```bash
-$ helm upgrade -i rhdh \
-  openshift-helm-charts/redhat-developer-hub --version 1.4.1
-
+====
+[source,subs="verbatim,quotes"]
+----
+*helm upgrade -i rhdh \
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1*
+----
+====
++
+You should see the output as follows:
++
+[subs=+quotes]
+----
 Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
 LAST DEPLOYED: Tue Jan  7 16:27:07 2025
 NAMESPACE: devhub
 STATUS: deployed
 REVISION: 2
-```
+----
 +
 You can also supply extra values to the chart by creating a *new-values.yml* file on your workstation with values that override the attributes in the installed chart, or add new attributes.
 +
-```bash
-$ helm upgrade -i rhdh -f new-values.yml \
-  openshift-helm-charts/redhat-developer-hub --version 1.4.1
-```
+====
+[source,subs="verbatim,quotes"]
+----
+*helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1*
+----
+====
  
 == Upgrading the RHDH Operator using the OpenShift Web Console
 
