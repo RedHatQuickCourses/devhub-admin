@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Upgrading Red Hat Developer Hub :: Red Hat Developer Hub Administration</title>
+    <link rel="prev" href="install-operator.html">
+    <link rel="next" href="uninstall.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Red Hat Developer Hub Administration</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/devhub-admin/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="devhub-admin" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat Developer Hub Administration</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-helm.html">Installing RHDH (Helm Charts)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operator.html">Installing RHDH (Operator)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="upgrade.html">Upgrading RHDH</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="uninstall.html">Uninstalling RHDH</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Basic Configuration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/basic-config.html">Basic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/git-auth.html">GitHub Integration and Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/rbac.html">Role Based Access Control</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat Developer Hub Administration</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat Developer Hub Administration</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat Developer Hub Administration</a></li>
+    <li><a href="index.html">Installation</a></li>
+    <li><a href="upgrade.html">Upgrading RHDH</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Upgrading Red Hat Developer Hub</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Upgrading RHDH depends on your install method that you selected.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Before you perform any updates to RHDH, ensure that you back up <strong>ALL</strong> the data in the RHDH PostreSQL database, plus any RHDH configuration stored in ConfigMaps and Secrets!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_helm_chart"><a class="anchor" href="#_upgrading_the_rhdh_helm_chart"></a>Upgrading the RHDH Helm Chart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update RHDH using the OpenShift web console.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ensure that you are in the <strong>Developer</strong> perspective of the OpenShift console. Click on <code>Helm</code> to view the installed releases in the <code>Helm Releases</code> tab.</p>
+</li>
+<li>
+<p>Expand the hamburger menu on the right of the <code>rhdh</code> release and click <code>Upgrade</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/helm-release-upgrade.png" alt="helm release upgrade">
+</div>
+<div class="title">Figure 1. Upgrade Helm Release</div>
+</div>
+</li>
+<li>
+<p>In the <code>Upgrade Helm Release</code> page, select the version of RHDH you want to upgrade to in the <code>Chart version</code> drop-down. This list shows the different helm chart versions of RHDH that have been publicly released.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/select-chart-upgrade.png" alt="select chart upgrade">
+</div>
+<div class="title">Figure 2. Select Upgrade Version</div>
+</div>
+</li>
+<li>
+<p>After you have selected a version for upgrade, click <code>Upgrade</code>. Wait for 10-15 minutes while the resources in the older versions are deleted, and newer versions of the RHDH pod(s) are launched.</p>
+</li>
+<li>
+<p>Close all open RHDH web pages, and log in again to verify that the upgrade was successful.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_helm_chart_using_the_cli"><a class="anchor" href="#_upgrading_the_rhdh_helm_chart_using_the_cli"></a>Upgrading the RHDH Helm Chart using the CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update RHDH using the <strong>helm</strong> CLI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' &#8594; 'Copy login command' and select "Display Token".</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/login.png" alt="login">
+</div>
+<div class="title">Figure 3. Login Command</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Ensure that you switch to the <strong>devhub</strong> project.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>oc project devhub</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Assuming there is a new version of the RHDH helm chart (for example, <strong>1.4.1</strong>), run the following command to upgrade RHDH.</p>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>helm upgrade -i rhdh \
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the output as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Release "rhdh" has been upgraded. Happy Helming!
+NAME: rhdh
+LAST DEPLOYED: Tue Jan  7 16:27:07 2025
+NAMESPACE: devhub
+STATUS: deployed
+REVISION: 2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also supply extra values to the chart by creating a <strong>new-values.yml</strong> file on your workstation with values that override the attributes in the installed chart, or add new attributes.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>helm upgrade -i rhdh -f new-values.yml \
+  openshift-helm-charts/redhat-developer-hub --version 1.4.1</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_rhdh_operator_using_the_openshift_web_console"><a class="anchor" href="#_upgrading_the_rhdh_operator_using_the_openshift_web_console"></a>Upgrading the RHDH Operator using the OpenShift Web Console</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The default setting during operator install is set to <strong>Automatic</strong> mode. In this mode, new versions of the operator are <em>automatically</em> downloaded and applied. If you chose the <strong>Manual</strong> mode, a cluster administrator needs to <em>manually</em> approve each upgrade. In such cases, switch to the <code>Administrator</code> perspective, and then click on <code>Operators &gt; Installed Operators</code> to view the updates for the RHDH operator.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/op-upgrade.png" alt="op upgrade">
+</div>
+<div class="title">Figure 4. Operator Updates</div>
+</div>
+<div class="paragraph">
+<p>Click <code>Upgrade Available</code> for the RHDH operator, and then click <code>Preview InstallPlan</code>. Click <code>Approve</code> to approve the update.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="install-operator.html">Installing RHDH (Operator)</a></span>
+  <span class="next"><a href="uninstall.html">Uninstalling RHDH</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
