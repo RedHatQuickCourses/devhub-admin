@@ -235,9 +235,11 @@ The main reason to declare policy administrators is to allow a certain limited n
 </li>
 <li>
 <p>Select <code>YAML</code> view and ensure that you added a valid authenticated user for the <code>admin.users</code> attribute:</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>catalog:
+<pre class="highlightjs highlight"><code class="language-none hljs">catalog:
       providers:
         github:
           ...
@@ -248,8 +250,19 @@ The main reason to declare policy administrators is to allow a certain limited n
   rbac:
     admin:
       users:
-        - name: user:default/&lt;your_policy_administrator_name&gt;</strong></pre>
+        - name: user:default/&lt;your_policy_administrator_name&gt;</strong></code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Here the &lt;your_policy_administrator_name&gt; could be found by navigating to your Developer Hub Application, select <strong>Settings</strong>, select tab <strong>Authentication Providers</strong> and select the name highlighted in below image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/adminname.png" alt="adminname">
+</div>
+<div class="title">Figure 2. Policy Administrator Name</div>
 </div>
 </li>
 </ol>
@@ -315,14 +328,20 @@ It is recommended to keep the RBAC system <strong>disabled</strong> when trying 
 <ol class="arabic">
 <li>
 <p>After you have enabled the RBAC dynamic plugin and add users to the <code>rbac.admin.users</code> list in the <code>app-config-rhdh</code> ConfigMap, log in to RHDH and then click <code>Administration</code> in the bottom of the left sidebar.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/admin1.png" alt="admin1">
+</div>
+<div class="title">Figure 3. Administration</div>
+</div>
 </li>
 <li>
 <p>Notice that a new tab called <code>RBAC</code> is now enabled. There is a single role named <code>rbac_admin</code> declared with the users you declared in the <code>rbac.admin.users</code> list assigned to this role.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/rbac-admin-ui.png" alt="rbac admin ui">
+<img src="_images/admin2.png" alt="admin2">
 </div>
-<div class="title">Figure 2. RBAC Admin UI</div>
+<div class="title">Figure 4. RBAC Admin UI</div>
 </div>
 </li>
 <li>
@@ -331,7 +350,7 @@ It is recommended to keep the RBAC system <strong>disabled</strong> when trying 
 <div class="content">
 <img src="_images/rbac-policy-details.png" alt="rbac policy details">
 </div>
-<div class="title">Figure 3. RBAC Policy Mapping</div>
+<div class="title">Figure 5. RBAC Policy Mapping</div>
 </div>
 <div class="paragraph">
 <p>This user is allowed to create, edit, update and delete RBAC policies and view catalog items. With RBAC enabled, you need to explicitly allow users to create catalog items.</p>
@@ -339,23 +358,47 @@ It is recommended to keep the RBAC system <strong>disabled</strong> when trying 
 </li>
 <li>
 <p>Switch back the RBAC <code>Administration</code> page. Click <code>Create</code> to add a new policy.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/create1.png" alt="create1">
+</div>
+<div class="title">Figure 6. Create Policy</div>
+</div>
 </li>
 <li>
 <p>In the <code>Create Role</code> screen, enter <code>allow-catalog-create-policy</code> as the policy name, and enter a brief description. Click <code>Next</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rolename.png" alt="rolename">
+</div>
+<div class="title">Figure 7. Enter Role Name</div>
+</div>
 </li>
 <li>
 <p>In the <code>Add users and groups</code> screen, select users and groups that should be assigned to this role and click <code>Next</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/group.png" alt="group">
+</div>
+<div class="title">Figure 8. Enter User/Group</div>
+</div>
 </li>
 <li>
 <p>In the <code>Add permission policies</code> screen, select <strong>catalog</strong> in the <code>Plugin</code> field, and <strong>catalog.entity.create</strong> in the <code>Resource type</code> field. Ensure <code>Create</code> is selected in the actions and click <code>Next</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/permit.png" alt="permit">
+</div>
+<div class="title">Figure 9. Permission policies</div>
+</div>
 </li>
 <li>
 <p>Review your choices and click <code>Create</code> to create the policy.</p>
 <div class="imageblock">
 <div class="content">
-<img src="_images/rbac-allow-catalog-create.png" alt="rbac allow catalog create">
+<img src="_images/review.png" alt="review">
 </div>
-<div class="title">Figure 4. RBAC Policy to allow creation of catalog items</div>
+<div class="title">Figure 10. RBAC Policy to allow creation of catalog items</div>
 </div>
 </li>
 <li>
@@ -407,38 +450,124 @@ If RBAC is enabled, you may need to permit actions on the <code>policy.entity</c
 <div class="sect1">
 <h2 id="_lab_rbac_rest_api"><a class="anchor" href="#_lab_rbac_rest_api"></a>Lab: RBAC REST API</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Log in to RHDH and log in as a user who has access to RBAC policies in the RHDH (Red Hat Dynamic Host Configuration) interface.</p>
+</li>
+<li>
+<p><strong>Open Developer Tools</strong>:</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>To send requests to the RBAC API, you need a JWT token from RHDH to authenticate yourself. In RHDH, log in as a user who can access RBAC policies, and navigate to the <code>Catalog</code> page. Open the browser&#8217;s developer tools pane (for example, on Chrome Ctrl+Shift+C), and click the <code>Network</code> tab. Look for HTTP requests like <code>entity-facets?facet=kind</code> and click on that entry. In the <code>Request Headers</code> section look for the <code>Authorization</code> entry. Copy the token value to the clipboard.</p>
+<p>You can open the developer tools by pressing Ctrl + Shift + I (Windows/Linux) or Cmd + Option + I (Mac), or right-click anywhere on the page and select Inspect. Alternatively, you can press Ctrl + Shift + C (Windows/Linux) or Cmd + Shift + C (Mac) to open the developer tools and directly start inspecting elements on the page.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Go to the Network Tab</strong>:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the developer tools pane, click on the Network tab. This tab shows all network requests made by the page, including HTTP requests.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Navigate to the Catalog Page</strong>:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>While the developer tools are open, go back to the RHDH page, and navigate to the Catalog page or the part of the UI where RBAC policies are listed or accessed.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Look for the Request</strong>:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As you interact with the page (like clicking or navigating), you&#8217;ll see network activity in the Network tab. The requests will appear as the page loads.</p>
+</li>
+<li>
+<p>Look for HTTP requests that contain the keyword entity-facets?facet=kind. These are usually requests made to fetch certain data related to RBAC policies or catalog items.</p>
+</li>
+<li>
+<p>You can filter the requests by typing <strong>entity-facets?facet=kind</strong> in the search box inside the Network tab or look for a request with this string in the URL.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Click on the Request</strong>:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>When you find a request that matches <strong>entity-facets?facet=kind</strong>, click on it to view the request details.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Find the Authorization Header</strong>:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the Request Headers section of the request details, you will find a key called Authorization. The Authorization header contains the JWT token that you need.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><strong>Copy the value of the token (the part after Bearer)</strong></p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rbac-token.png" alt="rbac token">
 </div>
-<div class="title">Figure 5. Get the Bearer token for the logged in RHDH user</div>
+<div class="title">Figure 11. Get the Bearer token for the logged in RHDH user</div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Save the token value and RHDH URL to environment variables:</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ export token=&lt;your token value&gt;
-$ export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">export token=&lt;your token value&gt;
+
+export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
 <li>
 <p>Use the <code>curl</code> and <code>jq</code> CLI tools, or a REST API client, to invoke the RBAC REST API. For example, to list the policies existing in the current RHDH instance:</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl $RHDH_URL/api/permission/roles \
+<pre class="highlightjs highlight"><code class="language-none hljs">curl $RHDH_URL/api/permission/roles \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $token" \
-  -k -s | jq .
-[
+  -k -s | jq .</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the output as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[
   {
     "memberReferences": [
-      "user:default/rsriniva"
+      "user:default/&lt;you-account-name&gt;"
     ],
     "name": "role:default/rbac_admin",
     "metadata": {
@@ -446,22 +575,22 @@ $ export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynami
       "description": "The default permission policy for the admin role allows for the creation, deletion, updating, and reading of roles and permission policies.",
       "author": "application configuration",
       "modifiedBy": "application configuration",
-      "createdAt": "2024-06-28T11:17:50.000Z",
-      "lastModified": "2024-07-11T11:00:02.000Z"
+      "createdAt": "2025-01-28T11:17:50.000Z",
+      "lastModified": "2025-01-11T11:00:02.000Z"
     }
   },
   {
     "memberReferences": [
-      "user:default/rsriniva"
+      "user:default/&lt;you-account-name&gt;"
     ],
     "name": "role:default/allow-catalog-create-policy",
     "metadata": {
       "source": "rest",
       "description": "This policy allows users to create catalog items",
-      "author": "user:default/rsriniva",
-      "modifiedBy": "user:default/rsriniva",
-      "createdAt": "2024-07-11T12:03:27.000Z",
-      "lastModified": "2024-07-11T12:03:27.000Z"
+      "author": "user:default/&lt;you-account-name&gt;",
+      "modifiedBy": "user:default/&lt;you-account-name&gt;",
+      "createdAt": "2025-01-11T12:03:27.000Z",
+      "lastModified": "2025-01-11T12:03:27.000Z"
     }
   }
 ]</code></pre>
@@ -472,6 +601,9 @@ $ export RHDH_URL=https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynami
 </div>
 </li>
 </ol>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>

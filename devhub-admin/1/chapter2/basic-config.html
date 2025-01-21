@@ -321,9 +321,11 @@ The priority of the configurations is determined by the following rules, in orde
 </li>
 <li>
 <p>Select <code>YAML</code> view and paste the following YAML snippet.</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>kind: ConfigMap
+<pre class="highlightjs highlight"><code class="language-none hljs">kind: ConfigMap
 apiVersion: v1
 metadata:
   name: app-config-rhdh
@@ -338,7 +340,9 @@ data:
           - secret: <strong>"${BACKEND_SECRET}"</strong> <i class="conum" data-value="2"></i><b>(2)</b>
       baseUrl: <strong>https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</strong> <i class="conum" data-value="1"></i><b>(1)</b>
       cors:
-        origin: <strong>https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</strong> <i class="conum" data-value="1"></i><b>(1)</b></pre>
+        origin: <strong>https://backstage-rhdh-devhub.apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</strong> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="colist arabic">
@@ -365,7 +369,7 @@ data:
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Click <code>Secrets &gt; Create &#8594; Key/value secret</code>:</p>
+<p>Click <strong>Secrets &gt; Create &#8594; Key/value secret</strong>:</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/secret.png" alt="secret">
@@ -375,9 +379,13 @@ data:
 </li>
 <li>
 <p>Enter <strong>rhdh-secrets</strong> in the <code>Secret name</code> field, enter <strong>BACKEND_SECRET</strong> in the <code>Key</code> field. For the <strong>Value</strong> field, open a new command line terminal and generate a base64 encoded string using the following command:</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ node -p 'require("crypto").randomBytes(24).toString("base64")'</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>node -p 'require("crypto").randomBytes(24).toString("base64")'</strong></code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
@@ -401,12 +409,30 @@ data:
 </div>
 <div class="title">Figure 6. Edit Backstage CR</div>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You will get the <code>Edit Backstage</code> option only if you have installed the Developer Hub using RHDH operator. If you have installed Developer Hub using Helm Charts, you will need to edit Helm Charts.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </li>
 <li>
-<p>Reference the <code>app-config-rhdh</code> ConfigMap and the <code>rhdh-secrets</code> secret in the CR:</p>
+<p>Reference the <code><strong>app-config-rhdh</strong></code> ConfigMap and the <code><strong>rhdh-secrets</strong></code> secret in the CR:</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>apiVersion: rhdh.redhat.com/v1alpha3
+<pre class="highlightjs highlight"><code class="language-none hljs">apiVersion: rhdh.redhat.com/v1alpha3
 kind: Backstage
 metadata:
   creationTimestamp: '2025-01-09T11:28:30Z'
@@ -471,7 +497,9 @@ status:
       message: ''
       reason: Deployed
       status: 'True'
-      type: Deployed</pre>
+      type: Deployed</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>

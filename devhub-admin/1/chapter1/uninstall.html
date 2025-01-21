@@ -187,36 +187,48 @@ Before you uninstall RHDH, verify if you need to back up the data in the RHDH Po
 <ol class="loweralpha" type="a">
 <li>
 <p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</strong></code></pre>
 </div>
 </div>
-</li>
-</ol>
 </div>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p>Ensure that you switch to the <strong>devhub</strong> project.</p>
 </div>
-<div class="paragraph">
-<p>+</p>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>oc project devhub</strong></code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
 <li>
 <p>Run the following command to uninstall RHDH</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>$ <strong>helm uninstall rhdh</strong>
-release "rhdh" uninstalled</pre>
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>helm uninstall rhdh</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the output as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>release "rhdh" uninstalled</pre>
 </div>
 </div>
 </li>

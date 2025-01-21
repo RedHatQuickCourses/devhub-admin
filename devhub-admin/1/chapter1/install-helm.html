@@ -325,34 +325,46 @@ You have now successfully installed Red Hat Developer Hub on your OpenShift clus
 <ol class="arabic">
 <li>
 <p>Add the OpenShift helm chart repository</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm repo add openshift-helm-charts https://charts.openshift.io/</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">helm repo add openshift-helm-charts https://charts.openshift.io/</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
 <li>
 <p>Download the default <strong>values.yaml</strong> file for the RHDH helm chart</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ helm show values \
+<pre class="highlightjs highlight"><code class="language-none hljs">helm show values \
   openshift-helm-charts/redhat-developer-hub \
   --version 1.4.0 &gt; /tmp/values.yaml</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
 <li>
 <p>Change the value of the <strong>global.clusterRouterBase</strong> attribute to the wildcard OpenShift DNS name, and also edit the <strong>upstream.nameOverride</strong> to <strong>rhdh</strong>.</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>global:
+<pre class="highlightjs highlight"><code class="language-none hljs">global:
   clusterRouterBase: <strong>apps.cluster-&lt;guid&gt;.dynamic.redhatworkshops.io</strong>
   host: ""
 
 upstream:
   nameOverride: <strong>rhdh</strong>
   backstage:
-...</pre>
+...</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
@@ -368,9 +380,13 @@ upstream:
 <ol class="loweralpha" type="a">
 <li>
 <p>Select the <strong>Log in with this token</strong> command and login into the OpenShift cluster.</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">oc login --token=XXXXX --server=https://api.cluster-&lt;your_guid&gt;.dynamic.redhatworkshops.io:6443</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
@@ -382,25 +398,36 @@ upstream:
 <div class="paragraph">
 <p>Ensure that you switch to the <strong>devhub</strong> project.</p>
 </div>
-<div class="paragraph">
-<p>+</p>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc project devhub</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">oc project devhub</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Install the RHDH helm chart with the updated <strong>values.yaml</strong> file</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>$ <strong>helm upgrade \
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>helm upgrade \
   -i rhdh -f /tmp/values.yaml \
-  openshift-helm-charts/redhat-developer-hub</strong>
-
-Release "rhdh" has been upgraded. Happy Helming!
+  openshift-helm-charts/redhat-developer-hub</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the output as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
 LAST DEPLOYED: Tue Jan  7 16:27:07 2025
 NAMESPACE: devhub
@@ -411,10 +438,21 @@ REVISION: 1</pre>
 </li>
 <li>
 <p>Wait for 10-15 minutes while the helm chart is installed. Verify that the <strong>rhdh-devhub</strong> and <strong>rhdh-postgresql</strong> pods are in <strong>Running</strong> state.</p>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>$ <strong>oc get pods</strong>
-NAME                   READY   STATUS    RESTARTS   AGE
+<pre class="highlightjs highlight"><code class="language-none hljs"><strong>oc get pods</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the output as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                   READY   STATUS    RESTARTS   AGE
 rhdh-7485cc8cd-b4dpp   1/1     Running   0          103s
 rhdh-postgresql-0      1/1     Running   0          25m</pre>
 </div>
