@@ -101,7 +101,8 @@ image::create_config.png[title=ConfigMap]
 
 .. Select `YAML` view and paste the following YAML snippet.
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 kind: ConfigMap
 apiVersion: v1
@@ -120,6 +121,8 @@ data:
       cors:
         origin: *https://backstage-rhdh-devhub.apps.cluster-<guid>.dynamic.redhatworkshops.io* <1>
 ----
+====
++
 <1> The RHDH URL. Replace *guid* with your unique guid from RHDP
 <2> A secret to define the mandatory RHDH backend authentication key
 
@@ -127,15 +130,18 @@ data:
 
 . The custom application configuration file contains a sensitive environment variable, named *BACKEND_SECRET*. This variable contains a mandatory backend authentication key that Developer Hub uses to reference an environment variable defined in an OpenShift Container Platform secret. You must create a secret, named *rhdh-secrets*, and reference it in the Developer Hub CR. 
 
-.. Click `Secrets > Create -> Key/value secret`:
+.. Click *Secrets > Create -> Key/value secret*:
 +
 image::secret.png[title=Create Secret]
 
 .. Enter *rhdh-secrets* in the `Secret name` field, enter *BACKEND_SECRET* in the `Key` field. For the *Value* field, open a new command line terminal and generate a base64 encoded string using the following command:
 +
-```bash
-$ node -p 'require("crypto").randomBytes(24).toString("base64")'
-```
+====
+[source,subs="verbatim,quotes"]
+----
+*node -p 'require("crypto").randomBytes(24).toString("base64")'*
+----
+====
 
 .. Copy the randomly generated string to the *Value* field, and then click `Create` to create the secret.
 +
@@ -144,10 +150,15 @@ image::random.png[title=Create a new secret]
 . Now that you have created your own custom configuration file with an embedded secret, you need to reference the new custom configuration file in the backstage custom resource (CR) and restart the RHDH container for the changes to take effect. Click on `Topology` in the left sidebar, and then expand the hamburger menu (three vertical dots) next to the `rhdh` Backstage custom resource (CR) to select the `Edit Backstage` option
 +
 image::edit-backstage-cr.png[title=Edit Backstage CR]
-
-. Reference the `app-config-rhdh` ConfigMap and the `rhdh-secrets` secret in the CR:
 +
-[subs=+quotes]
+====
+NOTE: You will get the `Edit Backstage` option only if you have installed the Developer Hub using RHDH operator. If you have installed Developer Hub using Helm Charts, you will need to edit Helm Charts.
+====
+
+. Reference the `*app-config-rhdh*` ConfigMap and the `*rhdh-secrets*` secret in the CR:
++
+====
+[source,subs="verbatim,quotes"]
 ----
 apiVersion: rhdh.redhat.com/v1alpha3
 kind: Backstage
@@ -216,6 +227,7 @@ status:
       status: 'True'
       type: Deployed
 ----
+====
 
 . Click `Save` to save the changes to the Backstage CR.
 
@@ -241,3 +253,4 @@ You can also scale down the RHDH pod to zero (0), and then scale it up back to o
 
 * https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started[Adding a custom application configuration file to RHDH^]
 * https://backstage.io/docs/conf[Configuration in Backstage^]
+

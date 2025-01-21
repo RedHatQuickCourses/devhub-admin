@@ -25,21 +25,36 @@ image::login.png[title=Login Command]
 
 .. Select the *Log in with this token* command and login into the OpenShift cluster.
 +
-```bash
-$ oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
-```
-
+====
+[source,subs="verbatim,quotes"]
+----
+*oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443*
+----
+====
++
 Ensure that you switch to the *devhub* project.
 +
-```bash
-$ oc project devhub
-```
+====
+[source,subs="verbatim,quotes"]
+----
+*oc project devhub*
+----
+====
+
 
 . Run the following command to uninstall RHDH
 +
+====
+[source,subs="verbatim,quotes"]
+----
+*helm uninstall rhdh*
+----
+====
++
+You should see the output as follows:
++
 [subs=+quotes]
 ----
-$ *helm uninstall rhdh*
 release "rhdh" uninstalled
 ----
 

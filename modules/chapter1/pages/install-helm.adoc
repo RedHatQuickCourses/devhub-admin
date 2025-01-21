@@ -92,21 +92,28 @@ image::cli-tools.png[title=Download CLI Tools]
 
 . Add the OpenShift helm chart repository
 +
-```bash
-$ helm repo add openshift-helm-charts https://charts.openshift.io/
-```
+====
+[source,subs="verbatim,quotes"]
+----
+helm repo add openshift-helm-charts https://charts.openshift.io/
+----
+====
 
 . Download the default *values.yaml* file for the RHDH helm chart
 +
-```bash
-$ helm show values \
+====
+[source,subs="verbatim,quotes"]
+----
+helm show values \
   openshift-helm-charts/redhat-developer-hub \
   --version 1.4.0 > /tmp/values.yaml
-```
+----
+====
 
 . Change the value of the *global.clusterRouterBase* attribute to the wildcard OpenShift DNS name, and also edit the *upstream.nameOverride* to *rhdh*.
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
 global:
   clusterRouterBase: *apps.cluster-<guid>.dynamic.redhatworkshops.io*
@@ -117,6 +124,7 @@ upstream:
   backstage:
 ...
 ----
+====
 
 . Log in to the OpenShift cluster as the cluster administrator. For this, select 'admin' -> 'Copy login command' and select "Display Token".
 +
@@ -124,24 +132,36 @@ image::login.png[title=Login Command]
 
 .. Select the *Log in with this token* command and login into the OpenShift cluster.
 +
-```bash
-$ oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
-```
+====
+[source,subs="verbatim,quotes"]
+----
+oc login --token=XXXXX --server=https://api.cluster-<your_guid>.dynamic.redhatworkshops.io:6443
+----
+====
 
 Ensure that you switch to the *devhub* project.
-+
-```bash
-$ oc project devhub
-```
+====
+[source,subs="verbatim,quotes"]
+----
+oc project devhub
+----
+====
 
 . Install the RHDH helm chart with the updated *values.yaml* file
 +
-[subs=+quotes]
+====
+[source,subs="verbatim,quotes"]
 ----
-$ *helm upgrade \
+*helm upgrade \
   -i rhdh -f /tmp/values.yaml \
   openshift-helm-charts/redhat-developer-hub*
-
+----
+====
++
+You should see the output as follows:
++
+[subs=+quotes]
+----
 Release "rhdh" has been upgraded. Happy Helming!
 NAME: rhdh
 LAST DEPLOYED: Tue Jan  7 16:27:07 2025
@@ -150,11 +170,20 @@ STATUS: deployed
 REVISION: 1
 ----
 
+
 . Wait for 10-15 minutes while the helm chart is installed. Verify that the *rhdh-devhub* and *rhdh-postgresql* pods are in *Running* state.
++
+====
+[source,subs="verbatim,quotes"]
+----
+*oc get pods*
+----
+====
++
+You should see the output as follows:
 +
 [subs=+quotes]
 ----
-$ *oc get pods*
 NAME                   READY   STATUS    RESTARTS   AGE
 rhdh-7485cc8cd-b4dpp   1/1     Running   0          103s
 rhdh-postgresql-0      1/1     Running   0          25m
